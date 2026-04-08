@@ -4050,6 +4050,21 @@ public final class WeaviateProtoGenerative {
      */
     io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeXAIOrBuilder getXaiOrBuilder();
 
+    /**
+     * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+     * @return Whether the contextualai field is set.
+     */
+    boolean hasContextualai();
+    /**
+     * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+     * @return The contextualai.
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI getContextualai();
+    /**
+     * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAIOrBuilder getContextualaiOrBuilder();
+
     io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeProvider.KindCase getKindCase();
   }
   /**
@@ -4106,6 +4121,7 @@ public final class WeaviateProtoGenerative {
       FRIENDLIAI(12),
       NVIDIA(13),
       XAI(14),
+      CONTEXTUALAI(15),
       KIND_NOT_SET(0);
       private final int value;
       private KindCase(int value) {
@@ -4136,6 +4152,7 @@ public final class WeaviateProtoGenerative {
           case 12: return FRIENDLIAI;
           case 13: return NVIDIA;
           case 14: return XAI;
+          case 15: return CONTEXTUALAI;
           case 0: return KIND_NOT_SET;
           default: return null;
         }
@@ -4565,6 +4582,37 @@ public final class WeaviateProtoGenerative {
       return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeXAI.getDefaultInstance();
     }
 
+    public static final int CONTEXTUALAI_FIELD_NUMBER = 15;
+    /**
+     * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+     * @return Whether the contextualai field is set.
+     */
+    @java.lang.Override
+    public boolean hasContextualai() {
+      return kindCase_ == 15;
+    }
+    /**
+     * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+     * @return The contextualai.
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI getContextualai() {
+      if (kindCase_ == 15) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI) kind_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.getDefaultInstance();
+    }
+    /**
+     * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAIOrBuilder getContextualaiOrBuilder() {
+      if (kindCase_ == 15) {
+         return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI) kind_;
+      }
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.getDefaultInstance();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -4620,6 +4668,9 @@ public final class WeaviateProtoGenerative {
       }
       if (kindCase_ == 14) {
         output.writeMessage(14, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeXAI) kind_);
+      }
+      if (kindCase_ == 15) {
+        output.writeMessage(15, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI) kind_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -4685,6 +4736,10 @@ public final class WeaviateProtoGenerative {
       if (kindCase_ == 14) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(14, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeXAI) kind_);
+      }
+      if (kindCase_ == 15) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(15, (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI) kind_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -4757,6 +4812,10 @@ public final class WeaviateProtoGenerative {
           if (!getXai()
               .equals(other.getXai())) return false;
           break;
+        case 15:
+          if (!getContextualai()
+              .equals(other.getContextualai())) return false;
+          break;
         case 0:
         default:
       }
@@ -4826,6 +4885,10 @@ public final class WeaviateProtoGenerative {
         case 14:
           hash = (37 * hash) + XAI_FIELD_NUMBER;
           hash = (53 * hash) + getXai().hashCode();
+          break;
+        case 15:
+          hash = (37 * hash) + CONTEXTUALAI_FIELD_NUMBER;
+          hash = (53 * hash) + getContextualai().hashCode();
           break;
         case 0:
         default:
@@ -5001,6 +5064,9 @@ public final class WeaviateProtoGenerative {
         if (xaiBuilder_ != null) {
           xaiBuilder_.clear();
         }
+        if (contextualaiBuilder_ != null) {
+          contextualaiBuilder_.clear();
+        }
         kindCase_ = 0;
         kind_ = null;
         return this;
@@ -5096,6 +5162,10 @@ public final class WeaviateProtoGenerative {
         if (kindCase_ == 14 &&
             xaiBuilder_ != null) {
           result.kind_ = xaiBuilder_.build();
+        }
+        if (kindCase_ == 15 &&
+            contextualaiBuilder_ != null) {
+          result.kind_ = contextualaiBuilder_.build();
         }
       }
 
@@ -5197,6 +5267,10 @@ public final class WeaviateProtoGenerative {
           }
           case XAI: {
             mergeXai(other.getXai());
+            break;
+          }
+          case CONTEXTUALAI: {
+            mergeContextualai(other.getContextualai());
             break;
           }
           case KIND_NOT_SET: {
@@ -5325,6 +5399,13 @@ public final class WeaviateProtoGenerative {
                 kindCase_ = 14;
                 break;
               } // case 114
+              case 122: {
+                input.readMessage(
+                    getContextualaiFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                kindCase_ = 15;
+                break;
+              } // case 122
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -7233,6 +7314,148 @@ public final class WeaviateProtoGenerative {
         kindCase_ = 14;
         onChanged();
         return xaiBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAIOrBuilder> contextualaiBuilder_;
+      /**
+       * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+       * @return Whether the contextualai field is set.
+       */
+      @java.lang.Override
+      public boolean hasContextualai() {
+        return kindCase_ == 15;
+      }
+      /**
+       * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+       * @return The contextualai.
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI getContextualai() {
+        if (contextualaiBuilder_ == null) {
+          if (kindCase_ == 15) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI) kind_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.getDefaultInstance();
+        } else {
+          if (kindCase_ == 15) {
+            return contextualaiBuilder_.getMessage();
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+       */
+      public Builder setContextualai(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI value) {
+        if (contextualaiBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          kind_ = value;
+          onChanged();
+        } else {
+          contextualaiBuilder_.setMessage(value);
+        }
+        kindCase_ = 15;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+       */
+      public Builder setContextualai(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.Builder builderForValue) {
+        if (contextualaiBuilder_ == null) {
+          kind_ = builderForValue.build();
+          onChanged();
+        } else {
+          contextualaiBuilder_.setMessage(builderForValue.build());
+        }
+        kindCase_ = 15;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+       */
+      public Builder mergeContextualai(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI value) {
+        if (contextualaiBuilder_ == null) {
+          if (kindCase_ == 15 &&
+              kind_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.getDefaultInstance()) {
+            kind_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.newBuilder((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI) kind_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            kind_ = value;
+          }
+          onChanged();
+        } else {
+          if (kindCase_ == 15) {
+            contextualaiBuilder_.mergeFrom(value);
+          } else {
+            contextualaiBuilder_.setMessage(value);
+          }
+        }
+        kindCase_ = 15;
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+       */
+      public Builder clearContextualai() {
+        if (contextualaiBuilder_ == null) {
+          if (kindCase_ == 15) {
+            kindCase_ = 0;
+            kind_ = null;
+            onChanged();
+          }
+        } else {
+          if (kindCase_ == 15) {
+            kindCase_ = 0;
+            kind_ = null;
+          }
+          contextualaiBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.Builder getContextualaiBuilder() {
+        return getContextualaiFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAIOrBuilder getContextualaiOrBuilder() {
+        if ((kindCase_ == 15) && (contextualaiBuilder_ != null)) {
+          return contextualaiBuilder_.getMessageOrBuilder();
+        } else {
+          if (kindCase_ == 15) {
+            return (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI) kind_;
+          }
+          return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.weaviate.v1.GenerativeContextualAI contextualai = 15;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAIOrBuilder> 
+          getContextualaiFieldBuilder() {
+        if (contextualaiBuilder_ == null) {
+          if (!(kindCase_ == 15)) {
+            kind_ = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.getDefaultInstance();
+          }
+          contextualaiBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAIOrBuilder>(
+                  (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI) kind_,
+                  getParentForChildren(),
+                  isClean());
+          kind_ = null;
+        }
+        kindCase_ = 15;
+        onChanged();
+        return contextualaiBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -10062,6 +10285,32 @@ public final class WeaviateProtoGenerative {
      * <code>optional .weaviate.v1.TextArray image_properties = 15;</code>
      */
     io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getImagePropertiesOrBuilder();
+
+    /**
+     * <code>optional int64 max_tokens = 16;</code>
+     * @return Whether the maxTokens field is set.
+     */
+    boolean hasMaxTokens();
+    /**
+     * <code>optional int64 max_tokens = 16;</code>
+     * @return The maxTokens.
+     */
+    long getMaxTokens();
+
+    /**
+     * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+     * @return Whether the stopSequences field is set.
+     */
+    boolean hasStopSequences();
+    /**
+     * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+     * @return The stopSequences.
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray getStopSequences();
+    /**
+     * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getStopSequencesOrBuilder();
   }
   /**
    * Protobuf type {@code weaviate.v1.GenerativeAWS}
@@ -10458,6 +10707,51 @@ public final class WeaviateProtoGenerative {
       return imageProperties_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : imageProperties_;
     }
 
+    public static final int MAX_TOKENS_FIELD_NUMBER = 16;
+    private long maxTokens_ = 0L;
+    /**
+     * <code>optional int64 max_tokens = 16;</code>
+     * @return Whether the maxTokens field is set.
+     */
+    @java.lang.Override
+    public boolean hasMaxTokens() {
+      return ((bitField0_ & 0x00000200) != 0);
+    }
+    /**
+     * <code>optional int64 max_tokens = 16;</code>
+     * @return The maxTokens.
+     */
+    @java.lang.Override
+    public long getMaxTokens() {
+      return maxTokens_;
+    }
+
+    public static final int STOP_SEQUENCES_FIELD_NUMBER = 17;
+    private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray stopSequences_;
+    /**
+     * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+     * @return Whether the stopSequences field is set.
+     */
+    @java.lang.Override
+    public boolean hasStopSequences() {
+      return ((bitField0_ & 0x00000400) != 0);
+    }
+    /**
+     * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+     * @return The stopSequences.
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray getStopSequences() {
+      return stopSequences_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : stopSequences_;
+    }
+    /**
+     * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getStopSequencesOrBuilder() {
+      return stopSequences_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : stopSequences_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -10499,6 +10793,12 @@ public final class WeaviateProtoGenerative {
       if (((bitField0_ & 0x00000100) != 0)) {
         output.writeMessage(15, getImageProperties());
       }
+      if (((bitField0_ & 0x00000200) != 0)) {
+        output.writeInt64(16, maxTokens_);
+      }
+      if (((bitField0_ & 0x00000400) != 0)) {
+        output.writeMessage(17, getStopSequences());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -10537,6 +10837,14 @@ public final class WeaviateProtoGenerative {
       if (((bitField0_ & 0x00000100) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(15, getImageProperties());
+      }
+      if (((bitField0_ & 0x00000200) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(16, maxTokens_);
+      }
+      if (((bitField0_ & 0x00000400) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(17, getStopSequences());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -10599,6 +10907,16 @@ public final class WeaviateProtoGenerative {
         if (!getImageProperties()
             .equals(other.getImageProperties())) return false;
       }
+      if (hasMaxTokens() != other.hasMaxTokens()) return false;
+      if (hasMaxTokens()) {
+        if (getMaxTokens()
+            != other.getMaxTokens()) return false;
+      }
+      if (hasStopSequences() != other.hasStopSequences()) return false;
+      if (hasStopSequences()) {
+        if (!getStopSequences()
+            .equals(other.getStopSequences())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -10646,6 +10964,15 @@ public final class WeaviateProtoGenerative {
       if (hasImageProperties()) {
         hash = (37 * hash) + IMAGE_PROPERTIES_FIELD_NUMBER;
         hash = (53 * hash) + getImageProperties().hashCode();
+      }
+      if (hasMaxTokens()) {
+        hash = (37 * hash) + MAX_TOKENS_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getMaxTokens());
+      }
+      if (hasStopSequences()) {
+        hash = (37 * hash) + STOP_SEQUENCES_FIELD_NUMBER;
+        hash = (53 * hash) + getStopSequences().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -10779,6 +11106,7 @@ public final class WeaviateProtoGenerative {
                 .alwaysUseFieldBuilders) {
           getImagesFieldBuilder();
           getImagePropertiesFieldBuilder();
+          getStopSequencesFieldBuilder();
         }
       }
       @java.lang.Override
@@ -10801,6 +11129,12 @@ public final class WeaviateProtoGenerative {
         if (imagePropertiesBuilder_ != null) {
           imagePropertiesBuilder_.dispose();
           imagePropertiesBuilder_ = null;
+        }
+        maxTokens_ = 0L;
+        stopSequences_ = null;
+        if (stopSequencesBuilder_ != null) {
+          stopSequencesBuilder_.dispose();
+          stopSequencesBuilder_ = null;
         }
         return this;
       }
@@ -10875,6 +11209,16 @@ public final class WeaviateProtoGenerative {
               ? imageProperties_
               : imagePropertiesBuilder_.build();
           to_bitField0_ |= 0x00000100;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.maxTokens_ = maxTokens_;
+          to_bitField0_ |= 0x00000200;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.stopSequences_ = stopSequencesBuilder_ == null
+              ? stopSequences_
+              : stopSequencesBuilder_.build();
+          to_bitField0_ |= 0x00000400;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -10962,6 +11306,12 @@ public final class WeaviateProtoGenerative {
         if (other.hasImageProperties()) {
           mergeImageProperties(other.getImageProperties());
         }
+        if (other.hasMaxTokens()) {
+          setMaxTokens(other.getMaxTokens());
+        }
+        if (other.hasStopSequences()) {
+          mergeStopSequences(other.getStopSequences());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -11037,6 +11387,18 @@ public final class WeaviateProtoGenerative {
                 bitField0_ |= 0x00000100;
                 break;
               } // case 122
+              case 128: {
+                maxTokens_ = input.readInt64();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 128
+              case 138: {
+                input.readMessage(
+                    getStopSequencesFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 138
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -11809,6 +12171,167 @@ public final class WeaviateProtoGenerative {
         }
         return imagePropertiesBuilder_;
       }
+
+      private long maxTokens_ ;
+      /**
+       * <code>optional int64 max_tokens = 16;</code>
+       * @return Whether the maxTokens field is set.
+       */
+      @java.lang.Override
+      public boolean hasMaxTokens() {
+        return ((bitField0_ & 0x00000200) != 0);
+      }
+      /**
+       * <code>optional int64 max_tokens = 16;</code>
+       * @return The maxTokens.
+       */
+      @java.lang.Override
+      public long getMaxTokens() {
+        return maxTokens_;
+      }
+      /**
+       * <code>optional int64 max_tokens = 16;</code>
+       * @param value The maxTokens to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxTokens(long value) {
+
+        maxTokens_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 max_tokens = 16;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxTokens() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        maxTokens_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray stopSequences_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder> stopSequencesBuilder_;
+      /**
+       * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+       * @return Whether the stopSequences field is set.
+       */
+      public boolean hasStopSequences() {
+        return ((bitField0_ & 0x00000400) != 0);
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+       * @return The stopSequences.
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray getStopSequences() {
+        if (stopSequencesBuilder_ == null) {
+          return stopSequences_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : stopSequences_;
+        } else {
+          return stopSequencesBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+       */
+      public Builder setStopSequences(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray value) {
+        if (stopSequencesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          stopSequences_ = value;
+        } else {
+          stopSequencesBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+       */
+      public Builder setStopSequences(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder builderForValue) {
+        if (stopSequencesBuilder_ == null) {
+          stopSequences_ = builderForValue.build();
+        } else {
+          stopSequencesBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+       */
+      public Builder mergeStopSequences(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray value) {
+        if (stopSequencesBuilder_ == null) {
+          if (((bitField0_ & 0x00000400) != 0) &&
+            stopSequences_ != null &&
+            stopSequences_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance()) {
+            getStopSequencesBuilder().mergeFrom(value);
+          } else {
+            stopSequences_ = value;
+          }
+        } else {
+          stopSequencesBuilder_.mergeFrom(value);
+        }
+        if (stopSequences_ != null) {
+          bitField0_ |= 0x00000400;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+       */
+      public Builder clearStopSequences() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        stopSequences_ = null;
+        if (stopSequencesBuilder_ != null) {
+          stopSequencesBuilder_.dispose();
+          stopSequencesBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder getStopSequencesBuilder() {
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return getStopSequencesFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getStopSequencesOrBuilder() {
+        if (stopSequencesBuilder_ != null) {
+          return stopSequencesBuilder_.getMessageOrBuilder();
+        } else {
+          return stopSequences_ == null ?
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : stopSequences_;
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray stop_sequences = 17;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder> 
+          getStopSequencesFieldBuilder() {
+        if (stopSequencesBuilder_ == null) {
+          stopSequencesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder>(
+                  getStopSequences(),
+                  getParentForChildren(),
+                  isClean());
+          stopSequences_ = null;
+        }
+        return stopSequencesBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -11991,6 +12514,36 @@ public final class WeaviateProtoGenerative {
      * @return The temperature.
      */
     double getTemperature();
+
+    /**
+     * <code>optional .weaviate.v1.TextArray images = 10;</code>
+     * @return Whether the images field is set.
+     */
+    boolean hasImages();
+    /**
+     * <code>optional .weaviate.v1.TextArray images = 10;</code>
+     * @return The images.
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray getImages();
+    /**
+     * <code>optional .weaviate.v1.TextArray images = 10;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getImagesOrBuilder();
+
+    /**
+     * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+     * @return Whether the imageProperties field is set.
+     */
+    boolean hasImageProperties();
+    /**
+     * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+     * @return The imageProperties.
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray getImageProperties();
+    /**
+     * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getImagePropertiesOrBuilder();
   }
   /**
    * Protobuf type {@code weaviate.v1.GenerativeCohere}
@@ -12264,6 +12817,58 @@ public final class WeaviateProtoGenerative {
       return temperature_;
     }
 
+    public static final int IMAGES_FIELD_NUMBER = 10;
+    private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray images_;
+    /**
+     * <code>optional .weaviate.v1.TextArray images = 10;</code>
+     * @return Whether the images field is set.
+     */
+    @java.lang.Override
+    public boolean hasImages() {
+      return ((bitField0_ & 0x00000200) != 0);
+    }
+    /**
+     * <code>optional .weaviate.v1.TextArray images = 10;</code>
+     * @return The images.
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray getImages() {
+      return images_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : images_;
+    }
+    /**
+     * <code>optional .weaviate.v1.TextArray images = 10;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getImagesOrBuilder() {
+      return images_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : images_;
+    }
+
+    public static final int IMAGE_PROPERTIES_FIELD_NUMBER = 11;
+    private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray imageProperties_;
+    /**
+     * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+     * @return Whether the imageProperties field is set.
+     */
+    @java.lang.Override
+    public boolean hasImageProperties() {
+      return ((bitField0_ & 0x00000400) != 0);
+    }
+    /**
+     * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+     * @return The imageProperties.
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray getImageProperties() {
+      return imageProperties_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : imageProperties_;
+    }
+    /**
+     * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getImagePropertiesOrBuilder() {
+      return imageProperties_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : imageProperties_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -12304,6 +12909,12 @@ public final class WeaviateProtoGenerative {
       }
       if (((bitField0_ & 0x00000100) != 0)) {
         output.writeDouble(9, temperature_);
+      }
+      if (((bitField0_ & 0x00000200) != 0)) {
+        output.writeMessage(10, getImages());
+      }
+      if (((bitField0_ & 0x00000400) != 0)) {
+        output.writeMessage(11, getImageProperties());
       }
       getUnknownFields().writeTo(output);
     }
@@ -12347,6 +12958,14 @@ public final class WeaviateProtoGenerative {
       if (((bitField0_ & 0x00000100) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(9, temperature_);
+      }
+      if (((bitField0_ & 0x00000200) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(10, getImages());
+      }
+      if (((bitField0_ & 0x00000400) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(11, getImageProperties());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -12412,6 +13031,16 @@ public final class WeaviateProtoGenerative {
             != java.lang.Double.doubleToLongBits(
                 other.getTemperature())) return false;
       }
+      if (hasImages() != other.hasImages()) return false;
+      if (hasImages()) {
+        if (!getImages()
+            .equals(other.getImages())) return false;
+      }
+      if (hasImageProperties() != other.hasImageProperties()) return false;
+      if (hasImageProperties()) {
+        if (!getImageProperties()
+            .equals(other.getImageProperties())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -12464,6 +13093,14 @@ public final class WeaviateProtoGenerative {
         hash = (37 * hash) + TEMPERATURE_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             java.lang.Double.doubleToLongBits(getTemperature()));
+      }
+      if (hasImages()) {
+        hash = (37 * hash) + IMAGES_FIELD_NUMBER;
+        hash = (53 * hash) + getImages().hashCode();
+      }
+      if (hasImageProperties()) {
+        hash = (37 * hash) + IMAGE_PROPERTIES_FIELD_NUMBER;
+        hash = (53 * hash) + getImageProperties().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -12596,6 +13233,8 @@ public final class WeaviateProtoGenerative {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getStopSequencesFieldBuilder();
+          getImagesFieldBuilder();
+          getImagePropertiesFieldBuilder();
         }
       }
       @java.lang.Override
@@ -12615,6 +13254,16 @@ public final class WeaviateProtoGenerative {
           stopSequencesBuilder_ = null;
         }
         temperature_ = 0D;
+        images_ = null;
+        if (imagesBuilder_ != null) {
+          imagesBuilder_.dispose();
+          imagesBuilder_ = null;
+        }
+        imageProperties_ = null;
+        if (imagePropertiesBuilder_ != null) {
+          imagePropertiesBuilder_.dispose();
+          imagePropertiesBuilder_ = null;
+        }
         return this;
       }
 
@@ -12686,6 +13335,18 @@ public final class WeaviateProtoGenerative {
         if (((from_bitField0_ & 0x00000100) != 0)) {
           result.temperature_ = temperature_;
           to_bitField0_ |= 0x00000100;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.images_ = imagesBuilder_ == null
+              ? images_
+              : imagesBuilder_.build();
+          to_bitField0_ |= 0x00000200;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.imageProperties_ = imagePropertiesBuilder_ == null
+              ? imageProperties_
+              : imagePropertiesBuilder_.build();
+          to_bitField0_ |= 0x00000400;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -12765,6 +13426,12 @@ public final class WeaviateProtoGenerative {
         if (other.hasTemperature()) {
           setTemperature(other.getTemperature());
         }
+        if (other.hasImages()) {
+          mergeImages(other.getImages());
+        }
+        if (other.hasImageProperties()) {
+          mergeImageProperties(other.getImageProperties());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -12838,6 +13505,20 @@ public final class WeaviateProtoGenerative {
                 bitField0_ |= 0x00000100;
                 break;
               } // case 73
+              case 82: {
+                input.readMessage(
+                    getImagesFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 82
+              case 90: {
+                input.readMessage(
+                    getImagePropertiesFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 90
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -13372,6 +14053,248 @@ public final class WeaviateProtoGenerative {
         temperature_ = 0D;
         onChanged();
         return this;
+      }
+
+      private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray images_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder> imagesBuilder_;
+      /**
+       * <code>optional .weaviate.v1.TextArray images = 10;</code>
+       * @return Whether the images field is set.
+       */
+      public boolean hasImages() {
+        return ((bitField0_ & 0x00000200) != 0);
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray images = 10;</code>
+       * @return The images.
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray getImages() {
+        if (imagesBuilder_ == null) {
+          return images_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : images_;
+        } else {
+          return imagesBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray images = 10;</code>
+       */
+      public Builder setImages(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray value) {
+        if (imagesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          images_ = value;
+        } else {
+          imagesBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray images = 10;</code>
+       */
+      public Builder setImages(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder builderForValue) {
+        if (imagesBuilder_ == null) {
+          images_ = builderForValue.build();
+        } else {
+          imagesBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray images = 10;</code>
+       */
+      public Builder mergeImages(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray value) {
+        if (imagesBuilder_ == null) {
+          if (((bitField0_ & 0x00000200) != 0) &&
+            images_ != null &&
+            images_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance()) {
+            getImagesBuilder().mergeFrom(value);
+          } else {
+            images_ = value;
+          }
+        } else {
+          imagesBuilder_.mergeFrom(value);
+        }
+        if (images_ != null) {
+          bitField0_ |= 0x00000200;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray images = 10;</code>
+       */
+      public Builder clearImages() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        images_ = null;
+        if (imagesBuilder_ != null) {
+          imagesBuilder_.dispose();
+          imagesBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray images = 10;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder getImagesBuilder() {
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return getImagesFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray images = 10;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getImagesOrBuilder() {
+        if (imagesBuilder_ != null) {
+          return imagesBuilder_.getMessageOrBuilder();
+        } else {
+          return images_ == null ?
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : images_;
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray images = 10;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder> 
+          getImagesFieldBuilder() {
+        if (imagesBuilder_ == null) {
+          imagesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder>(
+                  getImages(),
+                  getParentForChildren(),
+                  isClean());
+          images_ = null;
+        }
+        return imagesBuilder_;
+      }
+
+      private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray imageProperties_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder> imagePropertiesBuilder_;
+      /**
+       * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+       * @return Whether the imageProperties field is set.
+       */
+      public boolean hasImageProperties() {
+        return ((bitField0_ & 0x00000400) != 0);
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+       * @return The imageProperties.
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray getImageProperties() {
+        if (imagePropertiesBuilder_ == null) {
+          return imageProperties_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : imageProperties_;
+        } else {
+          return imagePropertiesBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+       */
+      public Builder setImageProperties(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray value) {
+        if (imagePropertiesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          imageProperties_ = value;
+        } else {
+          imagePropertiesBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+       */
+      public Builder setImageProperties(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder builderForValue) {
+        if (imagePropertiesBuilder_ == null) {
+          imageProperties_ = builderForValue.build();
+        } else {
+          imagePropertiesBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+       */
+      public Builder mergeImageProperties(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray value) {
+        if (imagePropertiesBuilder_ == null) {
+          if (((bitField0_ & 0x00000400) != 0) &&
+            imageProperties_ != null &&
+            imageProperties_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance()) {
+            getImagePropertiesBuilder().mergeFrom(value);
+          } else {
+            imageProperties_ = value;
+          }
+        } else {
+          imagePropertiesBuilder_.mergeFrom(value);
+        }
+        if (imageProperties_ != null) {
+          bitField0_ |= 0x00000400;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+       */
+      public Builder clearImageProperties() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        imageProperties_ = null;
+        if (imagePropertiesBuilder_ != null) {
+          imagePropertiesBuilder_.dispose();
+          imagePropertiesBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder getImagePropertiesBuilder() {
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return getImagePropertiesFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getImagePropertiesOrBuilder() {
+        if (imagePropertiesBuilder_ != null) {
+          return imagePropertiesBuilder_.getMessageOrBuilder();
+        } else {
+          return imageProperties_ == null ?
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : imageProperties_;
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray image_properties = 11;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder> 
+          getImagePropertiesFieldBuilder() {
+        if (imagePropertiesBuilder_ == null) {
+          imagePropertiesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder>(
+                  getImageProperties(),
+                  getParentForChildren(),
+                  isClean());
+          imageProperties_ = null;
+        }
+        return imagePropertiesBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -16362,6 +17285,38 @@ public final class WeaviateProtoGenerative {
      * <code>optional .weaviate.v1.TextArray image_properties = 15;</code>
      */
     io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getImagePropertiesOrBuilder();
+
+    /**
+     * <code>optional .weaviate.v1.GenerativeOpenAI.ReasoningEffort reasoning_effort = 16;</code>
+     * @return Whether the reasoningEffort field is set.
+     */
+    boolean hasReasoningEffort();
+    /**
+     * <code>optional .weaviate.v1.GenerativeOpenAI.ReasoningEffort reasoning_effort = 16;</code>
+     * @return The enum numeric value on the wire for reasoningEffort.
+     */
+    int getReasoningEffortValue();
+    /**
+     * <code>optional .weaviate.v1.GenerativeOpenAI.ReasoningEffort reasoning_effort = 16;</code>
+     * @return The reasoningEffort.
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.ReasoningEffort getReasoningEffort();
+
+    /**
+     * <code>optional .weaviate.v1.GenerativeOpenAI.Verbosity verbosity = 17;</code>
+     * @return Whether the verbosity field is set.
+     */
+    boolean hasVerbosity();
+    /**
+     * <code>optional .weaviate.v1.GenerativeOpenAI.Verbosity verbosity = 17;</code>
+     * @return The enum numeric value on the wire for verbosity.
+     */
+    int getVerbosityValue();
+    /**
+     * <code>optional .weaviate.v1.GenerativeOpenAI.Verbosity verbosity = 17;</code>
+     * @return The verbosity.
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.Verbosity getVerbosity();
   }
   /**
    * Protobuf type {@code weaviate.v1.GenerativeOpenAI}
@@ -16381,6 +17336,8 @@ public final class WeaviateProtoGenerative {
       apiVersion_ = "";
       resourceName_ = "";
       deploymentId_ = "";
+      reasoningEffort_ = 0;
+      verbosity_ = 0;
     }
 
     @java.lang.Override
@@ -16401,6 +17358,267 @@ public final class WeaviateProtoGenerative {
       return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.internal_static_weaviate_v1_GenerativeOpenAI_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.Builder.class);
+    }
+
+    /**
+     * Protobuf enum {@code weaviate.v1.GenerativeOpenAI.ReasoningEffort}
+     */
+    public enum ReasoningEffort
+        implements com.google.protobuf.ProtocolMessageEnum {
+      /**
+       * <code>REASONING_EFFORT_UNSPECIFIED = 0;</code>
+       */
+      REASONING_EFFORT_UNSPECIFIED(0),
+      /**
+       * <code>REASONING_EFFORT_MINIMAL = 1;</code>
+       */
+      REASONING_EFFORT_MINIMAL(1),
+      /**
+       * <code>REASONING_EFFORT_LOW = 2;</code>
+       */
+      REASONING_EFFORT_LOW(2),
+      /**
+       * <code>REASONING_EFFORT_MEDIUM = 3;</code>
+       */
+      REASONING_EFFORT_MEDIUM(3),
+      /**
+       * <code>REASONING_EFFORT_HIGH = 4;</code>
+       */
+      REASONING_EFFORT_HIGH(4),
+      UNRECOGNIZED(-1),
+      ;
+
+      /**
+       * <code>REASONING_EFFORT_UNSPECIFIED = 0;</code>
+       */
+      public static final int REASONING_EFFORT_UNSPECIFIED_VALUE = 0;
+      /**
+       * <code>REASONING_EFFORT_MINIMAL = 1;</code>
+       */
+      public static final int REASONING_EFFORT_MINIMAL_VALUE = 1;
+      /**
+       * <code>REASONING_EFFORT_LOW = 2;</code>
+       */
+      public static final int REASONING_EFFORT_LOW_VALUE = 2;
+      /**
+       * <code>REASONING_EFFORT_MEDIUM = 3;</code>
+       */
+      public static final int REASONING_EFFORT_MEDIUM_VALUE = 3;
+      /**
+       * <code>REASONING_EFFORT_HIGH = 4;</code>
+       */
+      public static final int REASONING_EFFORT_HIGH_VALUE = 4;
+
+
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+              "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
+
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static ReasoningEffort valueOf(int value) {
+        return forNumber(value);
+      }
+
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
+      public static ReasoningEffort forNumber(int value) {
+        switch (value) {
+          case 0: return REASONING_EFFORT_UNSPECIFIED;
+          case 1: return REASONING_EFFORT_MINIMAL;
+          case 2: return REASONING_EFFORT_LOW;
+          case 3: return REASONING_EFFORT_MEDIUM;
+          case 4: return REASONING_EFFORT_HIGH;
+          default: return null;
+        }
+      }
+
+      public static com.google.protobuf.Internal.EnumLiteMap<ReasoningEffort>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+          ReasoningEffort> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<ReasoningEffort>() {
+              public ReasoningEffort findValueByNumber(int number) {
+                return ReasoningEffort.forNumber(number);
+              }
+            };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.getDescriptor().getEnumTypes().get(0);
+      }
+
+      private static final ReasoningEffort[] VALUES = values();
+
+      public static ReasoningEffort valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int value;
+
+      private ReasoningEffort(int value) {
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:weaviate.v1.GenerativeOpenAI.ReasoningEffort)
+    }
+
+    /**
+     * Protobuf enum {@code weaviate.v1.GenerativeOpenAI.Verbosity}
+     */
+    public enum Verbosity
+        implements com.google.protobuf.ProtocolMessageEnum {
+      /**
+       * <code>VERBOSITY_UNSPECIFIED = 0;</code>
+       */
+      VERBOSITY_UNSPECIFIED(0),
+      /**
+       * <code>VERBOSITY_LOW = 1;</code>
+       */
+      VERBOSITY_LOW(1),
+      /**
+       * <code>VERBOSITY_MEDIUM = 2;</code>
+       */
+      VERBOSITY_MEDIUM(2),
+      /**
+       * <code>VERBOSITY_HIGH = 3;</code>
+       */
+      VERBOSITY_HIGH(3),
+      UNRECOGNIZED(-1),
+      ;
+
+      /**
+       * <code>VERBOSITY_UNSPECIFIED = 0;</code>
+       */
+      public static final int VERBOSITY_UNSPECIFIED_VALUE = 0;
+      /**
+       * <code>VERBOSITY_LOW = 1;</code>
+       */
+      public static final int VERBOSITY_LOW_VALUE = 1;
+      /**
+       * <code>VERBOSITY_MEDIUM = 2;</code>
+       */
+      public static final int VERBOSITY_MEDIUM_VALUE = 2;
+      /**
+       * <code>VERBOSITY_HIGH = 3;</code>
+       */
+      public static final int VERBOSITY_HIGH_VALUE = 3;
+
+
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+              "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
+
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static Verbosity valueOf(int value) {
+        return forNumber(value);
+      }
+
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
+      public static Verbosity forNumber(int value) {
+        switch (value) {
+          case 0: return VERBOSITY_UNSPECIFIED;
+          case 1: return VERBOSITY_LOW;
+          case 2: return VERBOSITY_MEDIUM;
+          case 3: return VERBOSITY_HIGH;
+          default: return null;
+        }
+      }
+
+      public static com.google.protobuf.Internal.EnumLiteMap<Verbosity>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+          Verbosity> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<Verbosity>() {
+              public Verbosity findValueByNumber(int number) {
+                return Verbosity.forNumber(number);
+              }
+            };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.getDescriptor().getEnumTypes().get(1);
+      }
+
+      private static final Verbosity[] VALUES = values();
+
+      public static Verbosity valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int value;
+
+      private Verbosity(int value) {
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:weaviate.v1.GenerativeOpenAI.Verbosity)
     }
 
     private int bitField0_;
@@ -16850,6 +18068,56 @@ public final class WeaviateProtoGenerative {
       return imageProperties_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : imageProperties_;
     }
 
+    public static final int REASONING_EFFORT_FIELD_NUMBER = 16;
+    private int reasoningEffort_ = 0;
+    /**
+     * <code>optional .weaviate.v1.GenerativeOpenAI.ReasoningEffort reasoning_effort = 16;</code>
+     * @return Whether the reasoningEffort field is set.
+     */
+    @java.lang.Override public boolean hasReasoningEffort() {
+      return ((bitField0_ & 0x00008000) != 0);
+    }
+    /**
+     * <code>optional .weaviate.v1.GenerativeOpenAI.ReasoningEffort reasoning_effort = 16;</code>
+     * @return The enum numeric value on the wire for reasoningEffort.
+     */
+    @java.lang.Override public int getReasoningEffortValue() {
+      return reasoningEffort_;
+    }
+    /**
+     * <code>optional .weaviate.v1.GenerativeOpenAI.ReasoningEffort reasoning_effort = 16;</code>
+     * @return The reasoningEffort.
+     */
+    @java.lang.Override public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.ReasoningEffort getReasoningEffort() {
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.ReasoningEffort result = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.ReasoningEffort.forNumber(reasoningEffort_);
+      return result == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.ReasoningEffort.UNRECOGNIZED : result;
+    }
+
+    public static final int VERBOSITY_FIELD_NUMBER = 17;
+    private int verbosity_ = 0;
+    /**
+     * <code>optional .weaviate.v1.GenerativeOpenAI.Verbosity verbosity = 17;</code>
+     * @return Whether the verbosity field is set.
+     */
+    @java.lang.Override public boolean hasVerbosity() {
+      return ((bitField0_ & 0x00010000) != 0);
+    }
+    /**
+     * <code>optional .weaviate.v1.GenerativeOpenAI.Verbosity verbosity = 17;</code>
+     * @return The enum numeric value on the wire for verbosity.
+     */
+    @java.lang.Override public int getVerbosityValue() {
+      return verbosity_;
+    }
+    /**
+     * <code>optional .weaviate.v1.GenerativeOpenAI.Verbosity verbosity = 17;</code>
+     * @return The verbosity.
+     */
+    @java.lang.Override public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.Verbosity getVerbosity() {
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.Verbosity result = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.Verbosity.forNumber(verbosity_);
+      return result == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.Verbosity.UNRECOGNIZED : result;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -16908,6 +18176,12 @@ public final class WeaviateProtoGenerative {
       }
       if (((bitField0_ & 0x00004000) != 0)) {
         output.writeMessage(15, getImageProperties());
+      }
+      if (((bitField0_ & 0x00008000) != 0)) {
+        output.writeEnum(16, reasoningEffort_);
+      }
+      if (((bitField0_ & 0x00010000) != 0)) {
+        output.writeEnum(17, verbosity_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -16972,6 +18246,14 @@ public final class WeaviateProtoGenerative {
       if (((bitField0_ & 0x00004000) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(15, getImageProperties());
+      }
+      if (((bitField0_ & 0x00008000) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(16, reasoningEffort_);
+      }
+      if (((bitField0_ & 0x00010000) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(17, verbosity_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -17067,6 +18349,14 @@ public final class WeaviateProtoGenerative {
         if (!getImageProperties()
             .equals(other.getImageProperties())) return false;
       }
+      if (hasReasoningEffort() != other.hasReasoningEffort()) return false;
+      if (hasReasoningEffort()) {
+        if (reasoningEffort_ != other.reasoningEffort_) return false;
+      }
+      if (hasVerbosity() != other.hasVerbosity()) return false;
+      if (hasVerbosity()) {
+        if (verbosity_ != other.verbosity_) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -17144,6 +18434,14 @@ public final class WeaviateProtoGenerative {
       if (hasImageProperties()) {
         hash = (37 * hash) + IMAGE_PROPERTIES_FIELD_NUMBER;
         hash = (53 * hash) + getImageProperties().hashCode();
+      }
+      if (hasReasoningEffort()) {
+        hash = (37 * hash) + REASONING_EFFORT_FIELD_NUMBER;
+        hash = (53 * hash) + reasoningEffort_;
+      }
+      if (hasVerbosity()) {
+        hash = (37 * hash) + VERBOSITY_FIELD_NUMBER;
+        hash = (53 * hash) + verbosity_;
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -17311,6 +18609,8 @@ public final class WeaviateProtoGenerative {
           imagePropertiesBuilder_.dispose();
           imagePropertiesBuilder_ = null;
         }
+        reasoningEffort_ = 0;
+        verbosity_ = 0;
         return this;
       }
 
@@ -17410,6 +18710,14 @@ public final class WeaviateProtoGenerative {
               ? imageProperties_
               : imagePropertiesBuilder_.build();
           to_bitField0_ |= 0x00004000;
+        }
+        if (((from_bitField0_ & 0x00008000) != 0)) {
+          result.reasoningEffort_ = reasoningEffort_;
+          to_bitField0_ |= 0x00008000;
+        }
+        if (((from_bitField0_ & 0x00010000) != 0)) {
+          result.verbosity_ = verbosity_;
+          to_bitField0_ |= 0x00010000;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -17512,6 +18820,12 @@ public final class WeaviateProtoGenerative {
         }
         if (other.hasImageProperties()) {
           mergeImageProperties(other.getImageProperties());
+        }
+        if (other.hasReasoningEffort()) {
+          setReasoningEffort(other.getReasoningEffort());
+        }
+        if (other.hasVerbosity()) {
+          setVerbosity(other.getVerbosity());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -17620,6 +18934,16 @@ public final class WeaviateProtoGenerative {
                 bitField0_ |= 0x00004000;
                 break;
               } // case 122
+              case 128: {
+                reasoningEffort_ = input.readEnum();
+                bitField0_ |= 0x00008000;
+                break;
+              } // case 128
+              case 136: {
+                verbosity_ = input.readEnum();
+                bitField0_ |= 0x00010000;
+                break;
+              } // case 136
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -18673,6 +19997,126 @@ public final class WeaviateProtoGenerative {
           imageProperties_ = null;
         }
         return imagePropertiesBuilder_;
+      }
+
+      private int reasoningEffort_ = 0;
+      /**
+       * <code>optional .weaviate.v1.GenerativeOpenAI.ReasoningEffort reasoning_effort = 16;</code>
+       * @return Whether the reasoningEffort field is set.
+       */
+      @java.lang.Override public boolean hasReasoningEffort() {
+        return ((bitField0_ & 0x00008000) != 0);
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeOpenAI.ReasoningEffort reasoning_effort = 16;</code>
+       * @return The enum numeric value on the wire for reasoningEffort.
+       */
+      @java.lang.Override public int getReasoningEffortValue() {
+        return reasoningEffort_;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeOpenAI.ReasoningEffort reasoning_effort = 16;</code>
+       * @param value The enum numeric value on the wire for reasoningEffort to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReasoningEffortValue(int value) {
+        reasoningEffort_ = value;
+        bitField0_ |= 0x00008000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeOpenAI.ReasoningEffort reasoning_effort = 16;</code>
+       * @return The reasoningEffort.
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.ReasoningEffort getReasoningEffort() {
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.ReasoningEffort result = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.ReasoningEffort.forNumber(reasoningEffort_);
+        return result == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.ReasoningEffort.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeOpenAI.ReasoningEffort reasoning_effort = 16;</code>
+       * @param value The reasoningEffort to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReasoningEffort(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.ReasoningEffort value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00008000;
+        reasoningEffort_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeOpenAI.ReasoningEffort reasoning_effort = 16;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearReasoningEffort() {
+        bitField0_ = (bitField0_ & ~0x00008000);
+        reasoningEffort_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int verbosity_ = 0;
+      /**
+       * <code>optional .weaviate.v1.GenerativeOpenAI.Verbosity verbosity = 17;</code>
+       * @return Whether the verbosity field is set.
+       */
+      @java.lang.Override public boolean hasVerbosity() {
+        return ((bitField0_ & 0x00010000) != 0);
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeOpenAI.Verbosity verbosity = 17;</code>
+       * @return The enum numeric value on the wire for verbosity.
+       */
+      @java.lang.Override public int getVerbosityValue() {
+        return verbosity_;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeOpenAI.Verbosity verbosity = 17;</code>
+       * @param value The enum numeric value on the wire for verbosity to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVerbosityValue(int value) {
+        verbosity_ = value;
+        bitField0_ |= 0x00010000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeOpenAI.Verbosity verbosity = 17;</code>
+       * @return The verbosity.
+       */
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.Verbosity getVerbosity() {
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.Verbosity result = io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.Verbosity.forNumber(verbosity_);
+        return result == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.Verbosity.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeOpenAI.Verbosity verbosity = 17;</code>
+       * @param value The verbosity to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVerbosity(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeOpenAI.Verbosity value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00010000;
+        verbosity_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.GenerativeOpenAI.Verbosity verbosity = 17;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVerbosity() {
+        bitField0_ = (bitField0_ & ~0x00010000);
+        verbosity_ = 0;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -26659,6 +28103,1368 @@ public final class WeaviateProtoGenerative {
 
     @java.lang.Override
     public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeXAI getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface GenerativeContextualAIOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:weaviate.v1.GenerativeContextualAI)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional string model = 1;</code>
+     * @return Whether the model field is set.
+     */
+    boolean hasModel();
+    /**
+     * <code>optional string model = 1;</code>
+     * @return The model.
+     */
+    java.lang.String getModel();
+    /**
+     * <code>optional string model = 1;</code>
+     * @return The bytes for model.
+     */
+    com.google.protobuf.ByteString
+        getModelBytes();
+
+    /**
+     * <code>optional double temperature = 2;</code>
+     * @return Whether the temperature field is set.
+     */
+    boolean hasTemperature();
+    /**
+     * <code>optional double temperature = 2;</code>
+     * @return The temperature.
+     */
+    double getTemperature();
+
+    /**
+     * <code>optional double top_p = 3;</code>
+     * @return Whether the topP field is set.
+     */
+    boolean hasTopP();
+    /**
+     * <code>optional double top_p = 3;</code>
+     * @return The topP.
+     */
+    double getTopP();
+
+    /**
+     * <code>optional int64 max_new_tokens = 4;</code>
+     * @return Whether the maxNewTokens field is set.
+     */
+    boolean hasMaxNewTokens();
+    /**
+     * <code>optional int64 max_new_tokens = 4;</code>
+     * @return The maxNewTokens.
+     */
+    long getMaxNewTokens();
+
+    /**
+     * <code>optional string system_prompt = 5;</code>
+     * @return Whether the systemPrompt field is set.
+     */
+    boolean hasSystemPrompt();
+    /**
+     * <code>optional string system_prompt = 5;</code>
+     * @return The systemPrompt.
+     */
+    java.lang.String getSystemPrompt();
+    /**
+     * <code>optional string system_prompt = 5;</code>
+     * @return The bytes for systemPrompt.
+     */
+    com.google.protobuf.ByteString
+        getSystemPromptBytes();
+
+    /**
+     * <code>optional bool avoid_commentary = 6;</code>
+     * @return Whether the avoidCommentary field is set.
+     */
+    boolean hasAvoidCommentary();
+    /**
+     * <code>optional bool avoid_commentary = 6;</code>
+     * @return The avoidCommentary.
+     */
+    boolean getAvoidCommentary();
+
+    /**
+     * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+     * @return Whether the knowledge field is set.
+     */
+    boolean hasKnowledge();
+    /**
+     * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+     * @return The knowledge.
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray getKnowledge();
+    /**
+     * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+     */
+    io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getKnowledgeOrBuilder();
+  }
+  /**
+   * Protobuf type {@code weaviate.v1.GenerativeContextualAI}
+   */
+  public static final class GenerativeContextualAI extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:weaviate.v1.GenerativeContextualAI)
+      GenerativeContextualAIOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use GenerativeContextualAI.newBuilder() to construct.
+    private GenerativeContextualAI(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private GenerativeContextualAI() {
+      model_ = "";
+      systemPrompt_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new GenerativeContextualAI();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.internal_static_weaviate_v1_GenerativeContextualAI_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.internal_static_weaviate_v1_GenerativeContextualAI_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int MODEL_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object model_ = "";
+    /**
+     * <code>optional string model = 1;</code>
+     * @return Whether the model field is set.
+     */
+    @java.lang.Override
+    public boolean hasModel() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional string model = 1;</code>
+     * @return The model.
+     */
+    @java.lang.Override
+    public java.lang.String getModel() {
+      java.lang.Object ref = model_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        model_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string model = 1;</code>
+     * @return The bytes for model.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getModelBytes() {
+      java.lang.Object ref = model_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        model_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TEMPERATURE_FIELD_NUMBER = 2;
+    private double temperature_ = 0D;
+    /**
+     * <code>optional double temperature = 2;</code>
+     * @return Whether the temperature field is set.
+     */
+    @java.lang.Override
+    public boolean hasTemperature() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>optional double temperature = 2;</code>
+     * @return The temperature.
+     */
+    @java.lang.Override
+    public double getTemperature() {
+      return temperature_;
+    }
+
+    public static final int TOP_P_FIELD_NUMBER = 3;
+    private double topP_ = 0D;
+    /**
+     * <code>optional double top_p = 3;</code>
+     * @return Whether the topP field is set.
+     */
+    @java.lang.Override
+    public boolean hasTopP() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>optional double top_p = 3;</code>
+     * @return The topP.
+     */
+    @java.lang.Override
+    public double getTopP() {
+      return topP_;
+    }
+
+    public static final int MAX_NEW_TOKENS_FIELD_NUMBER = 4;
+    private long maxNewTokens_ = 0L;
+    /**
+     * <code>optional int64 max_new_tokens = 4;</code>
+     * @return Whether the maxNewTokens field is set.
+     */
+    @java.lang.Override
+    public boolean hasMaxNewTokens() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional int64 max_new_tokens = 4;</code>
+     * @return The maxNewTokens.
+     */
+    @java.lang.Override
+    public long getMaxNewTokens() {
+      return maxNewTokens_;
+    }
+
+    public static final int SYSTEM_PROMPT_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object systemPrompt_ = "";
+    /**
+     * <code>optional string system_prompt = 5;</code>
+     * @return Whether the systemPrompt field is set.
+     */
+    @java.lang.Override
+    public boolean hasSystemPrompt() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional string system_prompt = 5;</code>
+     * @return The systemPrompt.
+     */
+    @java.lang.Override
+    public java.lang.String getSystemPrompt() {
+      java.lang.Object ref = systemPrompt_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        systemPrompt_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string system_prompt = 5;</code>
+     * @return The bytes for systemPrompt.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSystemPromptBytes() {
+      java.lang.Object ref = systemPrompt_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        systemPrompt_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int AVOID_COMMENTARY_FIELD_NUMBER = 6;
+    private boolean avoidCommentary_ = false;
+    /**
+     * <code>optional bool avoid_commentary = 6;</code>
+     * @return Whether the avoidCommentary field is set.
+     */
+    @java.lang.Override
+    public boolean hasAvoidCommentary() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <code>optional bool avoid_commentary = 6;</code>
+     * @return The avoidCommentary.
+     */
+    @java.lang.Override
+    public boolean getAvoidCommentary() {
+      return avoidCommentary_;
+    }
+
+    public static final int KNOWLEDGE_FIELD_NUMBER = 7;
+    private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray knowledge_;
+    /**
+     * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+     * @return Whether the knowledge field is set.
+     */
+    @java.lang.Override
+    public boolean hasKnowledge() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+     * @return The knowledge.
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray getKnowledge() {
+      return knowledge_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : knowledge_;
+    }
+    /**
+     * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+     */
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getKnowledgeOrBuilder() {
+      return knowledge_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : knowledge_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, model_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeDouble(2, temperature_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeDouble(3, topP_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        output.writeInt64(4, maxNewTokens_);
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, systemPrompt_);
+      }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        output.writeBool(6, avoidCommentary_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        output.writeMessage(7, getKnowledge());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, model_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(2, temperature_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(3, topP_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(4, maxNewTokens_);
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, systemPrompt_);
+      }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(6, avoidCommentary_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, getKnowledge());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI)) {
+        return super.equals(obj);
+      }
+      io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI other = (io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI) obj;
+
+      if (hasModel() != other.hasModel()) return false;
+      if (hasModel()) {
+        if (!getModel()
+            .equals(other.getModel())) return false;
+      }
+      if (hasTemperature() != other.hasTemperature()) return false;
+      if (hasTemperature()) {
+        if (java.lang.Double.doubleToLongBits(getTemperature())
+            != java.lang.Double.doubleToLongBits(
+                other.getTemperature())) return false;
+      }
+      if (hasTopP() != other.hasTopP()) return false;
+      if (hasTopP()) {
+        if (java.lang.Double.doubleToLongBits(getTopP())
+            != java.lang.Double.doubleToLongBits(
+                other.getTopP())) return false;
+      }
+      if (hasMaxNewTokens() != other.hasMaxNewTokens()) return false;
+      if (hasMaxNewTokens()) {
+        if (getMaxNewTokens()
+            != other.getMaxNewTokens()) return false;
+      }
+      if (hasSystemPrompt() != other.hasSystemPrompt()) return false;
+      if (hasSystemPrompt()) {
+        if (!getSystemPrompt()
+            .equals(other.getSystemPrompt())) return false;
+      }
+      if (hasAvoidCommentary() != other.hasAvoidCommentary()) return false;
+      if (hasAvoidCommentary()) {
+        if (getAvoidCommentary()
+            != other.getAvoidCommentary()) return false;
+      }
+      if (hasKnowledge() != other.hasKnowledge()) return false;
+      if (hasKnowledge()) {
+        if (!getKnowledge()
+            .equals(other.getKnowledge())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasModel()) {
+        hash = (37 * hash) + MODEL_FIELD_NUMBER;
+        hash = (53 * hash) + getModel().hashCode();
+      }
+      if (hasTemperature()) {
+        hash = (37 * hash) + TEMPERATURE_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getTemperature()));
+      }
+      if (hasTopP()) {
+        hash = (37 * hash) + TOP_P_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getTopP()));
+      }
+      if (hasMaxNewTokens()) {
+        hash = (37 * hash) + MAX_NEW_TOKENS_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getMaxNewTokens());
+      }
+      if (hasSystemPrompt()) {
+        hash = (37 * hash) + SYSTEM_PROMPT_FIELD_NUMBER;
+        hash = (53 * hash) + getSystemPrompt().hashCode();
+      }
+      if (hasAvoidCommentary()) {
+        hash = (37 * hash) + AVOID_COMMENTARY_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getAvoidCommentary());
+      }
+      if (hasKnowledge()) {
+        hash = (37 * hash) + KNOWLEDGE_FIELD_NUMBER;
+        hash = (53 * hash) + getKnowledge().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code weaviate.v1.GenerativeContextualAI}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:weaviate.v1.GenerativeContextualAI)
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAIOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.internal_static_weaviate_v1_GenerativeContextualAI_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.internal_static_weaviate_v1_GenerativeContextualAI_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.class, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.Builder.class);
+      }
+
+      // Construct using io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getKnowledgeFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        model_ = "";
+        temperature_ = 0D;
+        topP_ = 0D;
+        maxNewTokens_ = 0L;
+        systemPrompt_ = "";
+        avoidCommentary_ = false;
+        knowledge_ = null;
+        if (knowledgeBuilder_ != null) {
+          knowledgeBuilder_.dispose();
+          knowledgeBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.internal_static_weaviate_v1_GenerativeContextualAI_descriptor;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI getDefaultInstanceForType() {
+        return io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI build() {
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI buildPartial() {
+        io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI result = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.model_ = model_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.temperature_ = temperature_;
+          to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.topP_ = topP_;
+          to_bitField0_ |= 0x00000004;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.maxNewTokens_ = maxNewTokens_;
+          to_bitField0_ |= 0x00000008;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.systemPrompt_ = systemPrompt_;
+          to_bitField0_ |= 0x00000010;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.avoidCommentary_ = avoidCommentary_;
+          to_bitField0_ |= 0x00000020;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.knowledge_ = knowledgeBuilder_ == null
+              ? knowledge_
+              : knowledgeBuilder_.build();
+          to_bitField0_ |= 0x00000040;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI) {
+          return mergeFrom((io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI other) {
+        if (other == io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI.getDefaultInstance()) return this;
+        if (other.hasModel()) {
+          model_ = other.model_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.hasTemperature()) {
+          setTemperature(other.getTemperature());
+        }
+        if (other.hasTopP()) {
+          setTopP(other.getTopP());
+        }
+        if (other.hasMaxNewTokens()) {
+          setMaxNewTokens(other.getMaxNewTokens());
+        }
+        if (other.hasSystemPrompt()) {
+          systemPrompt_ = other.systemPrompt_;
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        if (other.hasAvoidCommentary()) {
+          setAvoidCommentary(other.getAvoidCommentary());
+        }
+        if (other.hasKnowledge()) {
+          mergeKnowledge(other.getKnowledge());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                model_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 17: {
+                temperature_ = input.readDouble();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 17
+              case 25: {
+                topP_ = input.readDouble();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 25
+              case 32: {
+                maxNewTokens_ = input.readInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 42: {
+                systemPrompt_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              case 48: {
+                avoidCommentary_ = input.readBool();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 48
+              case 58: {
+                input.readMessage(
+                    getKnowledgeFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 58
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object model_ = "";
+      /**
+       * <code>optional string model = 1;</code>
+       * @return Whether the model field is set.
+       */
+      public boolean hasModel() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>optional string model = 1;</code>
+       * @return The model.
+       */
+      public java.lang.String getModel() {
+        java.lang.Object ref = model_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          model_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string model = 1;</code>
+       * @return The bytes for model.
+       */
+      public com.google.protobuf.ByteString
+          getModelBytes() {
+        java.lang.Object ref = model_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          model_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string model = 1;</code>
+       * @param value The model to set.
+       * @return This builder for chaining.
+       */
+      public Builder setModel(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        model_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string model = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearModel() {
+        model_ = getDefaultInstance().getModel();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string model = 1;</code>
+       * @param value The bytes for model to set.
+       * @return This builder for chaining.
+       */
+      public Builder setModelBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        model_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private double temperature_ ;
+      /**
+       * <code>optional double temperature = 2;</code>
+       * @return Whether the temperature field is set.
+       */
+      @java.lang.Override
+      public boolean hasTemperature() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>optional double temperature = 2;</code>
+       * @return The temperature.
+       */
+      @java.lang.Override
+      public double getTemperature() {
+        return temperature_;
+      }
+      /**
+       * <code>optional double temperature = 2;</code>
+       * @param value The temperature to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTemperature(double value) {
+
+        temperature_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double temperature = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTemperature() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        temperature_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double topP_ ;
+      /**
+       * <code>optional double top_p = 3;</code>
+       * @return Whether the topP field is set.
+       */
+      @java.lang.Override
+      public boolean hasTopP() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>optional double top_p = 3;</code>
+       * @return The topP.
+       */
+      @java.lang.Override
+      public double getTopP() {
+        return topP_;
+      }
+      /**
+       * <code>optional double top_p = 3;</code>
+       * @param value The topP to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTopP(double value) {
+
+        topP_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double top_p = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTopP() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        topP_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private long maxNewTokens_ ;
+      /**
+       * <code>optional int64 max_new_tokens = 4;</code>
+       * @return Whether the maxNewTokens field is set.
+       */
+      @java.lang.Override
+      public boolean hasMaxNewTokens() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>optional int64 max_new_tokens = 4;</code>
+       * @return The maxNewTokens.
+       */
+      @java.lang.Override
+      public long getMaxNewTokens() {
+        return maxNewTokens_;
+      }
+      /**
+       * <code>optional int64 max_new_tokens = 4;</code>
+       * @param value The maxNewTokens to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxNewTokens(long value) {
+
+        maxNewTokens_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 max_new_tokens = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxNewTokens() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        maxNewTokens_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object systemPrompt_ = "";
+      /**
+       * <code>optional string system_prompt = 5;</code>
+       * @return Whether the systemPrompt field is set.
+       */
+      public boolean hasSystemPrompt() {
+        return ((bitField0_ & 0x00000010) != 0);
+      }
+      /**
+       * <code>optional string system_prompt = 5;</code>
+       * @return The systemPrompt.
+       */
+      public java.lang.String getSystemPrompt() {
+        java.lang.Object ref = systemPrompt_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          systemPrompt_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string system_prompt = 5;</code>
+       * @return The bytes for systemPrompt.
+       */
+      public com.google.protobuf.ByteString
+          getSystemPromptBytes() {
+        java.lang.Object ref = systemPrompt_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          systemPrompt_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string system_prompt = 5;</code>
+       * @param value The systemPrompt to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSystemPrompt(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        systemPrompt_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string system_prompt = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSystemPrompt() {
+        systemPrompt_ = getDefaultInstance().getSystemPrompt();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string system_prompt = 5;</code>
+       * @param value The bytes for systemPrompt to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSystemPromptBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        systemPrompt_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      private boolean avoidCommentary_ ;
+      /**
+       * <code>optional bool avoid_commentary = 6;</code>
+       * @return Whether the avoidCommentary field is set.
+       */
+      @java.lang.Override
+      public boolean hasAvoidCommentary() {
+        return ((bitField0_ & 0x00000020) != 0);
+      }
+      /**
+       * <code>optional bool avoid_commentary = 6;</code>
+       * @return The avoidCommentary.
+       */
+      @java.lang.Override
+      public boolean getAvoidCommentary() {
+        return avoidCommentary_;
+      }
+      /**
+       * <code>optional bool avoid_commentary = 6;</code>
+       * @param value The avoidCommentary to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAvoidCommentary(boolean value) {
+
+        avoidCommentary_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool avoid_commentary = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAvoidCommentary() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        avoidCommentary_ = false;
+        onChanged();
+        return this;
+      }
+
+      private io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray knowledge_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder> knowledgeBuilder_;
+      /**
+       * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+       * @return Whether the knowledge field is set.
+       */
+      public boolean hasKnowledge() {
+        return ((bitField0_ & 0x00000040) != 0);
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+       * @return The knowledge.
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray getKnowledge() {
+        if (knowledgeBuilder_ == null) {
+          return knowledge_ == null ? io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : knowledge_;
+        } else {
+          return knowledgeBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+       */
+      public Builder setKnowledge(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray value) {
+        if (knowledgeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          knowledge_ = value;
+        } else {
+          knowledgeBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+       */
+      public Builder setKnowledge(
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder builderForValue) {
+        if (knowledgeBuilder_ == null) {
+          knowledge_ = builderForValue.build();
+        } else {
+          knowledgeBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+       */
+      public Builder mergeKnowledge(io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray value) {
+        if (knowledgeBuilder_ == null) {
+          if (((bitField0_ & 0x00000040) != 0) &&
+            knowledge_ != null &&
+            knowledge_ != io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance()) {
+            getKnowledgeBuilder().mergeFrom(value);
+          } else {
+            knowledge_ = value;
+          }
+        } else {
+          knowledgeBuilder_.mergeFrom(value);
+        }
+        if (knowledge_ != null) {
+          bitField0_ |= 0x00000040;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+       */
+      public Builder clearKnowledge() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        knowledge_ = null;
+        if (knowledgeBuilder_ != null) {
+          knowledgeBuilder_.dispose();
+          knowledgeBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder getKnowledgeBuilder() {
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return getKnowledgeFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+       */
+      public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder getKnowledgeOrBuilder() {
+        if (knowledgeBuilder_ != null) {
+          return knowledgeBuilder_.getMessageOrBuilder();
+        } else {
+          return knowledge_ == null ?
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.getDefaultInstance() : knowledge_;
+        }
+      }
+      /**
+       * <code>optional .weaviate.v1.TextArray knowledge = 7;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder> 
+          getKnowledgeFieldBuilder() {
+        if (knowledgeBuilder_ == null) {
+          knowledgeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArray.Builder, io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.TextArrayOrBuilder>(
+                  getKnowledge(),
+                  getParentForChildren(),
+                  isClean());
+          knowledge_ = null;
+        }
+        return knowledgeBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:weaviate.v1.GenerativeContextualAI)
+    }
+
+    // @@protoc_insertion_point(class_scope:weaviate.v1.GenerativeContextualAI)
+    private static final io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI();
+    }
+
+    public static io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GenerativeContextualAI>
+        PARSER = new com.google.protobuf.AbstractParser<GenerativeContextualAI>() {
+      @java.lang.Override
+      public GenerativeContextualAI parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<GenerativeContextualAI> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GenerativeContextualAI> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoGenerative.GenerativeContextualAI getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -50080,6 +52886,11 @@ public final class WeaviateProtoGenerative {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_weaviate_v1_GenerativeXAI_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_weaviate_v1_GenerativeContextualAI_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_weaviate_v1_GenerativeContextualAI_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_weaviate_v1_GenerativeAnthropicMetadata_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -50256,7 +53067,7 @@ public final class WeaviateProtoGenerative {
       "\022/\n\nproperties\030\002 \001(\0132\026.weaviate.v1.TextA" +
       "rrayH\000\210\001\001\0220\n\007queries\030\003 \003(\0132\037.weaviate.v1" +
       ".GenerativeProvider\022\r\n\005debug\030\004 \001(\010B\r\n\013_p" +
-      "roperties\"\300\005\n\022GenerativeProvider\022\027\n\017retu" +
+      "roperties\"\375\005\n\022GenerativeProvider\022\027\n\017retu" +
       "rn_metadata\030\001 \001(\010\0225\n\tanthropic\030\002 \001(\0132 .w" +
       "eaviate.v1.GenerativeAnthropicH\000\0223\n\010anys" +
       "cale\030\003 \001(\0132\037.weaviate.v1.GenerativeAnysc" +
@@ -50273,234 +53084,261 @@ public final class WeaviateProtoGenerative {
       "7\n\nfriendliai\030\014 \001(\0132!.weaviate.v1.Genera" +
       "tiveFriendliAIH\000\022/\n\006nvidia\030\r \001(\0132\035.weavi" +
       "ate.v1.GenerativeNvidiaH\000\022)\n\003xai\030\016 \001(\0132\032" +
-      ".weaviate.v1.GenerativeXAIH\000B\006\n\004kind\"\261\003\n" +
-      "\023GenerativeAnthropic\022\025\n\010base_url\030\001 \001(\tH\000" +
-      "\210\001\001\022\027\n\nmax_tokens\030\002 \001(\003H\001\210\001\001\022\022\n\005model\030\003 " +
-      "\001(\tH\002\210\001\001\022\030\n\013temperature\030\004 \001(\001H\003\210\001\001\022\022\n\005to" +
-      "p_k\030\005 \001(\003H\004\210\001\001\022\022\n\005top_p\030\006 \001(\001H\005\210\001\001\0223\n\016st" +
-      "op_sequences\030\007 \001(\0132\026.weaviate.v1.TextArr" +
-      "ayH\006\210\001\001\022+\n\006images\030\010 \001(\0132\026.weaviate.v1.Te" +
-      "xtArrayH\007\210\001\001\0225\n\020image_properties\030\t \001(\0132\026" +
-      ".weaviate.v1.TextArrayH\010\210\001\001B\013\n\t_base_url" +
-      "B\r\n\013_max_tokensB\010\n\006_modelB\016\n\014_temperatur" +
-      "eB\010\n\006_top_kB\010\n\006_top_pB\021\n\017_stop_sequences" +
-      "B\t\n\007_imagesB\023\n\021_image_properties\"\200\001\n\022Gen" +
-      "erativeAnyscale\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\022" +
-      "\n\005model\030\002 \001(\tH\001\210\001\001\022\030\n\013temperature\030\003 \001(\001H" +
-      "\002\210\001\001B\013\n\t_base_urlB\010\n\006_modelB\016\n\014_temperat" +
-      "ure\"\235\003\n\rGenerativeAWS\022\022\n\005model\030\003 \001(\tH\000\210\001" +
-      "\001\022\030\n\013temperature\030\010 \001(\001H\001\210\001\001\022\024\n\007service\030\t" +
-      " \001(\tH\002\210\001\001\022\023\n\006region\030\n \001(\tH\003\210\001\001\022\025\n\010endpoi" +
-      "nt\030\013 \001(\tH\004\210\001\001\022\031\n\014target_model\030\014 \001(\tH\005\210\001\001" +
-      "\022\033\n\016target_variant\030\r \001(\tH\006\210\001\001\022+\n\006images\030" +
-      "\016 \001(\0132\026.weaviate.v1.TextArrayH\007\210\001\001\0225\n\020im" +
-      "age_properties\030\017 \001(\0132\026.weaviate.v1.TextA" +
-      "rrayH\010\210\001\001B\010\n\006_modelB\016\n\014_temperatureB\n\n\010_" +
-      "serviceB\t\n\007_regionB\013\n\t_endpointB\017\n\r_targ" +
-      "et_modelB\021\n\017_target_variantB\t\n\007_imagesB\023" +
-      "\n\021_image_properties\"\204\003\n\020GenerativeCohere" +
-      "\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\036\n\021frequency_pen" +
-      "alty\030\002 \001(\001H\001\210\001\001\022\027\n\nmax_tokens\030\003 \001(\003H\002\210\001\001" +
-      "\022\022\n\005model\030\004 \001(\tH\003\210\001\001\022\016\n\001k\030\005 \001(\003H\004\210\001\001\022\016\n\001" +
-      "p\030\006 \001(\001H\005\210\001\001\022\035\n\020presence_penalty\030\007 \001(\001H\006" +
-      "\210\001\001\0223\n\016stop_sequences\030\010 \001(\0132\026.weaviate.v" +
-      "1.TextArrayH\007\210\001\001\022\030\n\013temperature\030\t \001(\001H\010\210" +
-      "\001\001B\013\n\t_base_urlB\024\n\022_frequency_penaltyB\r\n" +
-      "\013_max_tokensB\010\n\006_modelB\004\n\002_kB\004\n\002_pB\023\n\021_p" +
-      "resence_penaltyB\021\n\017_stop_sequencesB\016\n\014_t" +
-      "emperature\"\021\n\017GenerativeDummy\"\305\001\n\021Genera" +
-      "tiveMistral\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\027\n\nma" +
-      "x_tokens\030\002 \001(\003H\001\210\001\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022" +
-      "\030\n\013temperature\030\004 \001(\001H\003\210\001\001\022\022\n\005top_p\030\005 \001(\001" +
-      "H\004\210\001\001B\013\n\t_base_urlB\r\n\013_max_tokensB\010\n\006_mo" +
-      "delB\016\n\014_temperatureB\010\n\006_top_p\"\212\002\n\020Genera" +
-      "tiveOllama\022\031\n\014api_endpoint\030\001 \001(\tH\000\210\001\001\022\022\n" +
-      "\005model\030\002 \001(\tH\001\210\001\001\022\030\n\013temperature\030\003 \001(\001H\002" +
-      "\210\001\001\022+\n\006images\030\004 \001(\0132\026.weaviate.v1.TextAr" +
-      "rayH\003\210\001\001\0225\n\020image_properties\030\005 \001(\0132\026.wea" +
-      "viate.v1.TextArrayH\004\210\001\001B\017\n\r_api_endpoint" +
-      "B\010\n\006_modelB\016\n\014_temperatureB\t\n\007_imagesB\023\n" +
-      "\021_image_properties\"\246\005\n\020GenerativeOpenAI\022" +
-      "\036\n\021frequency_penalty\030\001 \001(\001H\000\210\001\001\022\027\n\nmax_t" +
-      "okens\030\002 \001(\003H\001\210\001\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022\016\n\001" +
-      "n\030\004 \001(\003H\003\210\001\001\022\035\n\020presence_penalty\030\005 \001(\001H\004" +
-      "\210\001\001\022)\n\004stop\030\006 \001(\0132\026.weaviate.v1.TextArra" +
-      "yH\005\210\001\001\022\030\n\013temperature\030\007 \001(\001H\006\210\001\001\022\022\n\005top_" +
-      "p\030\010 \001(\001H\007\210\001\001\022\025\n\010base_url\030\t \001(\tH\010\210\001\001\022\030\n\013a" +
-      "pi_version\030\n \001(\tH\t\210\001\001\022\032\n\rresource_name\030\013" +
-      " \001(\tH\n\210\001\001\022\032\n\rdeployment_id\030\014 \001(\tH\013\210\001\001\022\025\n" +
-      "\010is_azure\030\r \001(\010H\014\210\001\001\022+\n\006images\030\016 \001(\0132\026.w" +
-      "eaviate.v1.TextArrayH\r\210\001\001\0225\n\020image_prope" +
-      "rties\030\017 \001(\0132\026.weaviate.v1.TextArrayH\016\210\001\001" +
-      "B\024\n\022_frequency_penaltyB\r\n\013_max_tokensB\010\n" +
-      "\006_modelB\004\n\002_nB\023\n\021_presence_penaltyB\007\n\005_s" +
-      "topB\016\n\014_temperatureB\010\n\006_top_pB\013\n\t_base_u" +
-      "rlB\016\n\014_api_versionB\020\n\016_resource_nameB\020\n\016" +
-      "_deployment_idB\013\n\t_is_azureB\t\n\007_imagesB\023" +
-      "\n\021_image_properties\"\222\005\n\020GenerativeGoogle" +
-      "\022\036\n\021frequency_penalty\030\001 \001(\001H\000\210\001\001\022\027\n\nmax_" +
-      "tokens\030\002 \001(\003H\001\210\001\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022\035\n" +
-      "\020presence_penalty\030\004 \001(\001H\003\210\001\001\022\030\n\013temperat" +
-      "ure\030\005 \001(\001H\004\210\001\001\022\022\n\005top_k\030\006 \001(\003H\005\210\001\001\022\022\n\005to" +
-      "p_p\030\007 \001(\001H\006\210\001\001\0223\n\016stop_sequences\030\010 \001(\0132\026" +
-      ".weaviate.v1.TextArrayH\007\210\001\001\022\031\n\014api_endpo" +
-      "int\030\t \001(\tH\010\210\001\001\022\027\n\nproject_id\030\n \001(\tH\t\210\001\001\022" +
-      "\030\n\013endpoint_id\030\013 \001(\tH\n\210\001\001\022\023\n\006region\030\014 \001(" +
-      "\tH\013\210\001\001\022+\n\006images\030\r \001(\0132\026.weaviate.v1.Tex" +
-      "tArrayH\014\210\001\001\0225\n\020image_properties\030\016 \001(\0132\026." +
-      "weaviate.v1.TextArrayH\r\210\001\001B\024\n\022_frequency" +
-      "_penaltyB\r\n\013_max_tokensB\010\n\006_modelB\023\n\021_pr" +
-      "esence_penaltyB\016\n\014_temperatureB\010\n\006_top_k" +
-      "B\010\n\006_top_pB\021\n\017_stop_sequencesB\017\n\r_api_en" +
-      "dpointB\r\n\013_project_idB\016\n\014_endpoint_idB\t\n" +
-      "\007_regionB\t\n\007_imagesB\023\n\021_image_properties" +
-      "\"\320\003\n\024GenerativeDatabricks\022\025\n\010endpoint\030\001 " +
-      "\001(\tH\000\210\001\001\022\022\n\005model\030\002 \001(\tH\001\210\001\001\022\036\n\021frequenc" +
-      "y_penalty\030\003 \001(\001H\002\210\001\001\022\026\n\tlog_probs\030\004 \001(\010H" +
-      "\003\210\001\001\022\032\n\rtop_log_probs\030\005 \001(\003H\004\210\001\001\022\027\n\nmax_" +
-      "tokens\030\006 \001(\003H\005\210\001\001\022\016\n\001n\030\007 \001(\003H\006\210\001\001\022\035\n\020pre" +
-      "sence_penalty\030\010 \001(\001H\007\210\001\001\022)\n\004stop\030\t \001(\0132\026" +
-      ".weaviate.v1.TextArrayH\010\210\001\001\022\030\n\013temperatu" +
-      "re\030\n \001(\001H\t\210\001\001\022\022\n\005top_p\030\013 \001(\001H\n\210\001\001B\013\n\t_en" +
-      "dpointB\010\n\006_modelB\024\n\022_frequency_penaltyB\014" +
-      "\n\n_log_probsB\020\n\016_top_log_probsB\r\n\013_max_t" +
-      "okensB\004\n\002_nB\023\n\021_presence_penaltyB\007\n\005_sto" +
-      "pB\016\n\014_temperatureB\010\n\006_top_p\"\336\001\n\024Generati" +
-      "veFriendliAI\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\022\n\005m" +
-      "odel\030\002 \001(\tH\001\210\001\001\022\027\n\nmax_tokens\030\003 \001(\003H\002\210\001\001" +
-      "\022\030\n\013temperature\030\004 \001(\001H\003\210\001\001\022\016\n\001n\030\005 \001(\003H\004\210" +
-      "\001\001\022\022\n\005top_p\030\006 \001(\001H\005\210\001\001B\013\n\t_base_urlB\010\n\006_" +
-      "modelB\r\n\013_max_tokensB\016\n\014_temperatureB\004\n\002" +
-      "_nB\010\n\006_top_p\"\304\001\n\020GenerativeNvidia\022\025\n\010bas" +
-      "e_url\030\001 \001(\tH\000\210\001\001\022\022\n\005model\030\002 \001(\tH\001\210\001\001\022\030\n\013" +
-      "temperature\030\003 \001(\001H\002\210\001\001\022\022\n\005top_p\030\004 \001(\001H\003\210" +
-      "\001\001\022\027\n\nmax_tokens\030\005 \001(\003H\004\210\001\001B\013\n\t_base_url" +
-      "B\010\n\006_modelB\016\n\014_temperatureB\010\n\006_top_pB\r\n\013" +
-      "_max_tokens\"\305\002\n\rGenerativeXAI\022\025\n\010base_ur" +
-      "l\030\001 \001(\tH\000\210\001\001\022\022\n\005model\030\002 \001(\tH\001\210\001\001\022\030\n\013temp" +
-      "erature\030\003 \001(\001H\002\210\001\001\022\022\n\005top_p\030\004 \001(\001H\003\210\001\001\022\027" +
-      "\n\nmax_tokens\030\005 \001(\003H\004\210\001\001\022+\n\006images\030\006 \001(\0132" +
-      "\026.weaviate.v1.TextArrayH\005\210\001\001\0225\n\020image_pr" +
-      "operties\030\007 \001(\0132\026.weaviate.v1.TextArrayH\006" +
-      "\210\001\001B\013\n\t_base_urlB\010\n\006_modelB\016\n\014_temperatu" +
-      "reB\010\n\006_top_pB\r\n\013_max_tokensB\t\n\007_imagesB\023" +
-      "\n\021_image_properties\"\222\001\n\033GenerativeAnthro" +
-      "picMetadata\022=\n\005usage\030\001 \001(\0132..weaviate.v1" +
-      ".GenerativeAnthropicMetadata.Usage\0324\n\005Us" +
-      "age\022\024\n\014input_tokens\030\001 \001(\003\022\025\n\routput_toke" +
-      "ns\030\002 \001(\003\"\034\n\032GenerativeAnyscaleMetadata\"\027" +
-      "\n\025GenerativeAWSMetadata\"\234\006\n\030GenerativeCo" +
-      "hereMetadata\022J\n\013api_version\030\001 \001(\01320.weav" +
-      "iate.v1.GenerativeCohereMetadata.ApiVers" +
-      "ionH\000\210\001\001\022L\n\014billed_units\030\002 \001(\01321.weaviat" +
-      "e.v1.GenerativeCohereMetadata.BilledUnit" +
-      "sH\001\210\001\001\022A\n\006tokens\030\003 \001(\0132,.weaviate.v1.Gen" +
-      "erativeCohereMetadata.TokensH\002\210\001\001\022-\n\010war" +
-      "nings\030\004 \001(\0132\026.weaviate.v1.TextArrayH\003\210\001\001" +
-      "\032\216\001\n\nApiVersion\022\024\n\007version\030\001 \001(\tH\000\210\001\001\022\032\n" +
-      "\ris_deprecated\030\002 \001(\010H\001\210\001\001\022\034\n\017is_experime" +
-      "ntal\030\003 \001(\010H\002\210\001\001B\n\n\010_versionB\020\n\016_is_depre" +
-      "catedB\022\n\020_is_experimental\032\305\001\n\013BilledUnit" +
-      "s\022\031\n\014input_tokens\030\001 \001(\001H\000\210\001\001\022\032\n\routput_t" +
-      "okens\030\002 \001(\001H\001\210\001\001\022\031\n\014search_units\030\003 \001(\001H\002" +
-      "\210\001\001\022\034\n\017classifications\030\004 \001(\001H\003\210\001\001B\017\n\r_in" +
-      "put_tokensB\020\n\016_output_tokensB\017\n\r_search_" +
-      "unitsB\022\n\020_classifications\032b\n\006Tokens\022\031\n\014i" +
-      "nput_tokens\030\001 \001(\001H\000\210\001\001\022\032\n\routput_tokens\030" +
-      "\002 \001(\001H\001\210\001\001B\017\n\r_input_tokensB\020\n\016_output_t" +
-      "okensB\016\n\014_api_versionB\017\n\r_billed_unitsB\t" +
-      "\n\007_tokensB\013\n\t_warnings\"\031\n\027GenerativeDumm" +
-      "yMetadata\"\201\002\n\031GenerativeMistralMetadata\022" +
-      "@\n\005usage\030\001 \001(\0132,.weaviate.v1.GenerativeM" +
-      "istralMetadata.UsageH\000\210\001\001\032\227\001\n\005Usage\022\032\n\rp" +
-      "rompt_tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021completion_to" +
-      "kens\030\002 \001(\003H\001\210\001\001\022\031\n\014total_tokens\030\003 \001(\003H\002\210" +
-      "\001\001B\020\n\016_prompt_tokensB\024\n\022_completion_toke" +
-      "nsB\017\n\r_total_tokensB\010\n\006_usage\"\032\n\030Generat" +
-      "iveOllamaMetadata\"\377\001\n\030GenerativeOpenAIMe" +
-      "tadata\022?\n\005usage\030\001 \001(\0132+.weaviate.v1.Gene" +
-      "rativeOpenAIMetadata.UsageH\000\210\001\001\032\227\001\n\005Usag" +
-      "e\022\032\n\rprompt_tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021complet" +
-      "ion_tokens\030\002 \001(\003H\001\210\001\001\022\031\n\014total_tokens\030\003 " +
-      "\001(\003H\002\210\001\001B\020\n\016_prompt_tokensB\024\n\022_completio" +
-      "n_tokensB\017\n\r_total_tokensB\010\n\006_usage\"\350\006\n\030" +
-      "GenerativeGoogleMetadata\022E\n\010metadata\030\001 \001" +
-      "(\0132..weaviate.v1.GenerativeGoogleMetadat" +
-      "a.MetadataH\000\210\001\001\022P\n\016usage_metadata\030\002 \001(\0132" +
-      "3.weaviate.v1.GenerativeGoogleMetadata.U" +
-      "sageMetadataH\001\210\001\001\032~\n\nTokenCount\022&\n\031total" +
-      "_billable_characters\030\001 \001(\003H\000\210\001\001\022\031\n\014total" +
-      "_tokens\030\002 \001(\003H\001\210\001\001B\034\n\032_total_billable_ch" +
-      "aractersB\017\n\r_total_tokens\032\341\001\n\rTokenMetad" +
-      "ata\022P\n\021input_token_count\030\001 \001(\01320.weaviat" +
-      "e.v1.GenerativeGoogleMetadata.TokenCount" +
-      "H\000\210\001\001\022Q\n\022output_token_count\030\002 \001(\01320.weav" +
-      "iate.v1.GenerativeGoogleMetadata.TokenCo" +
-      "untH\001\210\001\001B\024\n\022_input_token_countB\025\n\023_outpu" +
-      "t_token_count\032o\n\010Metadata\022P\n\016token_metad" +
-      "ata\030\001 \001(\01323.weaviate.v1.GenerativeGoogle" +
-      "Metadata.TokenMetadataH\000\210\001\001B\021\n\017_token_me" +
-      "tadata\032\275\001\n\rUsageMetadata\022\037\n\022prompt_token" +
-      "_count\030\001 \001(\003H\000\210\001\001\022#\n\026candidates_token_co" +
-      "unt\030\002 \001(\003H\001\210\001\001\022\036\n\021total_token_count\030\003 \001(" +
-      "\003H\002\210\001\001B\025\n\023_prompt_token_countB\031\n\027_candid" +
-      "ates_token_countB\024\n\022_total_token_countB\013" +
-      "\n\t_metadataB\021\n\017_usage_metadata\"\207\002\n\034Gener" +
-      "ativeDatabricksMetadata\022C\n\005usage\030\001 \001(\0132/" +
-      ".weaviate.v1.GenerativeDatabricksMetadat" +
-      "a.UsageH\000\210\001\001\032\227\001\n\005Usage\022\032\n\rprompt_tokens\030" +
-      "\001 \001(\003H\000\210\001\001\022\036\n\021completion_tokens\030\002 \001(\003H\001\210" +
-      "\001\001\022\031\n\014total_tokens\030\003 \001(\003H\002\210\001\001B\020\n\016_prompt" +
-      "_tokensB\024\n\022_completion_tokensB\017\n\r_total_" +
-      "tokensB\010\n\006_usage\"\207\002\n\034GenerativeFriendliA" +
-      "IMetadata\022C\n\005usage\030\001 \001(\0132/.weaviate.v1.G" +
-      "enerativeFriendliAIMetadata.UsageH\000\210\001\001\032\227" +
+      ".weaviate.v1.GenerativeXAIH\000\022;\n\014contextu" +
+      "alai\030\017 \001(\0132#.weaviate.v1.GenerativeConte" +
+      "xtualAIH\000B\006\n\004kind\"\261\003\n\023GenerativeAnthropi" +
+      "c\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\027\n\nmax_tokens\030\002" +
+      " \001(\003H\001\210\001\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022\030\n\013tempera" +
+      "ture\030\004 \001(\001H\003\210\001\001\022\022\n\005top_k\030\005 \001(\003H\004\210\001\001\022\022\n\005t" +
+      "op_p\030\006 \001(\001H\005\210\001\001\0223\n\016stop_sequences\030\007 \001(\0132" +
+      "\026.weaviate.v1.TextArrayH\006\210\001\001\022+\n\006images\030\010" +
+      " \001(\0132\026.weaviate.v1.TextArrayH\007\210\001\001\0225\n\020ima" +
+      "ge_properties\030\t \001(\0132\026.weaviate.v1.TextAr" +
+      "rayH\010\210\001\001B\013\n\t_base_urlB\r\n\013_max_tokensB\010\n\006" +
+      "_modelB\016\n\014_temperatureB\010\n\006_top_kB\010\n\006_top" +
+      "_pB\021\n\017_stop_sequencesB\t\n\007_imagesB\023\n\021_ima" +
+      "ge_properties\"\200\001\n\022GenerativeAnyscale\022\025\n\010" +
+      "base_url\030\001 \001(\tH\000\210\001\001\022\022\n\005model\030\002 \001(\tH\001\210\001\001\022" +
+      "\030\n\013temperature\030\003 \001(\001H\002\210\001\001B\013\n\t_base_urlB\010" +
+      "\n\006_modelB\016\n\014_temperature\"\215\004\n\rGenerativeA" +
+      "WS\022\022\n\005model\030\003 \001(\tH\000\210\001\001\022\030\n\013temperature\030\010 " +
+      "\001(\001H\001\210\001\001\022\024\n\007service\030\t \001(\tH\002\210\001\001\022\023\n\006region" +
+      "\030\n \001(\tH\003\210\001\001\022\025\n\010endpoint\030\013 \001(\tH\004\210\001\001\022\031\n\014ta" +
+      "rget_model\030\014 \001(\tH\005\210\001\001\022\033\n\016target_variant\030" +
+      "\r \001(\tH\006\210\001\001\022+\n\006images\030\016 \001(\0132\026.weaviate.v1" +
+      ".TextArrayH\007\210\001\001\0225\n\020image_properties\030\017 \001(" +
+      "\0132\026.weaviate.v1.TextArrayH\010\210\001\001\022\027\n\nmax_to" +
+      "kens\030\020 \001(\003H\t\210\001\001\0223\n\016stop_sequences\030\021 \001(\0132" +
+      "\026.weaviate.v1.TextArrayH\n\210\001\001B\010\n\006_modelB\016" +
+      "\n\014_temperatureB\n\n\010_serviceB\t\n\007_regionB\013\n" +
+      "\t_endpointB\017\n\r_target_modelB\021\n\017_target_v" +
+      "ariantB\t\n\007_imagesB\023\n\021_image_propertiesB\r" +
+      "\n\013_max_tokensB\021\n\017_stop_sequences\"\210\004\n\020Gen" +
+      "erativeCohere\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\036\n\021" +
+      "frequency_penalty\030\002 \001(\001H\001\210\001\001\022\027\n\nmax_toke" +
+      "ns\030\003 \001(\003H\002\210\001\001\022\022\n\005model\030\004 \001(\tH\003\210\001\001\022\016\n\001k\030\005" +
+      " \001(\003H\004\210\001\001\022\016\n\001p\030\006 \001(\001H\005\210\001\001\022\035\n\020presence_pe" +
+      "nalty\030\007 \001(\001H\006\210\001\001\0223\n\016stop_sequences\030\010 \001(\013" +
+      "2\026.weaviate.v1.TextArrayH\007\210\001\001\022\030\n\013tempera" +
+      "ture\030\t \001(\001H\010\210\001\001\022+\n\006images\030\n \001(\0132\026.weavia" +
+      "te.v1.TextArrayH\t\210\001\001\0225\n\020image_properties" +
+      "\030\013 \001(\0132\026.weaviate.v1.TextArrayH\n\210\001\001B\013\n\t_" +
+      "base_urlB\024\n\022_frequency_penaltyB\r\n\013_max_t" +
+      "okensB\010\n\006_modelB\004\n\002_kB\004\n\002_pB\023\n\021_presence" +
+      "_penaltyB\021\n\017_stop_sequencesB\016\n\014_temperat" +
+      "ureB\t\n\007_imagesB\023\n\021_image_properties\"\021\n\017G" +
+      "enerativeDummy\"\305\001\n\021GenerativeMistral\022\025\n\010" +
+      "base_url\030\001 \001(\tH\000\210\001\001\022\027\n\nmax_tokens\030\002 \001(\003H" +
+      "\001\210\001\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022\030\n\013temperature\030" +
+      "\004 \001(\001H\003\210\001\001\022\022\n\005top_p\030\005 \001(\001H\004\210\001\001B\013\n\t_base_" +
+      "urlB\r\n\013_max_tokensB\010\n\006_modelB\016\n\014_tempera" +
+      "tureB\010\n\006_top_p\"\212\002\n\020GenerativeOllama\022\031\n\014a" +
+      "pi_endpoint\030\001 \001(\tH\000\210\001\001\022\022\n\005model\030\002 \001(\tH\001\210" +
+      "\001\001\022\030\n\013temperature\030\003 \001(\001H\002\210\001\001\022+\n\006images\030\004" +
+      " \001(\0132\026.weaviate.v1.TextArrayH\003\210\001\001\0225\n\020ima" +
+      "ge_properties\030\005 \001(\0132\026.weaviate.v1.TextAr" +
+      "rayH\004\210\001\001B\017\n\r_api_endpointB\010\n\006_modelB\016\n\014_" +
+      "temperatureB\t\n\007_imagesB\023\n\021_image_propert" +
+      "ies\"\343\010\n\020GenerativeOpenAI\022\036\n\021frequency_pe" +
+      "nalty\030\001 \001(\001H\000\210\001\001\022\027\n\nmax_tokens\030\002 \001(\003H\001\210\001" +
+      "\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022\016\n\001n\030\004 \001(\003H\003\210\001\001\022\035\n" +
+      "\020presence_penalty\030\005 \001(\001H\004\210\001\001\022)\n\004stop\030\006 \001" +
+      "(\0132\026.weaviate.v1.TextArrayH\005\210\001\001\022\030\n\013tempe" +
+      "rature\030\007 \001(\001H\006\210\001\001\022\022\n\005top_p\030\010 \001(\001H\007\210\001\001\022\025\n" +
+      "\010base_url\030\t \001(\tH\010\210\001\001\022\030\n\013api_version\030\n \001(" +
+      "\tH\t\210\001\001\022\032\n\rresource_name\030\013 \001(\tH\n\210\001\001\022\032\n\rde" +
+      "ployment_id\030\014 \001(\tH\013\210\001\001\022\025\n\010is_azure\030\r \001(\010" +
+      "H\014\210\001\001\022+\n\006images\030\016 \001(\0132\026.weaviate.v1.Text" +
+      "ArrayH\r\210\001\001\0225\n\020image_properties\030\017 \001(\0132\026.w" +
+      "eaviate.v1.TextArrayH\016\210\001\001\022L\n\020reasoning_e" +
+      "ffort\030\020 \001(\0162-.weaviate.v1.GenerativeOpen" +
+      "AI.ReasoningEffortH\017\210\001\001\022?\n\tverbosity\030\021 \001" +
+      "(\0162\'.weaviate.v1.GenerativeOpenAI.Verbos" +
+      "ityH\020\210\001\001\"\243\001\n\017ReasoningEffort\022 \n\034REASONIN" +
+      "G_EFFORT_UNSPECIFIED\020\000\022\034\n\030REASONING_EFFO" +
+      "RT_MINIMAL\020\001\022\030\n\024REASONING_EFFORT_LOW\020\002\022\033" +
+      "\n\027REASONING_EFFORT_MEDIUM\020\003\022\031\n\025REASONING" +
+      "_EFFORT_HIGH\020\004\"c\n\tVerbosity\022\031\n\025VERBOSITY" +
+      "_UNSPECIFIED\020\000\022\021\n\rVERBOSITY_LOW\020\001\022\024\n\020VER" +
+      "BOSITY_MEDIUM\020\002\022\022\n\016VERBOSITY_HIGH\020\003B\024\n\022_" +
+      "frequency_penaltyB\r\n\013_max_tokensB\010\n\006_mod" +
+      "elB\004\n\002_nB\023\n\021_presence_penaltyB\007\n\005_stopB\016" +
+      "\n\014_temperatureB\010\n\006_top_pB\013\n\t_base_urlB\016\n" +
+      "\014_api_versionB\020\n\016_resource_nameB\020\n\016_depl" +
+      "oyment_idB\013\n\t_is_azureB\t\n\007_imagesB\023\n\021_im" +
+      "age_propertiesB\023\n\021_reasoning_effortB\014\n\n_" +
+      "verbosity\"\222\005\n\020GenerativeGoogle\022\036\n\021freque" +
+      "ncy_penalty\030\001 \001(\001H\000\210\001\001\022\027\n\nmax_tokens\030\002 \001" +
+      "(\003H\001\210\001\001\022\022\n\005model\030\003 \001(\tH\002\210\001\001\022\035\n\020presence_" +
+      "penalty\030\004 \001(\001H\003\210\001\001\022\030\n\013temperature\030\005 \001(\001H" +
+      "\004\210\001\001\022\022\n\005top_k\030\006 \001(\003H\005\210\001\001\022\022\n\005top_p\030\007 \001(\001H" +
+      "\006\210\001\001\0223\n\016stop_sequences\030\010 \001(\0132\026.weaviate." +
+      "v1.TextArrayH\007\210\001\001\022\031\n\014api_endpoint\030\t \001(\tH" +
+      "\010\210\001\001\022\027\n\nproject_id\030\n \001(\tH\t\210\001\001\022\030\n\013endpoin" +
+      "t_id\030\013 \001(\tH\n\210\001\001\022\023\n\006region\030\014 \001(\tH\013\210\001\001\022+\n\006" +
+      "images\030\r \001(\0132\026.weaviate.v1.TextArrayH\014\210\001" +
+      "\001\0225\n\020image_properties\030\016 \001(\0132\026.weaviate.v" +
+      "1.TextArrayH\r\210\001\001B\024\n\022_frequency_penaltyB\r" +
+      "\n\013_max_tokensB\010\n\006_modelB\023\n\021_presence_pen" +
+      "altyB\016\n\014_temperatureB\010\n\006_top_kB\010\n\006_top_p" +
+      "B\021\n\017_stop_sequencesB\017\n\r_api_endpointB\r\n\013" +
+      "_project_idB\016\n\014_endpoint_idB\t\n\007_regionB\t" +
+      "\n\007_imagesB\023\n\021_image_properties\"\320\003\n\024Gener" +
+      "ativeDatabricks\022\025\n\010endpoint\030\001 \001(\tH\000\210\001\001\022\022" +
+      "\n\005model\030\002 \001(\tH\001\210\001\001\022\036\n\021frequency_penalty\030" +
+      "\003 \001(\001H\002\210\001\001\022\026\n\tlog_probs\030\004 \001(\010H\003\210\001\001\022\032\n\rto" +
+      "p_log_probs\030\005 \001(\003H\004\210\001\001\022\027\n\nmax_tokens\030\006 \001" +
+      "(\003H\005\210\001\001\022\016\n\001n\030\007 \001(\003H\006\210\001\001\022\035\n\020presence_pena" +
+      "lty\030\010 \001(\001H\007\210\001\001\022)\n\004stop\030\t \001(\0132\026.weaviate." +
+      "v1.TextArrayH\010\210\001\001\022\030\n\013temperature\030\n \001(\001H\t" +
+      "\210\001\001\022\022\n\005top_p\030\013 \001(\001H\n\210\001\001B\013\n\t_endpointB\010\n\006" +
+      "_modelB\024\n\022_frequency_penaltyB\014\n\n_log_pro" +
+      "bsB\020\n\016_top_log_probsB\r\n\013_max_tokensB\004\n\002_" +
+      "nB\023\n\021_presence_penaltyB\007\n\005_stopB\016\n\014_temp" +
+      "eratureB\010\n\006_top_p\"\336\001\n\024GenerativeFriendli" +
+      "AI\022\025\n\010base_url\030\001 \001(\tH\000\210\001\001\022\022\n\005model\030\002 \001(\t" +
+      "H\001\210\001\001\022\027\n\nmax_tokens\030\003 \001(\003H\002\210\001\001\022\030\n\013temper" +
+      "ature\030\004 \001(\001H\003\210\001\001\022\016\n\001n\030\005 \001(\003H\004\210\001\001\022\022\n\005top_" +
+      "p\030\006 \001(\001H\005\210\001\001B\013\n\t_base_urlB\010\n\006_modelB\r\n\013_" +
+      "max_tokensB\016\n\014_temperatureB\004\n\002_nB\010\n\006_top" +
+      "_p\"\304\001\n\020GenerativeNvidia\022\025\n\010base_url\030\001 \001(" +
+      "\tH\000\210\001\001\022\022\n\005model\030\002 \001(\tH\001\210\001\001\022\030\n\013temperatur" +
+      "e\030\003 \001(\001H\002\210\001\001\022\022\n\005top_p\030\004 \001(\001H\003\210\001\001\022\027\n\nmax_" +
+      "tokens\030\005 \001(\003H\004\210\001\001B\013\n\t_base_urlB\010\n\006_model" +
+      "B\016\n\014_temperatureB\010\n\006_top_pB\r\n\013_max_token" +
+      "s\"\305\002\n\rGenerativeXAI\022\025\n\010base_url\030\001 \001(\tH\000\210" +
+      "\001\001\022\022\n\005model\030\002 \001(\tH\001\210\001\001\022\030\n\013temperature\030\003 " +
+      "\001(\001H\002\210\001\001\022\022\n\005top_p\030\004 \001(\001H\003\210\001\001\022\027\n\nmax_toke" +
+      "ns\030\005 \001(\003H\004\210\001\001\022+\n\006images\030\006 \001(\0132\026.weaviate" +
+      ".v1.TextArrayH\005\210\001\001\0225\n\020image_properties\030\007" +
+      " \001(\0132\026.weaviate.v1.TextArrayH\006\210\001\001B\013\n\t_ba" +
+      "se_urlB\010\n\006_modelB\016\n\014_temperatureB\010\n\006_top" +
+      "_pB\r\n\013_max_tokensB\t\n\007_imagesB\023\n\021_image_p" +
+      "roperties\"\316\002\n\026GenerativeContextualAI\022\022\n\005" +
+      "model\030\001 \001(\tH\000\210\001\001\022\030\n\013temperature\030\002 \001(\001H\001\210" +
+      "\001\001\022\022\n\005top_p\030\003 \001(\001H\002\210\001\001\022\033\n\016max_new_tokens" +
+      "\030\004 \001(\003H\003\210\001\001\022\032\n\rsystem_prompt\030\005 \001(\tH\004\210\001\001\022" +
+      "\035\n\020avoid_commentary\030\006 \001(\010H\005\210\001\001\022.\n\tknowle" +
+      "dge\030\007 \001(\0132\026.weaviate.v1.TextArrayH\006\210\001\001B\010" +
+      "\n\006_modelB\016\n\014_temperatureB\010\n\006_top_pB\021\n\017_m" +
+      "ax_new_tokensB\020\n\016_system_promptB\023\n\021_avoi" +
+      "d_commentaryB\014\n\n_knowledge\"\222\001\n\033Generativ" +
+      "eAnthropicMetadata\022=\n\005usage\030\001 \001(\0132..weav" +
+      "iate.v1.GenerativeAnthropicMetadata.Usag" +
+      "e\0324\n\005Usage\022\024\n\014input_tokens\030\001 \001(\003\022\025\n\routp" +
+      "ut_tokens\030\002 \001(\003\"\034\n\032GenerativeAnyscaleMet" +
+      "adata\"\027\n\025GenerativeAWSMetadata\"\234\006\n\030Gener" +
+      "ativeCohereMetadata\022J\n\013api_version\030\001 \001(\013" +
+      "20.weaviate.v1.GenerativeCohereMetadata." +
+      "ApiVersionH\000\210\001\001\022L\n\014billed_units\030\002 \001(\01321." +
+      "weaviate.v1.GenerativeCohereMetadata.Bil" +
+      "ledUnitsH\001\210\001\001\022A\n\006tokens\030\003 \001(\0132,.weaviate" +
+      ".v1.GenerativeCohereMetadata.TokensH\002\210\001\001" +
+      "\022-\n\010warnings\030\004 \001(\0132\026.weaviate.v1.TextArr" +
+      "ayH\003\210\001\001\032\216\001\n\nApiVersion\022\024\n\007version\030\001 \001(\tH" +
+      "\000\210\001\001\022\032\n\ris_deprecated\030\002 \001(\010H\001\210\001\001\022\034\n\017is_e" +
+      "xperimental\030\003 \001(\010H\002\210\001\001B\n\n\010_versionB\020\n\016_i" +
+      "s_deprecatedB\022\n\020_is_experimental\032\305\001\n\013Bil" +
+      "ledUnits\022\031\n\014input_tokens\030\001 \001(\001H\000\210\001\001\022\032\n\ro" +
+      "utput_tokens\030\002 \001(\001H\001\210\001\001\022\031\n\014search_units\030" +
+      "\003 \001(\001H\002\210\001\001\022\034\n\017classifications\030\004 \001(\001H\003\210\001\001" +
+      "B\017\n\r_input_tokensB\020\n\016_output_tokensB\017\n\r_" +
+      "search_unitsB\022\n\020_classifications\032b\n\006Toke" +
+      "ns\022\031\n\014input_tokens\030\001 \001(\001H\000\210\001\001\022\032\n\routput_" +
+      "tokens\030\002 \001(\001H\001\210\001\001B\017\n\r_input_tokensB\020\n\016_o" +
+      "utput_tokensB\016\n\014_api_versionB\017\n\r_billed_" +
+      "unitsB\t\n\007_tokensB\013\n\t_warnings\"\031\n\027Generat" +
+      "iveDummyMetadata\"\201\002\n\031GenerativeMistralMe" +
+      "tadata\022@\n\005usage\030\001 \001(\0132,.weaviate.v1.Gene" +
+      "rativeMistralMetadata.UsageH\000\210\001\001\032\227\001\n\005Usa" +
+      "ge\022\032\n\rprompt_tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021comple" +
+      "tion_tokens\030\002 \001(\003H\001\210\001\001\022\031\n\014total_tokens\030\003" +
+      " \001(\003H\002\210\001\001B\020\n\016_prompt_tokensB\024\n\022_completi" +
+      "on_tokensB\017\n\r_total_tokensB\010\n\006_usage\"\032\n\030" +
+      "GenerativeOllamaMetadata\"\377\001\n\030GenerativeO" +
+      "penAIMetadata\022?\n\005usage\030\001 \001(\0132+.weaviate." +
+      "v1.GenerativeOpenAIMetadata.UsageH\000\210\001\001\032\227" +
       "\001\n\005Usage\022\032\n\rprompt_tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021" +
       "completion_tokens\030\002 \001(\003H\001\210\001\001\022\031\n\014total_to" +
       "kens\030\003 \001(\003H\002\210\001\001B\020\n\016_prompt_tokensB\024\n\022_co" +
       "mpletion_tokensB\017\n\r_total_tokensB\010\n\006_usa" +
-      "ge\"\377\001\n\030GenerativeNvidiaMetadata\022?\n\005usage" +
-      "\030\001 \001(\0132+.weaviate.v1.GenerativeNvidiaMet" +
-      "adata.UsageH\000\210\001\001\032\227\001\n\005Usage\022\032\n\rprompt_tok" +
-      "ens\030\001 \001(\003H\000\210\001\001\022\036\n\021completion_tokens\030\002 \001(" +
-      "\003H\001\210\001\001\022\031\n\014total_tokens\030\003 \001(\003H\002\210\001\001B\020\n\016_pr" +
-      "ompt_tokensB\024\n\022_completion_tokensB\017\n\r_to" +
-      "tal_tokensB\010\n\006_usage\"\371\001\n\025GenerativeXAIMe" +
-      "tadata\022<\n\005usage\030\001 \001(\0132(.weaviate.v1.Gene" +
-      "rativeXAIMetadata.UsageH\000\210\001\001\032\227\001\n\005Usage\022\032" +
-      "\n\rprompt_tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021completion" +
-      "_tokens\030\002 \001(\003H\001\210\001\001\022\031\n\014total_tokens\030\003 \001(\003" +
-      "H\002\210\001\001B\020\n\016_prompt_tokensB\024\n\022_completion_t" +
-      "okensB\017\n\r_total_tokensB\010\n\006_usage\"\217\006\n\022Gen" +
-      "erativeMetadata\022=\n\tanthropic\030\001 \001(\0132(.wea" +
-      "viate.v1.GenerativeAnthropicMetadataH\000\022;" +
-      "\n\010anyscale\030\002 \001(\0132\'.weaviate.v1.Generativ" +
-      "eAnyscaleMetadataH\000\0221\n\003aws\030\003 \001(\0132\".weavi" +
-      "ate.v1.GenerativeAWSMetadataH\000\0227\n\006cohere" +
-      "\030\004 \001(\0132%.weaviate.v1.GenerativeCohereMet" +
-      "adataH\000\0225\n\005dummy\030\005 \001(\0132$.weaviate.v1.Gen" +
-      "erativeDummyMetadataH\000\0229\n\007mistral\030\006 \001(\0132" +
-      "&.weaviate.v1.GenerativeMistralMetadataH" +
-      "\000\0227\n\006ollama\030\007 \001(\0132%.weaviate.v1.Generati" +
-      "veOllamaMetadataH\000\0227\n\006openai\030\010 \001(\0132%.wea" +
-      "viate.v1.GenerativeOpenAIMetadataH\000\0227\n\006g" +
-      "oogle\030\t \001(\0132%.weaviate.v1.GenerativeGoog" +
-      "leMetadataH\000\022?\n\ndatabricks\030\n \001(\0132).weavi" +
-      "ate.v1.GenerativeDatabricksMetadataH\000\022?\n" +
-      "\nfriendliai\030\013 \001(\0132).weaviate.v1.Generati" +
-      "veFriendliAIMetadataH\000\0227\n\006nvidia\030\014 \001(\0132%" +
-      ".weaviate.v1.GenerativeNvidiaMetadataH\000\022" +
-      "1\n\003xai\030\r \001(\0132\".weaviate.v1.GenerativeXAI" +
-      "MetadataH\000B\006\n\004kind\"\242\001\n\017GenerativeReply\022\016" +
-      "\n\006result\030\001 \001(\t\0220\n\005debug\030\002 \001(\0132\034.weaviate" +
-      ".v1.GenerativeDebugH\000\210\001\001\0226\n\010metadata\030\003 \001" +
-      "(\0132\037.weaviate.v1.GenerativeMetadataH\001\210\001\001" +
-      "B\010\n\006_debugB\013\n\t_metadata\"@\n\020GenerativeRes" +
-      "ult\022,\n\006values\030\001 \003(\0132\034.weaviate.v1.Genera" +
-      "tiveReply\";\n\017GenerativeDebug\022\030\n\013full_pro" +
-      "mpt\030\001 \001(\tH\000\210\001\001B\016\n\014_full_promptBH\n-io.wea" +
-      "viate.client6.v1.internal.grpc.protocolB" +
-      "\027WeaviateProtoGenerativeb\006proto3"
+      "ge\"\350\006\n\030GenerativeGoogleMetadata\022E\n\010metad" +
+      "ata\030\001 \001(\0132..weaviate.v1.GenerativeGoogle" +
+      "Metadata.MetadataH\000\210\001\001\022P\n\016usage_metadata" +
+      "\030\002 \001(\01323.weaviate.v1.GenerativeGoogleMet" +
+      "adata.UsageMetadataH\001\210\001\001\032~\n\nTokenCount\022&" +
+      "\n\031total_billable_characters\030\001 \001(\003H\000\210\001\001\022\031" +
+      "\n\014total_tokens\030\002 \001(\003H\001\210\001\001B\034\n\032_total_bill" +
+      "able_charactersB\017\n\r_total_tokens\032\341\001\n\rTok" +
+      "enMetadata\022P\n\021input_token_count\030\001 \001(\01320." +
+      "weaviate.v1.GenerativeGoogleMetadata.Tok" +
+      "enCountH\000\210\001\001\022Q\n\022output_token_count\030\002 \001(\013" +
+      "20.weaviate.v1.GenerativeGoogleMetadata." +
+      "TokenCountH\001\210\001\001B\024\n\022_input_token_countB\025\n" +
+      "\023_output_token_count\032o\n\010Metadata\022P\n\016toke" +
+      "n_metadata\030\001 \001(\01323.weaviate.v1.Generativ" +
+      "eGoogleMetadata.TokenMetadataH\000\210\001\001B\021\n\017_t" +
+      "oken_metadata\032\275\001\n\rUsageMetadata\022\037\n\022promp" +
+      "t_token_count\030\001 \001(\003H\000\210\001\001\022#\n\026candidates_t" +
+      "oken_count\030\002 \001(\003H\001\210\001\001\022\036\n\021total_token_cou" +
+      "nt\030\003 \001(\003H\002\210\001\001B\025\n\023_prompt_token_countB\031\n\027" +
+      "_candidates_token_countB\024\n\022_total_token_" +
+      "countB\013\n\t_metadataB\021\n\017_usage_metadata\"\207\002" +
+      "\n\034GenerativeDatabricksMetadata\022C\n\005usage\030" +
+      "\001 \001(\0132/.weaviate.v1.GenerativeDatabricks" +
+      "Metadata.UsageH\000\210\001\001\032\227\001\n\005Usage\022\032\n\rprompt_" +
+      "tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021completion_tokens\030\002" +
+      " \001(\003H\001\210\001\001\022\031\n\014total_tokens\030\003 \001(\003H\002\210\001\001B\020\n\016" +
+      "_prompt_tokensB\024\n\022_completion_tokensB\017\n\r" +
+      "_total_tokensB\010\n\006_usage\"\207\002\n\034GenerativeFr" +
+      "iendliAIMetadata\022C\n\005usage\030\001 \001(\0132/.weavia" +
+      "te.v1.GenerativeFriendliAIMetadata.Usage" +
+      "H\000\210\001\001\032\227\001\n\005Usage\022\032\n\rprompt_tokens\030\001 \001(\003H\000" +
+      "\210\001\001\022\036\n\021completion_tokens\030\002 \001(\003H\001\210\001\001\022\031\n\014t" +
+      "otal_tokens\030\003 \001(\003H\002\210\001\001B\020\n\016_prompt_tokens" +
+      "B\024\n\022_completion_tokensB\017\n\r_total_tokensB" +
+      "\010\n\006_usage\"\377\001\n\030GenerativeNvidiaMetadata\022?" +
+      "\n\005usage\030\001 \001(\0132+.weaviate.v1.GenerativeNv" +
+      "idiaMetadata.UsageH\000\210\001\001\032\227\001\n\005Usage\022\032\n\rpro" +
+      "mpt_tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021completion_toke" +
+      "ns\030\002 \001(\003H\001\210\001\001\022\031\n\014total_tokens\030\003 \001(\003H\002\210\001\001" +
+      "B\020\n\016_prompt_tokensB\024\n\022_completion_tokens" +
+      "B\017\n\r_total_tokensB\010\n\006_usage\"\371\001\n\025Generati" +
+      "veXAIMetadata\022<\n\005usage\030\001 \001(\0132(.weaviate." +
+      "v1.GenerativeXAIMetadata.UsageH\000\210\001\001\032\227\001\n\005" +
+      "Usage\022\032\n\rprompt_tokens\030\001 \001(\003H\000\210\001\001\022\036\n\021com" +
+      "pletion_tokens\030\002 \001(\003H\001\210\001\001\022\031\n\014total_token" +
+      "s\030\003 \001(\003H\002\210\001\001B\020\n\016_prompt_tokensB\024\n\022_compl" +
+      "etion_tokensB\017\n\r_total_tokensB\010\n\006_usage\"" +
+      "\217\006\n\022GenerativeMetadata\022=\n\tanthropic\030\001 \001(" +
+      "\0132(.weaviate.v1.GenerativeAnthropicMetad" +
+      "ataH\000\022;\n\010anyscale\030\002 \001(\0132\'.weaviate.v1.Ge" +
+      "nerativeAnyscaleMetadataH\000\0221\n\003aws\030\003 \001(\0132" +
+      "\".weaviate.v1.GenerativeAWSMetadataH\000\0227\n" +
+      "\006cohere\030\004 \001(\0132%.weaviate.v1.GenerativeCo" +
+      "hereMetadataH\000\0225\n\005dummy\030\005 \001(\0132$.weaviate" +
+      ".v1.GenerativeDummyMetadataH\000\0229\n\007mistral" +
+      "\030\006 \001(\0132&.weaviate.v1.GenerativeMistralMe" +
+      "tadataH\000\0227\n\006ollama\030\007 \001(\0132%.weaviate.v1.G" +
+      "enerativeOllamaMetadataH\000\0227\n\006openai\030\010 \001(" +
+      "\0132%.weaviate.v1.GenerativeOpenAIMetadata" +
+      "H\000\0227\n\006google\030\t \001(\0132%.weaviate.v1.Generat" +
+      "iveGoogleMetadataH\000\022?\n\ndatabricks\030\n \001(\0132" +
+      ").weaviate.v1.GenerativeDatabricksMetada" +
+      "taH\000\022?\n\nfriendliai\030\013 \001(\0132).weaviate.v1.G" +
+      "enerativeFriendliAIMetadataH\000\0227\n\006nvidia\030" +
+      "\014 \001(\0132%.weaviate.v1.GenerativeNvidiaMeta" +
+      "dataH\000\0221\n\003xai\030\r \001(\0132\".weaviate.v1.Genera" +
+      "tiveXAIMetadataH\000B\006\n\004kind\"\242\001\n\017Generative" +
+      "Reply\022\016\n\006result\030\001 \001(\t\0220\n\005debug\030\002 \001(\0132\034.w" +
+      "eaviate.v1.GenerativeDebugH\000\210\001\001\0226\n\010metad" +
+      "ata\030\003 \001(\0132\037.weaviate.v1.GenerativeMetada" +
+      "taH\001\210\001\001B\010\n\006_debugB\013\n\t_metadata\"@\n\020Genera" +
+      "tiveResult\022,\n\006values\030\001 \003(\0132\034.weaviate.v1" +
+      ".GenerativeReply\";\n\017GenerativeDebug\022\030\n\013f" +
+      "ull_prompt\030\001 \001(\tH\000\210\001\001B\016\n\014_full_promptBH\n" +
+      "-io.weaviate.client6.v1.internal.grpc.pr" +
+      "otocolB\027WeaviateProtoGenerativeb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -50530,7 +53368,7 @@ public final class WeaviateProtoGenerative {
     internal_static_weaviate_v1_GenerativeProvider_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeProvider_descriptor,
-        new java.lang.String[] { "ReturnMetadata", "Anthropic", "Anyscale", "Aws", "Cohere", "Dummy", "Mistral", "Ollama", "Openai", "Google", "Databricks", "Friendliai", "Nvidia", "Xai", "Kind", });
+        new java.lang.String[] { "ReturnMetadata", "Anthropic", "Anyscale", "Aws", "Cohere", "Dummy", "Mistral", "Ollama", "Openai", "Google", "Databricks", "Friendliai", "Nvidia", "Xai", "Contextualai", "Kind", });
     internal_static_weaviate_v1_GenerativeAnthropic_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_weaviate_v1_GenerativeAnthropic_fieldAccessorTable = new
@@ -50548,13 +53386,13 @@ public final class WeaviateProtoGenerative {
     internal_static_weaviate_v1_GenerativeAWS_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeAWS_descriptor,
-        new java.lang.String[] { "Model", "Temperature", "Service", "Region", "Endpoint", "TargetModel", "TargetVariant", "Images", "ImageProperties", "Model", "Temperature", "Service", "Region", "Endpoint", "TargetModel", "TargetVariant", "Images", "ImageProperties", });
+        new java.lang.String[] { "Model", "Temperature", "Service", "Region", "Endpoint", "TargetModel", "TargetVariant", "Images", "ImageProperties", "MaxTokens", "StopSequences", "Model", "Temperature", "Service", "Region", "Endpoint", "TargetModel", "TargetVariant", "Images", "ImageProperties", "MaxTokens", "StopSequences", });
     internal_static_weaviate_v1_GenerativeCohere_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_weaviate_v1_GenerativeCohere_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeCohere_descriptor,
-        new java.lang.String[] { "BaseUrl", "FrequencyPenalty", "MaxTokens", "Model", "K", "P", "PresencePenalty", "StopSequences", "Temperature", "BaseUrl", "FrequencyPenalty", "MaxTokens", "Model", "K", "P", "PresencePenalty", "StopSequences", "Temperature", });
+        new java.lang.String[] { "BaseUrl", "FrequencyPenalty", "MaxTokens", "Model", "K", "P", "PresencePenalty", "StopSequences", "Temperature", "Images", "ImageProperties", "BaseUrl", "FrequencyPenalty", "MaxTokens", "Model", "K", "P", "PresencePenalty", "StopSequences", "Temperature", "Images", "ImageProperties", });
     internal_static_weaviate_v1_GenerativeDummy_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_weaviate_v1_GenerativeDummy_fieldAccessorTable = new
@@ -50578,7 +53416,7 @@ public final class WeaviateProtoGenerative {
     internal_static_weaviate_v1_GenerativeOpenAI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeOpenAI_descriptor,
-        new java.lang.String[] { "FrequencyPenalty", "MaxTokens", "Model", "N", "PresencePenalty", "Stop", "Temperature", "TopP", "BaseUrl", "ApiVersion", "ResourceName", "DeploymentId", "IsAzure", "Images", "ImageProperties", "FrequencyPenalty", "MaxTokens", "Model", "N", "PresencePenalty", "Stop", "Temperature", "TopP", "BaseUrl", "ApiVersion", "ResourceName", "DeploymentId", "IsAzure", "Images", "ImageProperties", });
+        new java.lang.String[] { "FrequencyPenalty", "MaxTokens", "Model", "N", "PresencePenalty", "Stop", "Temperature", "TopP", "BaseUrl", "ApiVersion", "ResourceName", "DeploymentId", "IsAzure", "Images", "ImageProperties", "ReasoningEffort", "Verbosity", "FrequencyPenalty", "MaxTokens", "Model", "N", "PresencePenalty", "Stop", "Temperature", "TopP", "BaseUrl", "ApiVersion", "ResourceName", "DeploymentId", "IsAzure", "Images", "ImageProperties", "ReasoningEffort", "Verbosity", });
     internal_static_weaviate_v1_GenerativeGoogle_descriptor =
       getDescriptor().getMessageTypes().get(10);
     internal_static_weaviate_v1_GenerativeGoogle_fieldAccessorTable = new
@@ -50609,8 +53447,14 @@ public final class WeaviateProtoGenerative {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeXAI_descriptor,
         new java.lang.String[] { "BaseUrl", "Model", "Temperature", "TopP", "MaxTokens", "Images", "ImageProperties", "BaseUrl", "Model", "Temperature", "TopP", "MaxTokens", "Images", "ImageProperties", });
-    internal_static_weaviate_v1_GenerativeAnthropicMetadata_descriptor =
+    internal_static_weaviate_v1_GenerativeContextualAI_descriptor =
       getDescriptor().getMessageTypes().get(15);
+    internal_static_weaviate_v1_GenerativeContextualAI_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_weaviate_v1_GenerativeContextualAI_descriptor,
+        new java.lang.String[] { "Model", "Temperature", "TopP", "MaxNewTokens", "SystemPrompt", "AvoidCommentary", "Knowledge", "Model", "Temperature", "TopP", "MaxNewTokens", "SystemPrompt", "AvoidCommentary", "Knowledge", });
+    internal_static_weaviate_v1_GenerativeAnthropicMetadata_descriptor =
+      getDescriptor().getMessageTypes().get(16);
     internal_static_weaviate_v1_GenerativeAnthropicMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeAnthropicMetadata_descriptor,
@@ -50622,19 +53466,19 @@ public final class WeaviateProtoGenerative {
         internal_static_weaviate_v1_GenerativeAnthropicMetadata_Usage_descriptor,
         new java.lang.String[] { "InputTokens", "OutputTokens", });
     internal_static_weaviate_v1_GenerativeAnyscaleMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_weaviate_v1_GenerativeAnyscaleMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeAnyscaleMetadata_descriptor,
         new java.lang.String[] { });
     internal_static_weaviate_v1_GenerativeAWSMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_weaviate_v1_GenerativeAWSMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeAWSMetadata_descriptor,
         new java.lang.String[] { });
     internal_static_weaviate_v1_GenerativeCohereMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_weaviate_v1_GenerativeCohereMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeCohereMetadata_descriptor,
@@ -50658,13 +53502,13 @@ public final class WeaviateProtoGenerative {
         internal_static_weaviate_v1_GenerativeCohereMetadata_Tokens_descriptor,
         new java.lang.String[] { "InputTokens", "OutputTokens", "InputTokens", "OutputTokens", });
     internal_static_weaviate_v1_GenerativeDummyMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_weaviate_v1_GenerativeDummyMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeDummyMetadata_descriptor,
         new java.lang.String[] { });
     internal_static_weaviate_v1_GenerativeMistralMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_weaviate_v1_GenerativeMistralMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeMistralMetadata_descriptor,
@@ -50676,13 +53520,13 @@ public final class WeaviateProtoGenerative {
         internal_static_weaviate_v1_GenerativeMistralMetadata_Usage_descriptor,
         new java.lang.String[] { "PromptTokens", "CompletionTokens", "TotalTokens", "PromptTokens", "CompletionTokens", "TotalTokens", });
     internal_static_weaviate_v1_GenerativeOllamaMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_weaviate_v1_GenerativeOllamaMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeOllamaMetadata_descriptor,
         new java.lang.String[] { });
     internal_static_weaviate_v1_GenerativeOpenAIMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_weaviate_v1_GenerativeOpenAIMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeOpenAIMetadata_descriptor,
@@ -50694,7 +53538,7 @@ public final class WeaviateProtoGenerative {
         internal_static_weaviate_v1_GenerativeOpenAIMetadata_Usage_descriptor,
         new java.lang.String[] { "PromptTokens", "CompletionTokens", "TotalTokens", "PromptTokens", "CompletionTokens", "TotalTokens", });
     internal_static_weaviate_v1_GenerativeGoogleMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_weaviate_v1_GenerativeGoogleMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeGoogleMetadata_descriptor,
@@ -50724,7 +53568,7 @@ public final class WeaviateProtoGenerative {
         internal_static_weaviate_v1_GenerativeGoogleMetadata_UsageMetadata_descriptor,
         new java.lang.String[] { "PromptTokenCount", "CandidatesTokenCount", "TotalTokenCount", "PromptTokenCount", "CandidatesTokenCount", "TotalTokenCount", });
     internal_static_weaviate_v1_GenerativeDatabricksMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_weaviate_v1_GenerativeDatabricksMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeDatabricksMetadata_descriptor,
@@ -50736,7 +53580,7 @@ public final class WeaviateProtoGenerative {
         internal_static_weaviate_v1_GenerativeDatabricksMetadata_Usage_descriptor,
         new java.lang.String[] { "PromptTokens", "CompletionTokens", "TotalTokens", "PromptTokens", "CompletionTokens", "TotalTokens", });
     internal_static_weaviate_v1_GenerativeFriendliAIMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_weaviate_v1_GenerativeFriendliAIMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeFriendliAIMetadata_descriptor,
@@ -50748,7 +53592,7 @@ public final class WeaviateProtoGenerative {
         internal_static_weaviate_v1_GenerativeFriendliAIMetadata_Usage_descriptor,
         new java.lang.String[] { "PromptTokens", "CompletionTokens", "TotalTokens", "PromptTokens", "CompletionTokens", "TotalTokens", });
     internal_static_weaviate_v1_GenerativeNvidiaMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(27);
     internal_static_weaviate_v1_GenerativeNvidiaMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeNvidiaMetadata_descriptor,
@@ -50760,7 +53604,7 @@ public final class WeaviateProtoGenerative {
         internal_static_weaviate_v1_GenerativeNvidiaMetadata_Usage_descriptor,
         new java.lang.String[] { "PromptTokens", "CompletionTokens", "TotalTokens", "PromptTokens", "CompletionTokens", "TotalTokens", });
     internal_static_weaviate_v1_GenerativeXAIMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(27);
+      getDescriptor().getMessageTypes().get(28);
     internal_static_weaviate_v1_GenerativeXAIMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeXAIMetadata_descriptor,
@@ -50772,25 +53616,25 @@ public final class WeaviateProtoGenerative {
         internal_static_weaviate_v1_GenerativeXAIMetadata_Usage_descriptor,
         new java.lang.String[] { "PromptTokens", "CompletionTokens", "TotalTokens", "PromptTokens", "CompletionTokens", "TotalTokens", });
     internal_static_weaviate_v1_GenerativeMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(28);
+      getDescriptor().getMessageTypes().get(29);
     internal_static_weaviate_v1_GenerativeMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeMetadata_descriptor,
         new java.lang.String[] { "Anthropic", "Anyscale", "Aws", "Cohere", "Dummy", "Mistral", "Ollama", "Openai", "Google", "Databricks", "Friendliai", "Nvidia", "Xai", "Kind", });
     internal_static_weaviate_v1_GenerativeReply_descriptor =
-      getDescriptor().getMessageTypes().get(29);
+      getDescriptor().getMessageTypes().get(30);
     internal_static_weaviate_v1_GenerativeReply_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeReply_descriptor,
         new java.lang.String[] { "Result", "Debug", "Metadata", "Debug", "Metadata", });
     internal_static_weaviate_v1_GenerativeResult_descriptor =
-      getDescriptor().getMessageTypes().get(30);
+      getDescriptor().getMessageTypes().get(31);
     internal_static_weaviate_v1_GenerativeResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeResult_descriptor,
         new java.lang.String[] { "Values", });
     internal_static_weaviate_v1_GenerativeDebug_descriptor =
-      getDescriptor().getMessageTypes().get(31);
+      getDescriptor().getMessageTypes().get(32);
     internal_static_weaviate_v1_GenerativeDebug_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_weaviate_v1_GenerativeDebug_descriptor,
