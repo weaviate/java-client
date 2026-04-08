@@ -40,6 +40,7 @@ import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
 import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector.Aggregation;
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2MultiVecJinaAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2MultiVecWeaviateVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecAwsVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecCohereVectorizer;
@@ -625,6 +626,28 @@ public class JSONTest {
                   "vectorIndexConfig": {},
                   "vectorizer": {
                     "multi2multivec-jinaai": {
+                      "imageFields": ["a", "b"],
+                      "textFields": ["c"]
+                    }
+                  }
+                }
+                    """,
+        },
+        {
+            VectorConfig.class,
+            Multi2MultiVecWeaviateVectorizer.of(v -> v
+                .baseUrl("example.com")
+                .model(Multi2MultiVecWeaviateVectorizer.MODERNVBERT_COLMODERNVBERT)
+                .imageFields("a", "b")
+                .textFields("c")),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "multi2multivec-weaviate": {
+                      "baseURL": "example.com",
+                      "model": "ModernVBERT/colmodernvbert",
                       "imageFields": ["a", "b"],
                       "textFields": ["c"]
                     }

@@ -17,6 +17,7 @@ import com.google.gson.stream.JsonWriter;
 
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2MultiVecJinaAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2MultiVecWeaviateVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecAwsVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecBindVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
@@ -78,7 +79,8 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     MULTI2VEC_NVIDIA("multi2vec-nvidia"),
     MULTI2VEC_VOYAGEAI("multi2vec-voyageai"),
     TEXT2MULTIVEC_JINAAI("text2multivec-jinaai"),
-    MULTI2MULTIVEC_JINAAI("multi2multivec-jinaai");
+    MULTI2MULTIVEC_JINAAI("multi2multivec-jinaai"),
+    MULTI2MULTIVEC_WEAVIATE("multi2multivec-weaviate");
 
     private static final Map<String, Kind> jsonValueMap = JsonEnum.collectNames(Kind.values());
     private final String jsonValue;
@@ -206,6 +208,43 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
   public static Map.Entry<String, VectorConfig> multi2multivecJinaai(String vectorName,
       Function<Multi2MultiVecJinaAiVectorizer.Builder, ObjectBuilder<Multi2MultiVecJinaAiVectorizer>> fn) {
     return Map.entry(vectorName, Multi2MultiVecJinaAiVectorizer.of(fn));
+  }
+
+  /** Create a vector index with an {@code multi2multivec-weaviate} vectorizer. */
+  public static Map.Entry<String, VectorConfig> multi2multivecWeaviate() {
+    return multi2multivecWeaviate(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code multi2multivec-weaviate} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2multivecWeaviate(
+      Function<Multi2MultiVecWeaviateVectorizer.Builder, ObjectBuilder<Multi2MultiVecWeaviateVectorizer>> fn) {
+    return multi2multivecWeaviate(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2multivec-weaviate}
+   * vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> multi2multivecWeaviate(String vectorName) {
+    return Map.entry(vectorName, Multi2MultiVecWeaviateVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2multivec-weaviate}
+   * vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2multivecWeaviate(String vectorName,
+      Function<Multi2MultiVecWeaviateVectorizer.Builder, ObjectBuilder<Multi2MultiVecWeaviateVectorizer>> fn) {
+    return Map.entry(vectorName, Multi2MultiVecWeaviateVectorizer.of(fn));
   }
 
   /** Create a vector index with an {@code multi2vec-aws} vectorizer. */
@@ -1650,6 +1689,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
       addAdapter(gson, VectorConfig.Kind.MULTI2VEC_VOYAGEAI, Multi2VecVoyageAiVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2MULTIVEC_JINAAI, Text2MultiVecJinaAiVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.MULTI2MULTIVEC_JINAAI, Multi2MultiVecJinaAiVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.MULTI2MULTIVEC_WEAVIATE, Multi2MultiVecWeaviateVectorizer.class);
     }
 
     @SuppressWarnings("unchecked")
