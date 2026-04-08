@@ -373,6 +373,31 @@ public class CollectionsITest extends ConcurrentTest {
   }
 
   @Test
+  public void test_dropVectorIndex() throws IOException {
+    Weaviate.Version.V137.orSkip();
+
+    // Arrange
+    var nsThings = ns("Things");
+    var things = client.collections.create(nsThings,
+        c -> c.vectorConfig(VectorConfig.selfProvided("leaveme"), VectorConfig.selfProvided("dropme")));
+
+    var config = things.config.get();
+    Assertions.assertThat(config).get()
+        .extracting(CollectionConfig::vectors, InstanceOfAssertFactories.map(String.class, VectorConfig.class))
+        .hasSize(2)
+        .containsKey("dropme");
+
+    things.config.dropVectorIndex("dropme");
+
+    config = things.config.get();
+    Assertions.assertThat(config).get()
+        .extracting(CollectionConfig::vectors, InstanceOfAssertFactories.map(String.class, VectorConfig.class))
+        .hasSize(2)
+        .extractingByKey("dropme")
+        .returns(null, VectorConfig::vectorIndex); // A dropped index has not vectorIndex configuration.
+  }
+
+  @Test
   public void test_asyncReplicationConfig() throws IOException {
     Weaviate.Version.latest().orSkip();
 

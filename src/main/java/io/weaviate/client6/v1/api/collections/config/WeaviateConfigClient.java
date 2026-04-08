@@ -58,6 +58,12 @@ public class WeaviateConfigClient {
         DeletePropertyIndexRequest._ENDPOINT);
   }
 
+  public void dropVectorIndex(String vectorName) throws IOException {
+    this.restTransport.performRequest(
+        new DeleteVectorIndexRequest(collection.collectionName(), vectorName),
+        DeleteVectorIndexRequest._ENDPOINT);
+  }
+
   public void addReference(String propertyName, String... dataTypes) throws IOException {
     this.addProperty(ReferenceProperty.to(propertyName, dataTypes).toProperty());
   }

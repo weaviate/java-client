@@ -137,8 +137,22 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
         public VectorIndex read(JsonReader in) throws IOException {
           var jsonObject = JsonParser.parseReader(in).getAsJsonObject();
 
+          var vectorIndexType = jsonObject.get("vectorIndexType");
+          if (vectorIndexType == null || vectorIndexType.isJsonNull()) {
+            // VectorConfig.CustomTypeAdapterFactory cannot provide this
+            // value for vector indexes that have been dropped.
+            return null;
+          }
+
+          var vectorIndexConfig = jsonObject.get("vectorIndexConfig");
+          if (vectorIndexConfig == null || vectorIndexConfig.isJsonNull()) {
+            // VectorConfig.CustomTypeAdapterFactory cannot provide this
+            // value for vector indexes that have been dropped.
+            return null;
+          }
+
           VectorIndex.Kind kind;
-          var kindString = jsonObject.get("vectorIndexType").getAsString();
+          var kindString = vectorIndexType.getAsString();
           try {
             kind = VectorIndex.Kind.valueOfJson(kindString);
           } catch (IllegalArgumentException e) {
@@ -150,7 +164,7 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
             return null;
           }
 
-          var config = jsonObject.get("vectorIndexConfig").getAsJsonObject();
+          var config = vectorIndexConfig.getAsJsonObject();
           return adapter.fromJsonTree(config);
         }
       }.nullSafe();
