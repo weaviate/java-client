@@ -3,7 +3,9 @@ package io.weaviate.client6.v1.api.collections.query;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.weaviate.client6.v1.api.collections.GeoCoordinates;
@@ -19,7 +21,8 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.client6.v1.internal.orm.PropertiesBuilder;
 
 public record QueryResponse<PropertiesT>(
-    List<WeaviateObject<PropertiesT>> objects) {
+    List<WeaviateObject<PropertiesT>> objects,
+    QueryProfile queryProfile) {
 
   static <PropertiesT> QueryResponse<PropertiesT> unmarshal(WeaviateProtoSearchGet.SearchReply reply,
       CollectionDescriptor<PropertiesT> collection) {
@@ -29,7 +32,22 @@ public record QueryResponse<PropertiesT>(
         .map(obj -> QueryResponse.unmarshalResultObject(
             obj.getProperties(), obj.getMetadata(), collection))
         .toList();
-    return new QueryResponse<>(objects);
+    return new QueryResponse<>(objects, unmarshalQueryProfile(reply.getQueryProfile()));
+  }
+
+  static QueryProfile unmarshalQueryProfile(WeaviateProtoSearchGet.QueryProfile queryProfile) {
+    return new QueryProfile(queryProfile
+        .getShardsList()
+        .stream()
+        .map(shard -> new QueryProfile.ShardProfile(
+            shard
+                .getSearchesMap()
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    entry -> entry.getValue().getDetailsMap()))))
+        .toList());
   }
 
   public static <PropertiesT> WeaviateObject<PropertiesT> unmarshalResultObject(

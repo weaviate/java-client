@@ -65,6 +65,13 @@ public interface Metadata {
   public static final Metadata EXPLAIN_SCORE = MetadataField.EXPLAIN_SCORE;
 
   /**
+   * Include a per-shard execution timing breakdowns for search queries.
+   *
+   * @see QueryProfile
+   */
+  public static final Metadata QUERY_PROFILE = MetadataField.QUERY_PROFILE;
+
+  /**
    * MetadataField are collection properties that can be requested for any object.
    */
   enum MetadataField implements Metadata {
@@ -76,7 +83,8 @@ public interface Metadata {
     DISTANCE,
     CERTAINTY,
     SCORE,
-    EXPLAIN_SCORE;
+    EXPLAIN_SCORE,
+    QUERY_PROFILE;
 
     public void appendTo(WeaviateProtoSearchGet.MetadataRequest.Builder metadata) {
       switch (this) {
@@ -111,6 +119,8 @@ public interface Metadata {
         case SCORE:
           metadata.setScore(true);
           break;
+        case QUERY_PROFILE:
+          metadata.setQueryProfile(true);
       }
     }
   }

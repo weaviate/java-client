@@ -36,7 +36,10 @@ import io.weaviate.client6.v1.api.collections.query.FetchObjectById;
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
 import io.weaviate.client6.v1.api.collections.query.Metadata;
+import io.weaviate.client6.v1.api.collections.query.QueryProfile;
+import io.weaviate.client6.v1.api.collections.query.QueryResponse;
 import io.weaviate.client6.v1.api.collections.query.QueryResponseGroup;
+import io.weaviate.client6.v1.api.collections.query.QueryResponseGrouped;
 import io.weaviate.client6.v1.api.collections.query.Rerank;
 import io.weaviate.client6.v1.api.collections.query.SortBy;
 import io.weaviate.client6.v1.api.collections.query.Target;
@@ -48,6 +51,7 @@ import io.weaviate.containers.Container.ContainerGroup;
 import io.weaviate.containers.Img2VecNeural;
 import io.weaviate.containers.Model2Vec;
 import io.weaviate.containers.Weaviate;
+import io.weaviate.containers.Weaviate.Version;
 
 public class SearchITest extends ConcurrentTest {
   private static final ContainerGroup compose = Container.compose(
@@ -838,5 +842,46 @@ public class SearchITest extends ConcurrentTest {
           Assertions.assertThat(v.getSingle("author_vec")).isNotEmpty();
           Assertions.assertThat(v.getSingle("title_vec")).isEqualTo(v.getSingle("author_vec"));
         });
+  }
+
+  @Test
+  public void testQueryProfile() throws Exception {
+    Version.V136.orSkip();
+
+    var things = client.collections.use(COLLECTION);
+    var resp = things.query.nearVector(searchVector,
+        opt -> opt.distance(10f)
+            .returnMetadata(Metadata.QUERY_PROFILE));
+
+    Assertions.assertThat(resp)
+        .extracting(QueryResponse::queryProfile).isNotNull()
+        .extracting(QueryProfile::shards, InstanceOfAssertFactories.list(QueryProfile.ShardProfile.class))
+        .hasSize(1)
+        .allSatisfy(shardProfile -> Assertions.assertThat(shardProfile)
+            .extracting(QueryProfile.ShardProfile::searches,
+                InstanceOfAssertFactories.map(String.class, String.class))
+            .isNotEmpty());
+  }
+
+  @Test
+  @Ignore("v1.36.9 does not support query profiles for grouped queries")
+  public void testQueryProfile_groupBy() throws Exception {
+    Version.V136.orSkip();
+
+    var things = client.collections.use(COLLECTION);
+    var resp = things.query.nearVector(searchVector,
+        opt -> opt.distance(10f)
+            .returnMetadata(Metadata.QUERY_PROFILE),
+        GroupBy.property("category", 2, 5));
+
+    Assertions.assertThat(resp)
+        .extracting(QueryResponseGrouped::queryProfile).isNotNull()
+        .extracting(QueryProfile::shards,
+            InstanceOfAssertFactories.list(QueryProfile.ShardProfile.class))
+        .hasSize(1)
+        .allSatisfy(shardProfile -> Assertions.assertThat(shardProfile)
+            .extracting(QueryProfile.ShardProfile::searches,
+                InstanceOfAssertFactories.map(String.class, String.class))
+            .isNotEmpty());
   }
 }
