@@ -1695,7 +1695,12 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
         @Override
         public VectorConfig read(JsonReader in) throws IOException {
           var jsonObject = JsonParser.parseReader(in).getAsJsonObject();
-          var vectorIndexConfig = jsonObject.get("vectorIndexConfig").getAsJsonObject();
+          JsonObject vectorIndexConfig = new JsonObject();
+          if (jsonObject.has("vectorIndexConfig")) {
+            // If the vector index has been dropped it will still be present in the
+            // response, but won't contain "vectorIndexConfig" and "vectorIndexType" fields.
+            vectorIndexConfig = jsonObject.get("vectorIndexConfig").getAsJsonObject();
+          }
 
           String quantizationKind = null;
           for (var kind : new String[] {
