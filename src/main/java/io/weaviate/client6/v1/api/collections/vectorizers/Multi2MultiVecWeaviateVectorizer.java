@@ -18,8 +18,6 @@ public record Multi2MultiVecWeaviateVectorizer(
     @SerializedName("model") String model,
     /** BLOB properties included in the embedding. */
     @SerializedName("imageFields") List<String> imageFields,
-    /** TEXT properties included in the embedding. */
-    @SerializedName("textFields") List<String> textFields,
     /** Vector index configuration. */
     VectorIndex vectorIndex,
     /** Vector quantization method. */
@@ -52,7 +50,6 @@ public record Multi2MultiVecWeaviateVectorizer(
         builder.baseUrl,
         builder.model,
         builder.imageFields,
-        builder.textFields,
         builder.vectorIndex,
         builder.quantization);
   }
@@ -65,7 +62,6 @@ public record Multi2MultiVecWeaviateVectorizer(
     private String model;
 
     private List<String> imageFields;
-    private List<String> textFields;
 
     public Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
@@ -86,17 +82,6 @@ public record Multi2MultiVecWeaviateVectorizer(
     /** Add BLOB properties to include in the embedding. */
     public Builder imageFields(String... fields) {
       return imageFields(Arrays.asList(fields));
-    }
-
-    /** Add TEXT properties to include in the embedding. */
-    public Builder textFields(List<String> fields) {
-      textFields = fields;
-      return this;
-    }
-
-    /** Add TEXT properties to include in the embedding. */
-    public Builder textFields(String... fields) {
-      return textFields(Arrays.asList(fields));
     }
 
     /**

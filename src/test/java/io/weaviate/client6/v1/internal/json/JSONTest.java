@@ -79,7 +79,6 @@ import io.weaviate.client6.v1.api.rbac.TenantsPermission;
 import io.weaviate.client6.v1.api.rbac.UsersPermission;
 import io.weaviate.client6.v1.api.rbac.groups.GroupType;
 
-/** Unit tests for custom POJO-to-JSON serialization. */
 @RunWith(JParamsTestRunner.class)
 public class JSONTest {
   public static Object[][] testCases() {
@@ -638,8 +637,7 @@ public class JSONTest {
             Multi2MultiVecWeaviateVectorizer.of(v -> v
                 .baseUrl("example.com")
                 .model(Multi2MultiVecWeaviateVectorizer.MODERNVBERT_COLMODERNVBERT)
-                .imageFields("a", "b")
-                .textFields("c")),
+                .imageFields("a", "b")),
             """
                 {
                   "vectorIndexType": "hnsw",
@@ -648,9 +646,21 @@ public class JSONTest {
                     "multi2multivec-weaviate": {
                       "baseURL": "example.com",
                       "model": "ModernVBERT/colmodernvbert",
-                      "imageFields": ["a", "b"],
-                      "textFields": ["c"]
+                      "imageFields": ["a", "b"]
                     }
+                  }
+                }
+                    """,
+        },
+        {
+            VectorConfig.class,
+            Multi2MultiVecWeaviateVectorizer.of(),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "multi2multivec-weaviate": { }
                   }
                 }
                     """,
