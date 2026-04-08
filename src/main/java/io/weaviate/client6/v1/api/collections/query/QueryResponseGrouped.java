@@ -14,7 +14,8 @@ public record QueryResponseGrouped<PropertiesT>(
     /** All objects retrieved in the query. */
     List<QueryObjectGrouped<PropertiesT>> objects,
     /** Grouped response objects. */
-    Map<String, QueryResponseGroup<PropertiesT>> groups) {
+    Map<String, QueryResponseGroup<PropertiesT>> groups,
+    QueryProfile queryProfile) {
 
   static <PropertiesT> QueryResponseGrouped<PropertiesT> unmarshal(
       WeaviateProtoSearchGet.SearchReply reply,
@@ -47,6 +48,8 @@ public record QueryResponseGrouped<PropertiesT>(
         // about the server's response.
         .collect(Collectors.toMap(QueryResponseGroup::name, Function.identity()));
 
-    return new QueryResponseGrouped<PropertiesT>(allObjects, groups);
+    return new QueryResponseGrouped<PropertiesT>(
+        allObjects, groups,
+        QueryResponse.unmarshalQueryProfile(reply.getQueryProfile()));
   }
 }

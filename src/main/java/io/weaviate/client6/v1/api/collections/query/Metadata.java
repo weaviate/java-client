@@ -11,7 +11,13 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 public interface Metadata {
   void appendTo(WeaviateProtoSearchGet.MetadataRequest.Builder metadata);
 
-  /** Include metadata in the metadata response. */
+  /**
+   * Include all metadata in the metadata response.
+   *
+   * <p>
+   * Collecting {@link #QUERY_PROFILE} involves significant overhead on the
+   * server side, so it is excluded from ALL and must be requested explicitly.
+   */
   public static final Metadata ALL = MetadataField.ALL;
   /** Include object creation time in the metadata response. */
   public static final Metadata CREATION_TIME_UNIX = MetadataField.CREATION_TIME_UNIX;
@@ -65,6 +71,13 @@ public interface Metadata {
   public static final Metadata EXPLAIN_SCORE = MetadataField.EXPLAIN_SCORE;
 
   /**
+   * Include a per-shard execution timing breakdowns for search queries.
+   *
+   * @see QueryProfile
+   */
+  public static final Metadata QUERY_PROFILE = MetadataField.QUERY_PROFILE;
+
+  /**
    * MetadataField are collection properties that can be requested for any object.
    */
   enum MetadataField implements Metadata {
@@ -76,13 +89,15 @@ public interface Metadata {
     DISTANCE,
     CERTAINTY,
     SCORE,
-    EXPLAIN_SCORE;
+    EXPLAIN_SCORE,
+    QUERY_PROFILE;
 
     public void appendTo(WeaviateProtoSearchGet.MetadataRequest.Builder metadata) {
       switch (this) {
         case ALL:
           for (final var f : MetadataField.values()) {
-            if (f != ALL) {
+            // QUERY_PROFILE is expensive, require an explicit opt-in.
+            if (f != ALL && f != QUERY_PROFILE) {
               f.appendTo(metadata);
             }
           }
@@ -111,6 +126,8 @@ public interface Metadata {
         case SCORE:
           metadata.setScore(true);
           break;
+        case QUERY_PROFILE:
+          metadata.setQueryProfile(true);
       }
     }
   }
