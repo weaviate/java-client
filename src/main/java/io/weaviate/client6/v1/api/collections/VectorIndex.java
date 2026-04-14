@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
@@ -17,6 +18,7 @@ import io.weaviate.client6.v1.api.collections.vectorindex.Dynamic;
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.HFresh;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
+import io.weaviate.client6.v1.api.collections.vectorindex.None;
 import io.weaviate.client6.v1.internal.TaggedUnion;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
@@ -28,7 +30,8 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
     HNSW("hnsw"),
     FLAT("flat"),
     DYNAMIC("dynamic"),
-    HFRESH("hfresh");
+    HFRESH("hfresh"),
+    NONE("none");
 
     private static final Map<String, Kind> jsonValueMap = JsonEnum.collectNames(Kind.values());
     private final String jsonValue;
@@ -87,6 +90,11 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
     return _as(VectorIndex.Kind.HFRESH);
   }
 
+  /** Is this a "none" vector index? */
+  default boolean isNone() {
+    return _is(VectorIndex.Kind.NONE);
+  }
+
   static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
     INSTANCE;
 
@@ -102,6 +110,7 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
       addAdapter(gson, VectorIndex.Kind.FLAT, Flat.class);
       addAdapter(gson, VectorIndex.Kind.DYNAMIC, Dynamic.class);
       addAdapter(gson, VectorIndex.Kind.HFRESH, HFresh.class);
+      addAdapter(gson, VectorIndex.Kind.NONE, None.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -148,7 +157,7 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
           if (vectorIndexConfig == null || vectorIndexConfig.isJsonNull()) {
             // VectorConfig.CustomTypeAdapterFactory cannot provide this
             // value for vector indexes that have been dropped.
-            return null;
+            vectorIndexConfig = new JsonObject();
           }
 
           VectorIndex.Kind kind;
