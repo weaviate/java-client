@@ -14,6 +14,7 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.rbac.AliasesPermission;
 import io.weaviate.client6.v1.api.rbac.BackupsPermission;
 import io.weaviate.client6.v1.api.rbac.ClusterPermission;
+import io.weaviate.client6.v1.api.rbac.McpPermission;
 import io.weaviate.client6.v1.api.rbac.CollectionsPermission;
 import io.weaviate.client6.v1.api.rbac.DataPermission;
 import io.weaviate.client6.v1.api.rbac.GroupsPermission;
@@ -82,6 +83,9 @@ public class RbacITest extends ConcurrentTest {
     requireAtLeast(Weaviate.Version.V133, () -> {
       permissions.add(
           Permission.groups("my-group", GroupType.OIDC, GroupsPermission.Action.READ));
+    });
+    requireAtLeast(Weaviate.Version.V137, () -> {
+      permissions.add(Permission.mcp(McpPermission.Action.MANAGE));
     });
 
     // Act: create role

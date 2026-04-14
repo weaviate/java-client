@@ -41,7 +41,8 @@ public interface Permission {
     USERS("users"),
 
     // Fake permission kinds: Weaviate does not use those.
-    CLUSTER("cluster");
+    CLUSTER("cluster"),
+    MCP("mcp");
 
     private static final Map<String, Kind> jsonValueMap = JsonEnum.collectNames(Kind.values());
     private final String jsonValue;
@@ -154,6 +155,14 @@ public interface Permission {
   }
 
   /**
+   * Create {@link McpPermission}.
+   */
+  public static McpPermission mcp(McpPermission.Action... actions) {
+    checkDeprecation(actions);
+    return new McpPermission(actions);
+  }
+
+  /**
    * Create {@link ReplicatePermission}.
    *
    * <p>
@@ -222,6 +231,7 @@ public interface Permission {
       addAdapter(gson, Permission.Kind.ROLES, RolesPermission.class);
       addAdapter(gson, Permission.Kind.NODES, NodesPermission.class);
       addAdapter(gson, Permission.Kind.TENANTS, TenantsPermission.class);
+      addAdapter(gson, Permission.Kind.MCP, McpPermission.class);
       addAdapter(gson, Permission.Kind.REPLICATE, ReplicatePermission.class);
       addAdapter(gson, Permission.Kind.USERS, UsersPermission.class);
       addAdapter(gson, Permission.Kind.CLUSTER, ClusterPermission.class);
@@ -283,6 +293,8 @@ public interface Permission {
             var actionString = action.getAsString();
             if (actionString.endsWith("_cluster")) {
               kind = Permission.Kind.CLUSTER;
+            } else if (actionString.endsWith("_mcp")) {
+              kind = Permission.Kind.MCP;
             } else {
               throw new IllegalArgumentException("unknown RBAC action " + actionString);
             }
