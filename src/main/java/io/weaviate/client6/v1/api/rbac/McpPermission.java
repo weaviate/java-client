@@ -23,8 +23,14 @@ public record McpPermission(
   }
 
   public enum Action implements RbacAction<Action> {
-    @SerializedName("manage_mcp")
-    MANAGE("manage_mcp");
+    @SerializedName("create_mcp")
+    CREATE("create_mcp"),
+
+    @SerializedName("read_mcp")
+    READ("read_mcp"),
+
+    @SerializedName("update_mcp")
+    UPDATE("update_mcp");
 
     private final String jsonValue;
 

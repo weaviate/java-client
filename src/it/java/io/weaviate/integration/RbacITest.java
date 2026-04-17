@@ -85,7 +85,9 @@ public class RbacITest extends ConcurrentTest {
           Permission.groups("my-group", GroupType.OIDC, GroupsPermission.Action.READ));
     });
     requireAtLeast(Weaviate.Version.V137, () -> {
-      permissions.add(Permission.mcp(McpPermission.Action.MANAGE));
+      permissions.add(Permission.mcp(McpPermission.Action.CREATE));
+      permissions.add(Permission.mcp(McpPermission.Action.READ));
+      permissions.add(Permission.mcp(McpPermission.Action.UPDATE));
     });
 
     // Act: create role

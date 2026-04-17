@@ -1480,12 +1480,14 @@ public class JSONTest {
                 "rock-n-role",
                 List.of(
                     new McpPermission(
-                        List.of(McpPermission.Action.MANAGE)))),
+                        List.of(McpPermission.Action.CREATE, McpPermission.Action.READ, McpPermission.Action.UPDATE)))),
             """
                 {
                   "name": "rock-n-role",
                   "permissions": [
-                    { "action": "manage_mcp" }
+                    { "action": "create_mcp" },
+                    { "action": "read_mcp" },
+                    { "action": "update_mcp" }
                   ]
                 }
                   """
