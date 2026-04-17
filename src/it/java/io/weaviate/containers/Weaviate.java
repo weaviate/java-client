@@ -308,6 +308,7 @@ public class Weaviate extends WeaviateContainer {
 
       // Required in v1.36.1, but we'll just set it by default.
       c.withEnv("OBJECTS_TTL_DELETE_SCHEDULE", "@hourly");
+      c.withEnv("ENABLE_EXPERIMENTAL_ALTER_SCHEMA_DROP_VECTOR_INDEX_ENDPOINT", "true");
 
       var apiKeyUsers = new HashSet<String>();
       apiKeyUsers.addAll(adminUsers);
