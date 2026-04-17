@@ -45,7 +45,7 @@ public class Weaviate extends WeaviateContainer {
     V134(1, 34, 7),
     V135(1, 35, 2),
     V136(1, 36, 9),
-    V137(1, 37, "0-rc.0");
+    V137(1, 37, 1);
 
     public final SemanticVersion semver;
 
@@ -308,6 +308,7 @@ public class Weaviate extends WeaviateContainer {
 
       // Required in v1.36.1, but we'll just set it by default.
       c.withEnv("OBJECTS_TTL_DELETE_SCHEDULE", "@hourly");
+      c.withEnv("ENABLE_EXPERIMENTAL_ALTER_SCHEMA_DROP_VECTOR_INDEX_ENDPOINT", "true");
 
       var apiKeyUsers = new HashSet<String>();
       apiKeyUsers.addAll(adminUsers);

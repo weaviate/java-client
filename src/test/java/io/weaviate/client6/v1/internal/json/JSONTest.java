@@ -66,6 +66,7 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVector
 import io.weaviate.client6.v1.api.rbac.AliasesPermission;
 import io.weaviate.client6.v1.api.rbac.BackupsPermission;
 import io.weaviate.client6.v1.api.rbac.ClusterPermission;
+import io.weaviate.client6.v1.api.rbac.McpPermission;
 import io.weaviate.client6.v1.api.rbac.CollectionsPermission;
 import io.weaviate.client6.v1.api.rbac.DataPermission;
 import io.weaviate.client6.v1.api.rbac.GroupsPermission;
@@ -1469,6 +1470,24 @@ public class JSONTest {
                   "name": "rock-n-role",
                   "permissions": [
                     { "action": "read_cluster" }
+                  ]
+                }
+                  """
+        },
+        {
+            Role.class,
+            new Role(
+                "rock-n-role",
+                List.of(
+                    new McpPermission(
+                        List.of(McpPermission.Action.CREATE, McpPermission.Action.READ, McpPermission.Action.UPDATE)))),
+            """
+                {
+                  "name": "rock-n-role",
+                  "permissions": [
+                    { "action": "create_mcp" },
+                    { "action": "read_mcp" },
+                    { "action": "update_mcp" }
                   ]
                 }
                   """
