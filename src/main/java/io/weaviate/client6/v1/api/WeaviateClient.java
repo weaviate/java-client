@@ -10,6 +10,7 @@ import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.api.rbac.groups.WeaviateGroupsClient;
 import io.weaviate.client6.v1.api.rbac.roles.WeaviateRolesClient;
 import io.weaviate.client6.v1.api.rbac.users.WeaviateUsersClient;
+import io.weaviate.client6.v1.api.tokenize.WeaviateTokenizeClient;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.Timeout;
 import io.weaviate.client6.v1.internal.TokenProvider;
@@ -61,6 +62,12 @@ public class WeaviateClient implements AutoCloseable {
    * for managing replication and sharding.
    */
   public final WeaviateClusterClient cluster;
+
+  /**
+   * Client for {@code /tokenize} and
+   * {@code /schema/{collection}/property/{property}/tokenize} endpoints.
+   */
+  public final WeaviateTokenizeClient tokenize;
 
   public WeaviateClient(Config config) {
     RestTransportOptions restOpt = config.restTransportOptions();
@@ -117,6 +124,7 @@ public class WeaviateClient implements AutoCloseable {
     this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
     this.alias = new WeaviateAliasClient(restTransport);
     this.backup = new WeaviateBackupClient(restTransport);
+    this.tokenize = new WeaviateTokenizeClient(restTransport);
     this.collections = new WeaviateCollectionsClient(restTransport, grpcTransport);
     this.roles = new WeaviateRolesClient(restTransport);
     this.groups = new WeaviateGroupsClient(restTransport);
