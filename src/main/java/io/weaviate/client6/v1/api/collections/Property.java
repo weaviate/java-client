@@ -18,6 +18,7 @@ public record Property(
     @SerializedName("indexRangeFilters") Boolean indexRangeFilters,
     @SerializedName("indexSearchable") Boolean indexSearchable,
     @SerializedName("tokenization") Tokenization tokenization,
+    @SerializedName("textAnalyzer") TextAnalyzer textAnalyzer,
     @SerializedName("skipVectorization") Boolean skipVectorization,
     @SerializedName("vectorizePropertyName") Boolean vectorizePropertyName,
     @SerializedName("nestedProperties") List<Property> nestedProperties) {
@@ -407,6 +408,7 @@ public record Property(
         builder.indexRangeFilters,
         builder.indexSearchable,
         builder.tokenization,
+        builder.textAnalyzer,
         builder.skipVectorization,
         builder.vectorizePropertyName,
         builder.nestedProperties.isEmpty() ? null : builder.nestedProperties);
@@ -435,6 +437,7 @@ public record Property(
     private Boolean indexRangeFilters;
     private Boolean indexSearchable;
     private Tokenization tokenization;
+    private TextAnalyzer textAnalyzer;
     private Boolean skipVectorization;
     private Boolean vectorizePropertyName;
     private List<Property> nestedProperties = new ArrayList<>();
@@ -552,6 +555,20 @@ public record Property(
      */
     public Builder tokenization(Tokenization tokenization) {
       this.tokenization = tokenization;
+      return this;
+    }
+
+    /**
+     * Configures per-property text analysis for {@code text} and {@code text[]}
+     * properties that use an inverted index (searchable or filterable).
+     *
+     * <p>
+     * Supports ASCII folding (accent/diacritic handling) and selecting
+     * a stopword preset that overrides the collection-level
+     * {@code invertedIndexConfig.stopwords} setting for this property only.
+     */
+    public Builder textAnalyzer(TextAnalyzer textAnalyzer) {
+      this.textAnalyzer = textAnalyzer;
       return this;
     }
 
