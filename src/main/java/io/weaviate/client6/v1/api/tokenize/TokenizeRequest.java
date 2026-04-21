@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.api.tokenize;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -27,8 +28,10 @@ public class TokenizeRequest {
   private final Tokenization tokenization;
   @SerializedName("analyzerConfig")
   private final TextAnalyzer textAnalyzer;
+  @SerializedName("stopwords")
+  private final Stopwords stopwords;
   @SerializedName("stopwordPresets")
-  private final Map<String, Stopwords> stopwordConfig;
+  private final Map<String, List<String>> stopwordPresets;
 
   public TokenizeRequest(String text, String collection, String property) {
     this.text = text;
@@ -36,20 +39,23 @@ public class TokenizeRequest {
     this.property = property;
     this.tokenization = null;
     this.textAnalyzer = null;
-    this.stopwordConfig = null;
+    this.stopwords = null;
+    this.stopwordPresets = null;
   }
 
   public TokenizeRequest(
       String text,
       Tokenization tokenization,
       TextAnalyzer textAnalyzer,
-      Map<String, Stopwords> stopwordConfig) {
+      Stopwords stopwords,
+      Map<String, List<String>> stopwordPresets) {
     this.text = text;
     this.collection = null;
     this.property = null;
     this.tokenization = tokenization;
     this.textAnalyzer = textAnalyzer;
-    this.stopwordConfig = stopwordConfig;
+    this.stopwords = stopwords;
+    this.stopwordPresets = stopwordPresets;
   }
 
   public final static Endpoint<TokenizeRequest, TokenizeResponse> _ENDPOINT = new SimpleEndpoint<>(
@@ -69,27 +75,48 @@ public class TokenizeRequest {
   }
 
   public TokenizeRequest(Builder builder) {
-    this(builder.text, builder.tokenization, builder.textAnalyzer, builder.stopwordConfig);
+    this(
+        builder.text,
+        builder.tokenization,
+        builder.textAnalyzer,
+        builder.stopwords,
+        builder.stopwordPresets);
   }
 
   public static class Builder implements ObjectBuilder<TokenizeRequest> {
     private final String text;
     private Tokenization tokenization;
     private TextAnalyzer textAnalyzer;
-    private Map<String, Stopwords> stopwordConfig = new HashMap<>();
+    private Stopwords stopwords;
+    private Map<String, List<String>> stopwordPresets = new HashMap<>();
 
+    /** Set tokenization strategy. */
     public Builder tokenization(Tokenization tokenization) {
       this.tokenization = tokenization;
       return this;
     }
 
+    /** Configure ASCII character folding. */
     public Builder textAnalyzer(TextAnalyzer textAnalyzer) {
       this.textAnalyzer = textAnalyzer;
       return this;
     }
 
-    public Builder stopwordConfig(Map<String, Stopwords> stopwordConfig) {
-      this.stopwordConfig = stopwordConfig;
+    /**
+     * Select a stopwords preset. Mutually exclusive with {@link #stopwordPresets}.
+     */
+    public Builder stopwords(Stopwords stopwords) {
+      this.stopwords = stopwords;
+      this.stopwordPresets.clear();
+      return this;
+    }
+
+    /**
+     * Select multiple stopword presets. Mutually exclusive with {@link #stopwords}.
+     */
+    public Builder stopwordPresets(Map<String, List<String>> stopwordPresets) {
+      this.stopwords = null;
+      this.stopwordPresets = stopwordPresets;
       return this;
     }
 
