@@ -40,6 +40,7 @@ import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector;
 import io.weaviate.client6.v1.api.collections.vectorindex.MultiVector.Aggregation;
 import io.weaviate.client6.v1.api.collections.vectorizers.Img2VecNeuralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2MultiVecJinaAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2MultiVecWeaviateVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecAwsVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecClipVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecCohereVectorizer;
@@ -66,6 +67,7 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVector
 import io.weaviate.client6.v1.api.rbac.AliasesPermission;
 import io.weaviate.client6.v1.api.rbac.BackupsPermission;
 import io.weaviate.client6.v1.api.rbac.ClusterPermission;
+import io.weaviate.client6.v1.api.rbac.McpPermission;
 import io.weaviate.client6.v1.api.rbac.CollectionsPermission;
 import io.weaviate.client6.v1.api.rbac.DataPermission;
 import io.weaviate.client6.v1.api.rbac.GroupsPermission;
@@ -78,7 +80,6 @@ import io.weaviate.client6.v1.api.rbac.TenantsPermission;
 import io.weaviate.client6.v1.api.rbac.UsersPermission;
 import io.weaviate.client6.v1.api.rbac.groups.GroupType;
 
-/** Unit tests for custom POJO-to-JSON serialization. */
 @RunWith(JParamsTestRunner.class)
 public class JSONTest {
   public static Object[][] testCases() {
@@ -628,6 +629,39 @@ public class JSONTest {
                       "imageFields": ["a", "b"],
                       "textFields": ["c"]
                     }
+                  }
+                }
+                    """,
+        },
+        {
+            VectorConfig.class,
+            Multi2MultiVecWeaviateVectorizer.of(v -> v
+                .baseUrl("example.com")
+                .model(Multi2MultiVecWeaviateVectorizer.MODERNVBERT_COLMODERNVBERT)
+                .imageFields("a", "b")),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "multi2multivec-weaviate": {
+                      "baseURL": "example.com",
+                      "model": "ModernVBERT/colmodernvbert",
+                      "imageFields": ["a", "b"]
+                    }
+                  }
+                }
+                    """,
+        },
+        {
+            VectorConfig.class,
+            Multi2MultiVecWeaviateVectorizer.of(),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "multi2multivec-weaviate": { }
                   }
                 }
                     """,
@@ -1362,10 +1396,12 @@ public class JSONTest {
         {
             Reranker.class,
             Reranker.cohere(rerank -> rerank
+                .baseUrl("example.com")
                 .model(CohereReranker.RERANK_ENGLISH_V2)),
             """
                 {
                   "reranker-cohere": {
+                    "baseURL": "example.com",
                     "model": "rerank-english-v2.0"
                   }
                 }
@@ -1469,6 +1505,24 @@ public class JSONTest {
                   "name": "rock-n-role",
                   "permissions": [
                     { "action": "read_cluster" }
+                  ]
+                }
+                  """
+        },
+        {
+            Role.class,
+            new Role(
+                "rock-n-role",
+                List.of(
+                    new McpPermission(
+                        List.of(McpPermission.Action.CREATE, McpPermission.Action.READ, McpPermission.Action.UPDATE)))),
+            """
+                {
+                  "name": "rock-n-role",
+                  "permissions": [
+                    { "action": "create_mcp" },
+                    { "action": "read_mcp" },
+                    { "action": "update_mcp" }
                   ]
                 }
                   """

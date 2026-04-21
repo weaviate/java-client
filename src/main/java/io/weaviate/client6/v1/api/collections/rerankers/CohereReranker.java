@@ -8,6 +8,7 @@ import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record CohereReranker(
+    @SerializedName("baseURL") String baseUrl,
     @SerializedName("model") String model) implements Reranker {
 
   public static final String RERANK_ENGLISH_V2 = "rerank-english-v2.0";
@@ -32,11 +33,17 @@ public record CohereReranker(
   }
 
   public CohereReranker(Builder builder) {
-    this(builder.model);
+    this(builder.baseUrl, builder.model);
   }
 
   public static class Builder implements ObjectBuilder<CohereReranker> {
+    private String baseUrl;
     private String model;
+
+    public Builder baseUrl(String baseUrl) {
+      this.baseUrl = baseUrl;
+      return this;
+    }
 
     public Builder model(String model) {
       this.model = model;
