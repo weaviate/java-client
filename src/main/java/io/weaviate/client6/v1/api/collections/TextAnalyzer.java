@@ -30,7 +30,7 @@ public record TextAnalyzer(
   }
 
   public static class Builder implements ObjectBuilder<TextAnalyzer> {
-    Boolean foldAscii;
+    Boolean foldAscii = true;
     List<String> keepAscii = new ArrayList<>();
     String stopwordPreset;
 
