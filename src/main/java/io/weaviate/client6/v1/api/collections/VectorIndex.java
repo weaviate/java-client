@@ -18,7 +18,6 @@ import io.weaviate.client6.v1.api.collections.vectorindex.Dynamic;
 import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.HFresh;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
-import io.weaviate.client6.v1.api.collections.vectorindex.None;
 import io.weaviate.client6.v1.internal.TaggedUnion;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
 
@@ -110,7 +109,7 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
       addAdapter(gson, VectorIndex.Kind.FLAT, Flat.class);
       addAdapter(gson, VectorIndex.Kind.DYNAMIC, Dynamic.class);
       addAdapter(gson, VectorIndex.Kind.HFRESH, HFresh.class);
-      addAdapter(gson, VectorIndex.Kind.NONE, None.class);
+      addAdapter(gson, VectorIndex.Kind.NONE, NoneVectorIndex.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -177,6 +176,24 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
           return adapter.fromJsonTree(config);
         }
       }.nullSafe();
+    }
+
+    /**
+     * NoneVectorIndex is a special kind of vector index config
+     * used for an index that has been deleted. It is not possible
+     * to create an vector index with "none" config, so it stays
+     * private to it's parent {@link CustomTypeAdapterFactory}.
+     */
+    private record NoneVectorIndex() implements VectorIndex {
+      @Override
+      public VectorIndex.Kind _kind() {
+        return VectorIndex.Kind.NONE;
+      }
+
+      @Override
+      public Object _self() {
+        return this;
+      }
     }
   }
 }
