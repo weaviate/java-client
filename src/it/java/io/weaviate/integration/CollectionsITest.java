@@ -20,6 +20,7 @@ import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Replication;
 import io.weaviate.client6.v1.api.collections.Replication.AsyncReplicationConfig;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
+import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.config.PropertyIndexType;
 import io.weaviate.client6.v1.api.collections.config.Shard;
 import io.weaviate.client6.v1.api.collections.config.ShardStatus;
@@ -394,7 +395,8 @@ public class CollectionsITest extends ConcurrentTest {
         .extracting(CollectionConfig::vectors, InstanceOfAssertFactories.map(String.class, VectorConfig.class))
         .hasSize(2)
         .extractingByKey("dropme")
-        .returns(null, VectorConfig::vectorIndex); // A dropped index has not vectorIndex configuration.
+        .extracting(VectorConfig::vectorIndex)
+        .matches(VectorIndex::isNone).as("is 'none'");
   }
 
   @Test

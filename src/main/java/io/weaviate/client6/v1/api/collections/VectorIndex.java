@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
@@ -28,7 +29,8 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
     HNSW("hnsw"),
     FLAT("flat"),
     DYNAMIC("dynamic"),
-    HFRESH("hfresh");
+    HFRESH("hfresh"),
+    NONE("none");
 
     private static final Map<String, Kind> jsonValueMap = JsonEnum.collectNames(Kind.values());
     private final String jsonValue;
@@ -87,6 +89,11 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
     return _as(VectorIndex.Kind.HFRESH);
   }
 
+  /** Is this a "none" vector index? */
+  default boolean isNone() {
+    return _is(VectorIndex.Kind.NONE);
+  }
+
   static enum CustomTypeAdapterFactory implements TypeAdapterFactory {
     INSTANCE;
 
@@ -102,6 +109,7 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
       addAdapter(gson, VectorIndex.Kind.FLAT, Flat.class);
       addAdapter(gson, VectorIndex.Kind.DYNAMIC, Dynamic.class);
       addAdapter(gson, VectorIndex.Kind.HFRESH, HFresh.class);
+      addAdapter(gson, VectorIndex.Kind.NONE, NoneVectorIndex.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -148,7 +156,7 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
           if (vectorIndexConfig == null || vectorIndexConfig.isJsonNull()) {
             // VectorConfig.CustomTypeAdapterFactory cannot provide this
             // value for vector indexes that have been dropped.
-            return null;
+            vectorIndexConfig = new JsonObject();
           }
 
           VectorIndex.Kind kind;
@@ -168,6 +176,24 @@ public interface VectorIndex extends TaggedUnion<VectorIndex.Kind, Object> {
           return adapter.fromJsonTree(config);
         }
       }.nullSafe();
+    }
+
+    /**
+     * NoneVectorIndex is a special kind of vector index config
+     * used for an index that has been deleted. It is not possible
+     * to create an vector index with "none" config, so it stays
+     * private to it's parent {@link CustomTypeAdapterFactory}.
+     */
+    private record NoneVectorIndex() implements VectorIndex {
+      @Override
+      public VectorIndex.Kind _kind() {
+        return VectorIndex.Kind.NONE;
+      }
+
+      @Override
+      public Object _self() {
+        return this;
+      }
     }
   }
 }
