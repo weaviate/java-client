@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.api.collections;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -92,8 +93,8 @@ public record InvertedIndex(
 
     public static class Builder implements ObjectBuilder<Stopwords> {
       private String preset;
-      private List<String> additions;
-      private List<String> removals;
+      private final List<String> additions = new ArrayList<>();
+      private final List<String> removals = new ArrayList<>();
 
       /** Select a preset to use for a particular language. */
       public Builder preset(String preset) {
