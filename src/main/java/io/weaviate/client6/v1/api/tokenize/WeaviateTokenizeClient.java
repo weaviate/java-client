@@ -34,14 +34,14 @@ public class WeaviateTokenizeClient {
    * Tokenize a text string.
    *
    * @param text Input text string.
-   * @param fn   Lambda expression for optional stopwords.
+   * @param fn   Lambda expression for optional tokenization parameters.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public TokenizeResponse text(String text, Function<TokenizeRequest.Builder, ObjectBuilder<TokenizeRequest>> fn)
+  public TokenizeResponse forProperty(String text, Function<TokenizeRequest.Builder, ObjectBuilder<TokenizeRequest>> fn)
       throws IOException {
     return text(TokenizeRequest.of(text, fn));
   }

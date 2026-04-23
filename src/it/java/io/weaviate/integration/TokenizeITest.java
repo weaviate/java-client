@@ -29,7 +29,7 @@ public class TokenizeITest extends ConcurrentTest {
     var sentence = "hello world";
 
     // Act
-    var custom = client.tokenize.text(sentence,
+    var custom = client.tokenize.forProperty(sentence,
         tok -> tok.tokenization(Tokenization.TRIGRAM));
 
     var existing = client.tokenize.text(sentence,

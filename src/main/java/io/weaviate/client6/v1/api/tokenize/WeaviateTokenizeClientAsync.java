@@ -28,9 +28,9 @@ public class WeaviateTokenizeClientAsync {
    * Tokenize a text string.
    *
    * @param text Input text string.
-   * @param fn   Lambda expression for optional stopwords.
+   * @param fn   Lambda expression for optional tokenization parameters.
    */
-  public CompletableFuture<TokenizeResponse> text(String text,
+  public CompletableFuture<TokenizeResponse> forProperty(String text,
       Function<TokenizeRequest.Builder, ObjectBuilder<TokenizeRequest>> fn) {
     return text(TokenizeRequest.of(text, fn));
   }
