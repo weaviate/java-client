@@ -26,7 +26,7 @@ public class WeaviateTokenizeClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public TokenizeResponse text(String text, String collection, String property) throws IOException {
+  public TokenizeResponse forProperty(String text, String collection, String property) throws IOException {
     return text(new TokenizeRequest(text, collection, property));
   }
 
@@ -41,7 +41,7 @@ public class WeaviateTokenizeClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public TokenizeResponse forProperty(String text, Function<TokenizeRequest.Builder, ObjectBuilder<TokenizeRequest>> fn)
+  public TokenizeResponse text(String text, Function<TokenizeRequest.Builder, ObjectBuilder<TokenizeRequest>> fn)
       throws IOException {
     return text(TokenizeRequest.of(text, fn));
   }

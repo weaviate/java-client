@@ -20,7 +20,7 @@ public class WeaviateTokenizeClientAsync {
    * @param collection Name of the reference collection.
    * @param property   Name of the property to source tokenization config from.
    */
-  public CompletableFuture<TokenizeResponse> text(String text, String collection, String property) {
+  public CompletableFuture<TokenizeResponse> forProperty(String text, String collection, String property) {
     return text(new TokenizeRequest(text, collection, property));
   }
 
@@ -30,7 +30,7 @@ public class WeaviateTokenizeClientAsync {
    * @param text Input text string.
    * @param fn   Lambda expression for optional tokenization parameters.
    */
-  public CompletableFuture<TokenizeResponse> forProperty(String text,
+  public CompletableFuture<TokenizeResponse> text(String text,
       Function<TokenizeRequest.Builder, ObjectBuilder<TokenizeRequest>> fn) {
     return text(TokenizeRequest.of(text, fn));
   }
