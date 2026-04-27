@@ -2,7 +2,9 @@ package io.weaviate.client6.v1.api.collections;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import com.google.gson.annotations.SerializedName;
@@ -16,6 +18,7 @@ public record InvertedIndex(
     @SerializedName("bm25") Bm25 bm25,
     /** Common words which should be ignored in queries. */
     @SerializedName("stopwords") Stopwords stopwords,
+    @SerializedName("stopwordPresets") Map<String, List<String>> stopwordPresets,
     /**
      * If true, indexes object creation and update timestamps,
      * enabling filtering by creationTimeUnix and lastUpdateTimeUnix.
@@ -136,6 +139,7 @@ public record InvertedIndex(
         builder.cleanupIntervalSeconds,
         builder.bm25,
         builder.stopwords,
+        builder.stopwordPresets,
         builder.indexTimestamps,
         builder.indexNulls,
         builder.indexPropertyLength,
@@ -146,6 +150,7 @@ public record InvertedIndex(
     private Integer cleanupIntervalSeconds;
     private Bm25 bm25;
     private Stopwords stopwords;
+    private Map<String, List<String>> stopwordPresets = new HashMap<>();
     private Boolean indexTimestamps;
     private Boolean indexNulls;
     private Boolean indexPropertyLength;
@@ -166,6 +171,12 @@ public record InvertedIndex(
     /** Select and configure a stopwords preset. */
     public Builder stopwords(Function<Stopwords.Builder, ObjectBuilder<Stopwords>> fn) {
       this.stopwords = Stopwords.of(fn);
+      return this;
+    }
+
+    /** Supply custom stopword presets. */
+    public Builder stopwordPresets(Map<String, List<String>> stopwordPresets) {
+      this.stopwordPresets = stopwordPresets;
       return this;
     }
 
