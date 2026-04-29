@@ -30,9 +30,36 @@ public class Weaviate extends WeaviateContainer {
   public static final String VERSION;
   private static final boolean DEBUG;
 
+  private static final String TEST_HOST;
+  private static final int TEST_REST_PORT;
+  private static final int TEST_GRPC_PORT;
+  private static final boolean TEST_HOST_OVERRIDE;
+
   static {
     VERSION = System.getenv().getOrDefault("WEAVIATE_VERSION", LATEST_VERSION);
     DEBUG = System.getenv("DEBUG") != null;
+
+    String hostOverride = System.getenv("WV_TEST_HOST");
+    TEST_HOST_OVERRIDE = hostOverride != null && !hostOverride.isEmpty();
+    TEST_HOST = envStr("WV_TEST_HOST", "localhost");
+    TEST_REST_PORT = envInt("WV_TEST_REST_PORT", 8080);
+    TEST_GRPC_PORT = envInt("WV_TEST_GRPC_PORT", 50051);
+  }
+
+  private static String envStr(String key, String def) {
+    String v = System.getenv(key);
+    return (v != null && !v.isEmpty()) ? v : def;
+  }
+
+  private static int envInt(String key, int def) {
+    String v = System.getenv(key);
+    if (v != null && !v.isEmpty()) {
+      try {
+        return Integer.parseInt(v);
+      } catch (NumberFormatException ignored) {
+      }
+    }
+    return def;
   }
   public static String OIDC_ISSUER = "https://auth.wcs.api.weaviate.io/auth/realms/SeMI";
 
@@ -94,7 +121,7 @@ public class Weaviate extends WeaviateContainer {
    * after the parent Testcontainer is stopped.
    */
   public WeaviateClient getClient() {
-    if (!isRunning()) {
+    if (!TEST_HOST_OVERRIDE && !isRunning()) {
       start();
       if (DEBUG) {
         followOutput(frame -> System.out.println(frame.getUtf8String()));
@@ -122,7 +149,7 @@ public class Weaviate extends WeaviateContainer {
    * so it can be auto-closed by the try-with-resources statement when it exists.
    */
   public WeaviateClient getBareClient() {
-    if (!isRunning()) {
+    if (!TEST_HOST_OVERRIDE && !isRunning()) {
       start();
     }
     try {
@@ -138,7 +165,7 @@ public class Weaviate extends WeaviateContainer {
    * steps to run, e.g. OIDC authorization grant exchange.
    */
   public WeaviateClient getClient(Function<Config.Custom, ObjectBuilder<Config>> fn) {
-    if (!isRunning()) {
+    if (!TEST_HOST_OVERRIDE && !isRunning()) {
       start();
     }
 
@@ -152,11 +179,13 @@ public class Weaviate extends WeaviateContainer {
   }
 
   private Function<Config.Custom, ObjectBuilder<Config>> defaultConfigFn() {
-    var host = getHost();
+    var host = TEST_HOST_OVERRIDE ? TEST_HOST : getHost();
+    int restPort = TEST_HOST_OVERRIDE ? TEST_REST_PORT : getMappedPort(8080);
+    int grpcPort = TEST_HOST_OVERRIDE ? TEST_GRPC_PORT : getMappedPort(50051);
     return conn -> conn
         .scheme("http")
-        .httpHost(host).httpPort(getMappedPort(8080))
-        .grpcHost(host).grpcPort(getMappedPort(50051));
+        .httpHost(host).httpPort(restPort)
+        .grpcHost(host).grpcPort(grpcPort);
   }
 
   public static Weaviate createDefault() {
