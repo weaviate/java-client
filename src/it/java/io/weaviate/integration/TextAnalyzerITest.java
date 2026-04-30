@@ -41,7 +41,6 @@ public class TextAnalyzerITest extends ConcurrentTest {
 
         var products = client.collections.use(nsAccent);
 
-        // ---- Layer 1: schema round-trip -------------------------------------
         var config = products.config.get();
         Assertions.assertThat(config).isPresent();
         var props = config.get().properties();
@@ -72,13 +71,11 @@ public class TextAnalyzerITest extends ConcurrentTest {
                     Assertions.assertThat(ta.keepAscii()).containsExactly("é");
                 });
 
-        // ---- Layer 2: behavioral --------------------------------------------
         products.data.insert(Map.of(
                 "text_default", "Café Crème Bio",
                 "text_folded", "Café Crème Bio",
                 "text_folded_keep_e", "Café Crème Bio"));
 
-        // "cafe" (lowercase, no accents) must match only the fully-folded property.
         var defaultMatches = products.query.fetchObjects(
                 q -> q.filters(Filter.property("text_default").eq("cafe")));
         Assertions.assertThat(defaultMatches.objects())
@@ -97,7 +94,6 @@ public class TextAnalyzerITest extends ConcurrentTest {
                 .as("text_folded_keep_e preserves é, 'cafe' must NOT match 'Café Crème Bio'")
                 .isEmpty();
 
-        // The exact accented form matches everywhere.
         for (String prop : new String[] { "text_default", "text_folded", "text_folded_keep_e" }) {
             var hits = products.query.fetchObjects(
                     q -> q.filters(Filter.property(prop).eq("Café")));
