@@ -18,6 +18,8 @@ import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Quantization;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Replication;
+import io.weaviate.client6.v1.api.collections.TextAnalyzer;
+import io.weaviate.client6.v1.api.collections.Tokenization;
 import io.weaviate.client6.v1.api.collections.Replication.AsyncReplicationConfig;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
@@ -397,6 +399,67 @@ public class CollectionsITest extends ConcurrentTest {
         .extractingByKey("dropme")
         .extracting(VectorConfig::vectorIndex)
         .matches(VectorIndex::isNone).as("is 'none'");
+  }
+
+  @Test
+  public void testTextAnalyzer() throws Exception {
+    Weaviate.Version.V137.orSkip();
+
+    var nsTextAnalyzer = ns("TextAnalyzer");
+    var textAnalyzer = client.collections.create(nsTextAnalyzer, c -> c
+        .properties(
+            Property.text("text_default",
+                p -> p.tokenization(Tokenization.WORD)),
+            Property.text("text_folded",
+                p -> p.tokenization(Tokenization.WORD)
+                    .textAnalyzer(TextAnalyzer.of(t -> t.foldAscii(true)))),
+            Property.text("text_folded_keep_e",
+                p -> p.tokenization(Tokenization.WORD)
+                    .textAnalyzer(TextAnalyzer.of(t -> t
+                        .foldAscii(true)
+                        .keepAscii("é")))),
+            Property.text("name_en",
+                p -> p.tokenization(Tokenization.WORD)
+                    .textAnalyzer(TextAnalyzer.of(t -> t.stopwordPreset("en")))),
+            Property.text("name_none",
+                p -> p.tokenization(Tokenization.WORD)
+                    .textAnalyzer(TextAnalyzer.of(t -> t.stopwordPreset("none"))))));
+
+    Assertions.assertThat(textAnalyzer.config.get())
+        .get()
+        .extracting(CollectionConfig::properties, InstanceOfAssertFactories.list(Property.class))
+        .allSatisfy(property -> {
+          var analyzer = property.textAnalyzer();
+          switch (property.propertyName()) {
+            case "text_default":
+              Assertions.assertThat(analyzer)
+                  .as("default property has no textAnalyzer config")
+                  .isNull();
+              break;
+            case "text_folded":
+              Assertions.assertThat(analyzer)
+                  .as("text_folded persists asciiFold=true")
+                  .returns(true, TextAnalyzer::foldAscii);
+              break;
+            case "text_folded_keep_e":
+              Assertions.assertThat(analyzer)
+                  .as("text_folded_keep_e persists asciiFold=true and asciiFoldIgnore=[é]")
+                  .returns(true, TextAnalyzer::foldAscii)
+                  .extracting(TextAnalyzer::keepAscii, InstanceOfAssertFactories.list(String.class))
+                  .containsExactly("é");
+              break;
+            case "name_en":
+              Assertions.assertThat(analyzer)
+                  .as("name_en persists stopwordPreset=en")
+                  .returns("en", TextAnalyzer::stopwordPreset);
+              break;
+            case "name_none":
+              Assertions.assertThat(analyzer)
+                  .as("name_none persists stopwordPreset=none")
+                  .returns("none", TextAnalyzer::stopwordPreset);
+              break;
+          }
+        });
   }
 
   @Test

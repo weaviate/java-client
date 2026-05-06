@@ -10,9 +10,9 @@ import com.google.gson.annotations.SerializedName;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record TextAnalyzer(
-    @SerializedName("ascii_fold") Boolean foldAscii,
-    @SerializedName("ascii_fold_ignore") List<String> keepAscii,
-    @SerializedName("stopword_preset") String stopwordPreset) {
+    @SerializedName("asciiFold") Boolean foldAscii,
+    @SerializedName("asciiFoldIgnore") List<String> keepAscii,
+    @SerializedName("stopwordPreset") String stopwordPreset) {
 
   public static TextAnalyzer of() {
     return null;
