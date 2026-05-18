@@ -365,7 +365,7 @@ public class JSONTest {
         },
         {
             VectorConfig.class,
-            Text2VecDigitalOceanVectorizer.of(v -> v.model("qwen3-embedding-0.6b").baseUrl("https://inference.do-ai.run")),
+            Text2VecDigitalOceanVectorizer.of(v -> v.model("qwen3-embedding-0.6b").baseUrl("https://inference.do-ai.run").sourceProperties("a")),
             """
                 {
                   "vectorIndexType": "hnsw",
@@ -374,21 +374,6 @@ public class JSONTest {
                     "text2vec-digitalocean": {
                       "baseURL": "https://inference.do-ai.run",
                       "model": "qwen3-embedding-0.6b",
-                      "vectorizeClassName": false
-                    }
-                  }
-                }
-                    """,
-        },
-        {
-            VectorConfig.class,
-            Text2VecDigitalOceanVectorizer.of(v -> v.sourceProperties("a")),
-            """
-                {
-                  "vectorIndexType": "hnsw",
-                  "vectorIndexConfig": {},
-                  "vectorizer": {
-                    "text2vec-digitalocean": {
                       "properties": ["a"],
                       "vectorizeClassName": false
                     }
