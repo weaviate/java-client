@@ -55,6 +55,7 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDatabricksVect
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecGoogleVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecHuggingFaceVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecJinaAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDigitalOceanVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecMistralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecModel2VecVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecMorphVectorizer;
@@ -340,6 +341,39 @@ public class JSONTest {
                   "vectorIndexConfig": {},
                   "vectorizer": {
                     "text2vec-mistral": {
+                      "properties": ["a"],
+                      "vectorizeClassName": false
+                    }
+                  }
+                }
+                    """,
+        },
+        {
+            VectorConfig.class,
+            Text2VecDigitalOceanVectorizer.of(),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "text2vec-digitalocean": {
+                      "vectorizeClassName": false
+                    }
+                  }
+                }
+                    """,
+        },
+        {
+            VectorConfig.class,
+            Text2VecDigitalOceanVectorizer.of(v -> v.model("qwen3-embedding-0.6b").baseUrl("https://inference.do-ai.run").sourceProperties("a")),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "text2vec-digitalocean": {
+                      "baseURL": "https://inference.do-ai.run",
+                      "model": "qwen3-embedding-0.6b",
                       "properties": ["a"],
                       "vectorizeClassName": false
                     }

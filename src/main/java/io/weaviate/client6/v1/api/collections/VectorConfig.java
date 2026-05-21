@@ -36,6 +36,7 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDatabricksVect
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecGoogleVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecHuggingFaceVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecJinaAiVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDigitalOceanVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecMistralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecModel2VecVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecMorphVectorizer;
@@ -59,6 +60,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     TEXT2VEC_HUGGINGFACE("text2vec-huggingface"),
     REF2VEC_CENTROID("ref2vec-centroid"),
     TEXT2VEC_JINAAI("text2vec-jinaai"),
+    TEXT2VEC_DIGITALOCEAN("text2vec-digitalocean"),
     TEXT2VEC_MISTRAL("text2vec-mistral"),
     TEXT2VEC_MORPH("text2vec-morph"),
     TEXT2VEC_MODEL2VEC("text2vec-model2vec"),
@@ -1053,6 +1055,41 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     return Map.entry(vectorName, Text2VecJinaAiVectorizer.of(fn));
   }
 
+  /** Create a vector index with an {@code text2vec-digitalocean} vectorizer. */
+  public static Map.Entry<String, VectorConfig> text2vecDigitalOcean() {
+    return text2vecDigitalOcean(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code text2vec-digitalocean} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2vecDigitalOcean(
+      Function<Text2VecDigitalOceanVectorizer.Builder, ObjectBuilder<Text2VecDigitalOceanVectorizer>> fn) {
+    return text2vecDigitalOcean(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-digitalocean} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> text2vecDigitalOcean(String vectorName) {
+    return Map.entry(vectorName, Text2VecDigitalOceanVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code text2vec-digitalocean} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> text2vecDigitalOcean(String vectorName,
+      Function<Text2VecDigitalOceanVectorizer.Builder, ObjectBuilder<Text2VecDigitalOceanVectorizer>> fn) {
+    return Map.entry(vectorName, Text2VecDigitalOceanVectorizer.of(fn));
+  }
+
   /** Create a vector index with an {@code text2vec-mistral} vectorizer. */
   public static Map.Entry<String, VectorConfig> text2vecMistral() {
     return text2vecMistral(VectorIndex.DEFAULT_VECTOR_NAME);
@@ -1558,6 +1595,16 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     return _as(VectorConfig.Kind.TEXT2VEC_JINAAI);
   }
 
+  /** Is this an instance of {@link Text2VecDigitalOceanVectorizer}? */
+  default public boolean isText2VecDigitalOcean() {
+    return _is(VectorConfig.Kind.TEXT2VEC_DIGITALOCEAN);
+  }
+
+  /** Convert this instance to {@link Text2VecDigitalOceanVectorizer}. */
+  default public Text2VecDigitalOceanVectorizer asText2VecDigitalOcean() {
+    return _as(VectorConfig.Kind.TEXT2VEC_DIGITALOCEAN);
+  }
+
   /** Is this an instance of {@link Text2VecMistralVectorizer}? */
   default public boolean isText2VecMistral() {
     return _is(VectorConfig.Kind.TEXT2VEC_MISTRAL);
@@ -1668,6 +1715,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_HUGGINGFACE, Text2VecHuggingFaceVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.REF2VEC_CENTROID, Ref2VecCentroidVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_JINAAI, Text2VecJinaAiVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.TEXT2VEC_DIGITALOCEAN, Text2VecDigitalOceanVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_MISTRAL, Text2VecMistralVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_MORPH, Text2VecMorphVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2VEC_MODEL2VEC, Text2VecModel2VecVectorizer.class);
