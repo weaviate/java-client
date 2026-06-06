@@ -54,12 +54,12 @@ public record Export(
    *
    * @param client Weaviate client. Make sure {@link WeaviateClient#close}
    *               is NOT called before this method returns.
-   * @throws IllegalStateException if {@link #operation} is not set (null).
-   * @throws TimeoutException      in case the wait times out without reaching
-   *                               ExportStatus.SUCCESS.
-   * @throws IOException           in case the request was not sent successfully
-   *                               due to a malformed request, a networking error
-   *                               or the server being unavailable.
+   *
+   * @throws TimeoutException in case the wait times out without reaching
+   *                          ExportStatus.SUCCESS.
+   * @throws IOException      in case the request was not sent successfully
+   *                          due to a malformed request, a networking error
+   *                          or the server being unavailable.
    */
   public Export waitForCompletion(WeaviateClient client) throws IOException, TimeoutException {
     return waitForStatus(client, ExportStatus.SUCCESS);
@@ -71,12 +71,12 @@ public record Export(
    * @param client Weaviate client. Make sure {@link WeaviateClient#close}
    *               is NOT called before this method returns.
    * @param fn     Lambda expression for optional parameters.
-   * @throws IllegalStateException if {@link #operation} is not set (null).
-   * @throws TimeoutException      in case the wait times out without reaching
-   *                               ExportStatus.SUCCESS.
-   * @throws IOException           in case the request was not sent successfully
-   *                               due to a malformed request, a networking error
-   *                               or the server being unavailable.
+   *
+   * @throws TimeoutException in case the wait times out without reaching
+   *                          ExportStatus.SUCCESS.
+   * @throws IOException      in case the request was not sent successfully
+   *                          due to a malformed request, a networking error
+   *                          or the server being unavailable.
    */
   public Export waitForCompletion(WeaviateClient client, Function<WaitOptions.Builder, ObjectBuilder<WaitOptions>> fn)
       throws IOException, TimeoutException {
@@ -89,12 +89,12 @@ public record Export(
    * @param client Weaviate client. Make sure {@link WeaviateClient#close}
    *               is NOT called before this method returns.
    * @param status Target status.
-   * @throws IllegalStateException if {@link #operation} is not set (null).
-   * @throws TimeoutException      in case the wait times out without reaching
-   *                               the target status.
-   * @throws IOException           in case the request was not sent successfully
-   *                               due to a malformed request, a networking error
-   *                               or the server being unavailable.
+   *
+   * @throws TimeoutException in case the wait times out without reaching
+   *                          the target status.
+   * @throws IOException      in case the request was not sent successfully
+   *                          due to a malformed request, a networking error
+   *                          or the server being unavailable.
    */
   public Export waitForStatus(WeaviateClient client, ExportStatus status) throws IOException, TimeoutException {
     return waitForStatus(client, status, ObjectBuilder.identity());
@@ -107,12 +107,12 @@ public record Export(
    *               is NOT called before this method returns.
    * @param status Target status.
    * @param fn     Lambda expression for optional parameters.
-   * @throws IllegalStateException if {@link #operation} is not set (null).
-   * @throws TimeoutException      in case the wait times out without reaching
-   *                               the target status.
-   * @throws IOException           in case the request was not sent successfully
-   *                               due to a malformed request, a networking error
-   *                               or the server being unavailable.
+   *
+   * @throws TimeoutException in case the wait times out without reaching
+   *                          the target status.
+   * @throws IOException      in case the request was not sent successfully
+   *                          due to a malformed request, a networking error
+   *                          or the server being unavailable.
    */
   public Export waitForStatus(WeaviateClient client, ExportStatus status,
       Function<WaitOptions.Builder, ObjectBuilder<WaitOptions>> fn) throws IOException, TimeoutException {
@@ -141,7 +141,7 @@ public record Export(
    *
    * @param client Weaviate client. Make sure {@link WeaviateClientAsync#close}
    *               is NOT called before this method returns.
-   * @throws IllegalStateException if {@link #operation} is not set (null).
+   *
    */
   public CompletableFuture<Export> waitForCompletion(WeaviateClientAsync client) {
     return waitForStatus(client, ExportStatus.SUCCESS);
