@@ -182,8 +182,10 @@ public record Hybrid(
       switch (fusionType) {
         case RANKED:
           hybrid.setFusionType(WeaviateProtoBaseSearch.Hybrid.FusionType.FUSION_TYPE_RANKED);
+          break;
         case RELATIVE_SCORE:
           hybrid.setFusionType(WeaviateProtoBaseSearch.Hybrid.FusionType.FUSION_TYPE_RELATIVE_SCORE);
+          break;
       }
     }
 
