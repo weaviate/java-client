@@ -9,6 +9,7 @@ import io.weaviate.client6.v1.api.backup.WeaviateBackupClientAsync;
 import io.weaviate.client6.v1.api.cluster.WeaviateClusterClientAsync;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClientAsync;
+import io.weaviate.client6.v1.api.export.WeaviateExportClientAsync;
 import io.weaviate.client6.v1.api.rbac.groups.WeaviateGroupsClientAsync;
 import io.weaviate.client6.v1.api.rbac.roles.WeaviateRolesClientAsync;
 import io.weaviate.client6.v1.api.rbac.users.WeaviateUsersClientAsync;
@@ -55,6 +56,9 @@ public class WeaviateClientAsync implements AutoCloseable {
 
   /** Client for {@code /backups} endpoints for managing backups. */
   public final WeaviateBackupClientAsync backup;
+
+  /** Client for {@code /export} endpoints for managing exports. */
+  public final WeaviateExportClientAsync export;
 
   /**
    * Client for {@code /nodes} and {@code /replication} endpoints
@@ -128,6 +132,7 @@ public class WeaviateClientAsync implements AutoCloseable {
     this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
     this.alias = new WeaviateAliasClientAsync(restTransport);
     this.backup = new WeaviateBackupClientAsync(restTransport);
+    this.export = new WeaviateExportClientAsync(restTransport);
     this.tokenize = new WeaviateTokenizeClientAsync(restTransport);
     this.roles = new WeaviateRolesClientAsync(restTransport);
     this.groups = new WeaviateGroupsClientAsync(restTransport);

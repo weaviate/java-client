@@ -45,7 +45,7 @@ public class Weaviate extends WeaviateContainer {
     V134(1, 34, 7),
     V135(1, 35, 2),
     V136(1, 36, 9),
-    V137(1, 37, 2);
+    V137(1, 37, 7);
 
     public final SemanticVersion semver;
 
@@ -225,6 +225,13 @@ public class Weaviate extends WeaviateContainer {
     public Builder withFilesystemBackup(String fsPath) {
       addModules("backup-filesystem");
       environment.put("BACKUP_FILESYSTEM_PATH", fsPath);
+      return this;
+    }
+
+    public Builder withExportPath(String fsPath) {
+      withFilesystemBackup("/tmp/backups");
+      environment.put("EXPORT_ENABLED", "true");
+      environment.put("EXPORT_DEFAULT_PATH", fsPath);
       return this;
     }
 
