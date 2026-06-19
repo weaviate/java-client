@@ -219,7 +219,7 @@ public class JSONTest {
         },
         {
             VectorConfig.class,
-            Text2VecGoogleVectorizer.vertex("projectId", v -> v.sourceProperties("a")),
+            Text2VecGoogleVectorizer.vertex("projectId", v -> v.location("europe-west4").sourceProperties("a")),
             """
                 {
                   "vectorIndexType": "hnsw",
@@ -228,6 +228,7 @@ public class JSONTest {
                     "text2vec-google": {
                       "apiEndpoint":"us-central1-aiplatform.googleapis.com",
                       "projectId": "projectId",
+                      "location": "europe-west4",
                       "properties": ["a"],
                       "vectorizeClassName": false
                     }
