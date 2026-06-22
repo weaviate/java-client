@@ -18,6 +18,7 @@ public record Text2VecAwsVectorizer(
     @SerializedName("service") Service service,
     @SerializedName("targetModel") String targetModel,
     @SerializedName("targetVariant") String targetVariant,
+    @SerializedName("dimensions") Integer dimensions,
 
     /**
      * Weaviate defaults to {@code true} if the value is not provided.
@@ -83,6 +84,7 @@ public record Text2VecAwsVectorizer(
       Service service,
       String targetModel,
       String targetVariant,
+      Integer dimensions,
 
       boolean vectorizeCollectionName,
       List<String> sourceProperties,
@@ -94,6 +96,7 @@ public record Text2VecAwsVectorizer(
     this.service = service;
     this.targetModel = targetModel;
     this.targetVariant = targetVariant;
+    this.dimensions = dimensions;
 
     this.vectorizeCollectionName = false;
     this.sourceProperties = sourceProperties;
@@ -109,6 +112,7 @@ public record Text2VecAwsVectorizer(
         builder.service,
         builder.targetModel,
         builder.targetVariant,
+        builder.dimensions,
 
         builder.vectorizeCollectionName,
         builder.sourceProperties,
@@ -128,6 +132,7 @@ public record Text2VecAwsVectorizer(
     private String region;
     private String targetModel;
     private String targetVariant;
+    private Integer dimensions;
 
     protected Builder(Service service) {
       this.service = service;
@@ -157,6 +162,11 @@ public record Text2VecAwsVectorizer(
 
     public Builder targetVariant(String targetVariant) {
       this.targetVariant = targetVariant;
+      return this;
+    }
+
+    public Builder dimensions(int dimensions) {
+      this.dimensions = dimensions;
       return this;
     }
 
