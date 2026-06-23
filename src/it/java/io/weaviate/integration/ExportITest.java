@@ -14,6 +14,7 @@ import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.export.Export;
 import io.weaviate.client6.v1.api.export.ExportStatus;
+import io.weaviate.client6.v1.api.export.FileFormat;
 import io.weaviate.client6.v1.api.export.ShardExportProgress;
 import io.weaviate.containers.Weaviate;
 
@@ -45,7 +46,7 @@ public class ExportITest extends ConcurrentTest {
     }
 
     // Act: start export
-    var started = client.export.create(exportId, backend,
+    var started = client.export.create(exportId, backend, FileFormat.PARQUET,
         export -> export
             .includeCollections(nsA, nsB));
 

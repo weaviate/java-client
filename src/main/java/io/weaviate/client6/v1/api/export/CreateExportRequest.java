@@ -13,13 +13,13 @@ import io.weaviate.client6.v1.internal.json.JSON;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
-public record CreateExportRequest(ExportCreate body, String backend) {
+public record CreateExportRequest(ExportCreate config, String backend) {
 
   public static Endpoint<CreateExportRequest, Export> _ENDPOINT = new SimpleEndpoint<>(
       request -> "POST",
       request -> "/export/" + request.backend,
       request -> Collections.emptyMap(),
-      request -> JSON.serialize(request.body),
+      request -> JSON.serialize(request.config),
       (statusCode, response) -> JSON.deserialize(response, Export.class));
 
   public static record ExportCreate(
@@ -28,12 +28,13 @@ public record CreateExportRequest(ExportCreate body, String backend) {
       @SerializedName("include") List<String> includeCollections,
       @SerializedName("exclude") List<String> excludeCollections) {
 
-    public static ExportCreate of(String exportId) {
-      return of(exportId, ObjectBuilder.identity());
+    public static ExportCreate of(String exportId, FileFormat fileFormat) {
+      return of(exportId, fileFormat, ObjectBuilder.identity());
     }
 
-    public static ExportCreate of(String exportId, Function<Builder, ObjectBuilder<ExportCreate>> fn) {
-      return fn.apply(new Builder(exportId)).build();
+    public static ExportCreate of(String exportId, FileFormat fileFormat,
+        Function<Builder, ObjectBuilder<ExportCreate>> fn) {
+      return fn.apply(new Builder(exportId, fileFormat)).build();
     }
 
     public ExportCreate(Builder builder) {
@@ -46,13 +47,14 @@ public record CreateExportRequest(ExportCreate body, String backend) {
 
     public static class Builder implements ObjectBuilder<ExportCreate> {
       private final String exportId;
+      private FileFormat fileFormat;
 
-      private FileFormat fileFormat = FileFormat.PARQUET;
       private final List<String> includeCollections = new ArrayList<>();
       private final List<String> excludeCollections = new ArrayList<>();
 
-      public Builder(String exportId) {
+      public Builder(String exportId, FileFormat fileFormat) {
         this.exportId = exportId;
+        this.fileFormat = fileFormat;
       }
 
       /** Collection that should be included in the export. */
@@ -74,12 +76,6 @@ public record CreateExportRequest(ExportCreate body, String backend) {
       /** Collection that should be excluded from the export. */
       public Builder excludeCollections(List<String> excludeCollections) {
         this.excludeCollections.addAll(excludeCollections);
-        return this;
-      }
-
-      /** Export file format. */
-      public Builder fileFormat(FileFormat fileFormat) {
-        this.fileFormat = fileFormat;
         return this;
       }
 

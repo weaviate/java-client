@@ -20,8 +20,8 @@ public class WeaviateExportClientAsync {
    * @param exportId Export ID. Must be unique for the backend.
    * @param backend  Export storage backend.
    */
-  public CompletableFuture<Export> create(String exportId, String backend) {
-    return create(new CreateExportRequest(CreateExportRequest.ExportCreate.of(exportId), backend));
+  public CompletableFuture<Export> create(String exportId, String backend, FileFormat fileFormat) {
+    return create(new CreateExportRequest(CreateExportRequest.ExportCreate.of(exportId, fileFormat), backend));
   }
 
   /**
@@ -31,9 +31,9 @@ public class WeaviateExportClientAsync {
    * @param backend  Export storage backend.
    * @param fn       Lambda expression for optional parameters.
    */
-  public CompletableFuture<Export> create(String exportId, String backend,
+  public CompletableFuture<Export> create(String exportId, String backend, FileFormat fileFormat,
       Function<CreateExportRequest.ExportCreate.Builder, ObjectBuilder<CreateExportRequest.ExportCreate>> fn) {
-    return create(new CreateExportRequest(CreateExportRequest.ExportCreate.of(exportId, fn), backend));
+    return create(new CreateExportRequest(CreateExportRequest.ExportCreate.of(exportId, fileFormat, fn), backend));
   }
 
   /**
@@ -41,7 +41,7 @@ public class WeaviateExportClientAsync {
    *
    * @param request Create export request.
    */
-  public CompletableFuture<Export> create(CreateExportRequest request) {
+  private CompletableFuture<Export> create(CreateExportRequest request) {
     return this.restTransport.performRequestAsync(request, CreateExportRequest._ENDPOINT);
   }
 

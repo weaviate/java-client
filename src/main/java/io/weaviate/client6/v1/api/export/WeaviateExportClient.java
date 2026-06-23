@@ -26,8 +26,8 @@ public class WeaviateExportClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public Export create(String exportId, String backend) throws IOException {
-    return create(new CreateExportRequest(CreateExportRequest.ExportCreate.of(exportId), backend));
+  public Export create(String exportId, String backend, FileFormat fileFormat) throws IOException {
+    return create(new CreateExportRequest(CreateExportRequest.ExportCreate.of(exportId, fileFormat), backend));
   }
 
   /**
@@ -42,10 +42,10 @@ public class WeaviateExportClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public Export create(String exportId, String backend,
+  public Export create(String exportId, String backend, FileFormat fileFormat,
       Function<CreateExportRequest.ExportCreate.Builder, ObjectBuilder<CreateExportRequest.ExportCreate>> fn)
       throws IOException {
-    return create(new CreateExportRequest(CreateExportRequest.ExportCreate.of(exportId, fn), backend));
+    return create(new CreateExportRequest(CreateExportRequest.ExportCreate.of(exportId, fileFormat, fn), backend));
   }
 
   /**
@@ -58,7 +58,7 @@ public class WeaviateExportClient {
    *                              due to a malformed request, a networking error
    *                              or the server being unavailable.
    */
-  public Export create(CreateExportRequest request) throws IOException {
+  private Export create(CreateExportRequest request) throws IOException {
     return this.restTransport.performRequest(request, CreateExportRequest._ENDPOINT);
   }
 
