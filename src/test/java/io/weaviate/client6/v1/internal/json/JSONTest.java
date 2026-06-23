@@ -171,7 +171,7 @@ public class JSONTest {
         },
         {
             VectorConfig.class,
-            Text2VecAwsVectorizer.bedrock("amazon.titan-embed-text-v2:0"),
+            Text2VecAwsVectorizer.bedrock("amazon.titan-embed-text-v2:0", v -> v.dimensions(512)),
             """
                 {
                   "vectorIndexType": "hnsw",
@@ -180,6 +180,7 @@ public class JSONTest {
                     "text2vec-aws": {
                       "service": "bedrock",
                       "model": "amazon.titan-embed-text-v2:0",
+                      "dimensions": 512,
                       "vectorizeClassName": false
                     }
                   }
