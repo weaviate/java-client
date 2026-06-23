@@ -26,6 +26,7 @@ public record CreateBackupRequest(BackupCreate body, String backend) {
       @SerializedName("id") String id,
       @SerializedName("include") List<String> includeCollections,
       @SerializedName("exclude") List<String> excludeCollections,
+      @SerializedName("incremental_base_backup_id") String prefixIncremental,
       @SerializedName("config") Config config) {
 
     private static record Config(
@@ -48,6 +49,7 @@ public record CreateBackupRequest(BackupCreate body, String backend) {
           builder.backupId,
           builder.includeCollections,
           builder.excludeCollections,
+          builder.prefixIncremental,
           new Config(
               builder.cpuPercentage,
               builder.compressionLevel,
@@ -58,6 +60,7 @@ public record CreateBackupRequest(BackupCreate body, String backend) {
     public static class Builder implements ObjectBuilder<BackupCreate> {
       private final String backupId;
 
+      private String prefixIncremental;
       private Integer cpuPercentage;
       private CompressionLevel compressionLevel;
       private String bucket;
@@ -67,6 +70,12 @@ public record CreateBackupRequest(BackupCreate body, String backend) {
 
       public Builder(String backupId) {
         this.backupId = backupId;
+      }
+
+      /** Prefix for incremental backup IDs. */
+      public Builder prefixIncremental(String prefixIncremental) {
+        this.prefixIncremental = prefixIncremental;
+        return this;
       }
 
       /** Collection that should be included in the backup. */
