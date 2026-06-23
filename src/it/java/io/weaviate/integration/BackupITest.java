@@ -245,7 +245,7 @@ public class BackupITest extends ConcurrentTest {
   @Test(expected = IllegalStateException.class)
   public void test_waitForCompletion_unknown() throws IOException, TimeoutException {
     var backup = new Backup("#1", "/tmp/bak/#1", "filesystem", List.of("Things"), BackupStatus.STARTED,
-        null, null, null, null, null);
+        null, null, null, null, null, null);
     backup.waitForCompletion(client);
   }
 
