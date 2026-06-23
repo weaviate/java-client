@@ -55,23 +55,23 @@ public record CreateExportRequest(ExportCreate body, String backend) {
         this.exportId = exportId;
       }
 
-      /** Collection that should be included in the backup. */
+      /** Collection that should be included in the export. */
       public Builder includeCollections(String... includeCollections) {
         return includeCollections(Arrays.asList(includeCollections));
       }
 
-      /** Collection that should be included in the backup. */
+      /** Collection that should be included in the export. */
       public Builder includeCollections(List<String> includeCollections) {
         this.includeCollections.addAll(includeCollections);
         return this;
       }
 
-      /** Collection that should be excluded from the backup. */
+      /** Collection that should be excluded from the export. */
       public Builder excludeCollections(String... excludeCollections) {
         return excludeCollections(Arrays.asList(excludeCollections));
       }
 
-      /** Collection that should be excluded from the backup. */
+      /** Collection that should be excluded from the export. */
       public Builder excludeCollections(List<String> excludeCollections) {
         this.excludeCollections.addAll(excludeCollections);
         return this;
