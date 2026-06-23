@@ -93,7 +93,11 @@ public record Replication(
         return this;
       }
 
-      /** Maximum number of async replication workers. */
+      /**
+       * Maximum number of async replication workers.
+       *
+       * @deprecated This paramter should be controled server-side.
+       */
       public Builder maxWorkers(int maxWorkers) {
         this.maxWorkers = maxWorkers;
         return this;
@@ -117,7 +121,11 @@ public record Replication(
         return this;
       }
 
-      /** Interval in milliseconds at which liveness of target nodes is checked." */
+      /**
+       * Interval in milliseconds at which liveness of target nodes is checked.
+       *
+       * @deprecated This parameter should be controled server-side.
+       */
       public Builder aliveNodesCheckingFrequencyMillis(int aliveNodesCheckingFrequencyMillis) {
         this.aliveNodesCheckingFrequencyMillis = aliveNodesCheckingFrequencyMillis;
         return this;

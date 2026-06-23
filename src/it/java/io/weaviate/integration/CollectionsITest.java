@@ -18,9 +18,9 @@ import io.weaviate.client6.v1.api.collections.Property;
 import io.weaviate.client6.v1.api.collections.Quantization;
 import io.weaviate.client6.v1.api.collections.ReferenceProperty;
 import io.weaviate.client6.v1.api.collections.Replication;
+import io.weaviate.client6.v1.api.collections.Replication.AsyncReplicationConfig;
 import io.weaviate.client6.v1.api.collections.TextAnalyzer;
 import io.weaviate.client6.v1.api.collections.Tokenization;
-import io.weaviate.client6.v1.api.collections.Replication.AsyncReplicationConfig;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.api.collections.VectorIndex;
 import io.weaviate.client6.v1.api.collections.config.PropertyIndexType;
@@ -464,7 +464,7 @@ public class CollectionsITest extends ConcurrentTest {
 
   @Test
   public void test_asyncReplicationConfig() throws IOException {
-    Weaviate.Version.latest().orSkip();
+    Weaviate.Version.V137.orSkip();
 
     // Arrange
     var nsThings = ns("Things");
@@ -496,10 +496,10 @@ public class CollectionsITest extends ConcurrentTest {
         .extracting(CollectionConfig::replication)
         .extracting(Replication::asyncReplicationConfig)
         .returns(1, AsyncReplicationConfig::hashTreeHeight)
-        .returns(2, AsyncReplicationConfig::maxWorkers)
+        .returns(null, AsyncReplicationConfig::maxWorkers) // Deprecated
         .returns(3, AsyncReplicationConfig::frequencyMillis)
         .returns(4, AsyncReplicationConfig::frequencyMillisWhilePropagating)
-        .returns(5, AsyncReplicationConfig::aliveNodesCheckingFrequencyMillis)
+        .returns(null, AsyncReplicationConfig::aliveNodesCheckingFrequencyMillis)
         .returns(6, AsyncReplicationConfig::loggingFrequencySeconds)
         .returns(7, AsyncReplicationConfig::diffBatchSize)
         .returns(8, AsyncReplicationConfig::diffPerNodeTimeoutSeconds)

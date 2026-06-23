@@ -7,6 +7,7 @@ import io.weaviate.client6.v1.api.alias.WeaviateAliasClient;
 import io.weaviate.client6.v1.api.backup.WeaviateBackupClient;
 import io.weaviate.client6.v1.api.cluster.WeaviateClusterClient;
 import io.weaviate.client6.v1.api.collections.WeaviateCollectionsClient;
+import io.weaviate.client6.v1.api.export.WeaviateExportClient;
 import io.weaviate.client6.v1.api.rbac.groups.WeaviateGroupsClient;
 import io.weaviate.client6.v1.api.rbac.roles.WeaviateRolesClient;
 import io.weaviate.client6.v1.api.rbac.users.WeaviateUsersClient;
@@ -41,6 +42,9 @@ public class WeaviateClient implements AutoCloseable {
 
   /** Client for {@code /backups} endpoints for managing backups. */
   public final WeaviateBackupClient backup;
+
+  /** Client for {@code /export} endpoints for managing exports. */
+  public final WeaviateExportClient export;
 
   /**
    * Client for {@code /authz/roles} endpoints for managing RBAC roles.
@@ -124,6 +128,7 @@ public class WeaviateClient implements AutoCloseable {
     this.grpcTransport = new DefaultGrpcTransport(grpcOpt);
     this.alias = new WeaviateAliasClient(restTransport);
     this.backup = new WeaviateBackupClient(restTransport);
+    this.export = new WeaviateExportClient(restTransport);
     this.tokenize = new WeaviateTokenizeClient(restTransport);
     this.collections = new WeaviateCollectionsClient(restTransport, grpcTransport);
     this.roles = new WeaviateRolesClient(restTransport);
