@@ -22,6 +22,12 @@ public record Text2VecGoogleVectorizer(
     @SerializedName("projectId") String projectId,
 
     /**
+     * Google Vertex AI region. Only relevant for Vertex AI integration.
+     * If omitted, the server applies its default.
+     */
+    @SerializedName("location") String location,
+
+    /**
      * Weaviate defaults to {@code true} if the value is not provided.
      * To avoid that we send "vectorizeClassName": false all the time
      * and make it impossible to enable this feature, as it is deprecated.
@@ -90,6 +96,7 @@ public record Text2VecGoogleVectorizer(
       Integer dimensions,
       TaskType taskType,
       String projectId,
+      String location,
 
       boolean vectorizeCollectionName,
       List<String> sourceProperties,
@@ -100,6 +107,7 @@ public record Text2VecGoogleVectorizer(
     this.titleProperty = titleProperty;
     this.dimensions = dimensions;
     this.projectId = projectId;
+    this.location = location;
     this.taskType = taskType;
 
     this.vectorizeCollectionName = false;
@@ -116,6 +124,7 @@ public record Text2VecGoogleVectorizer(
         builder.dimensions,
         builder.taskType,
         builder.projectId,
+        builder.location,
 
         builder.vectorizeCollectionName,
         builder.sourceProperties,
@@ -133,6 +142,8 @@ public record Text2VecGoogleVectorizer(
     private String apiEndpoint;
     /** Google project ID. Only relevant for Vertex AI integration. */
     private final String projectId;
+    /** Google Vertex AI region. Only relevant for Vertex AI integration. */
+    private String location;
 
     private String model;
     private String titleProperty;
@@ -146,6 +157,11 @@ public record Text2VecGoogleVectorizer(
 
     protected Builder apiEndpoint(String apiEndpoint) {
       this.apiEndpoint = apiEndpoint;
+      return this;
+    }
+
+    protected Builder location(String location) {
+      this.location = location;
       return this;
     }
 
@@ -218,6 +234,15 @@ public record Text2VecGoogleVectorizer(
 
     public VertexBuilder apiEndpoint(String apiEndpoint) {
       super.apiEndpoint(apiEndpoint);
+      return this;
+    }
+
+    /**
+     * Set the Google Vertex AI region. If omitted, the server applies its
+     * default.
+     */
+    public VertexBuilder location(String location) {
+      super.location(location);
       return this;
     }
   }
