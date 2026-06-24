@@ -15,6 +15,7 @@ public record NearImage(
     Float distance,
     Float certainty,
     Rerank rerank,
+    Diversity diversity,
     BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
@@ -40,6 +41,7 @@ public record NearImage(
         builder.distance,
         builder.certainty,
         builder.rerank,
+        builder.diversity,
         builder.baseOptions());
   }
 
@@ -85,6 +87,9 @@ public record NearImage(
       nearImage.setCertainty(certainty);
     } else if (distance != null) {
       nearImage.setDistance(distance);
+    }
+    if (diversity != null) {
+      nearImage.setSelection(diversity.toProto());
     }
     return nearImage;
   }

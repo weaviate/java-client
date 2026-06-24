@@ -15,6 +15,7 @@ public record NearVideo(
     Float distance,
     Float certainty,
     Rerank rerank,
+    Diversity diversity,
     BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
@@ -40,6 +41,7 @@ public record NearVideo(
         builder.distance,
         builder.certainty,
         builder.rerank,
+        builder.diversity,
         builder.baseOptions());
   }
 
@@ -85,6 +87,9 @@ public record NearVideo(
       nearVideo.setCertainty(certainty);
     } else if (distance != null) {
       nearVideo.setDistance(distance);
+    }
+    if (diversity != null) {
+      nearVideo.setSelection(diversity.toProto());
     }
     return nearVideo;
   }

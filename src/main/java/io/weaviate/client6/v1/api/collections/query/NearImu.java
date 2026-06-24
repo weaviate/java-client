@@ -15,6 +15,7 @@ public record NearImu(
     Float distance,
     Float certainty,
     Rerank rerank,
+    Diversity diversity,
     BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
@@ -40,6 +41,7 @@ public record NearImu(
         builder.distance,
         builder.certainty,
         builder.rerank,
+        builder.diversity,
         builder.baseOptions());
   }
 
@@ -86,6 +88,10 @@ public record NearImu(
     } else if (distance != null) {
       nearImu.setDistance(distance);
     }
+    if (diversity != null) {
+      nearImu.setSelection(diversity.toProto());
+    }
+
     return nearImu;
   }
 }

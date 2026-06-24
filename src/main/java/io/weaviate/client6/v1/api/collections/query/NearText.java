@@ -20,6 +20,7 @@ public record NearText(
     Rerank rerank,
     Move moveTo,
     Move moveAway,
+    Diversity diversity,
     BaseQueryOptions common) implements QueryOperator, AggregateObjectFilter {
 
   public static NearText of(String... concepts) {
@@ -46,6 +47,7 @@ public record NearText(
         builder.rerank,
         builder.moveTo,
         builder.moveAway,
+        builder.diversity,
         builder.baseOptions());
   }
 
@@ -166,7 +168,9 @@ public record NearText(
       moveAway.appendTo(away);
       nearText.setMoveAway(away);
     }
-
+    if (diversity != null) {
+      nearText.setSelection(diversity.toProto());
+    }
     return nearText;
   }
 }

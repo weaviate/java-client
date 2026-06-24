@@ -32,6 +32,7 @@ import io.weaviate.client6.v1.api.collections.data.ObjectReference;
 import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
 import io.weaviate.client6.v1.api.collections.generate.TaskOutput;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
+import io.weaviate.client6.v1.api.collections.query.Diversity;
 import io.weaviate.client6.v1.api.collections.query.FetchObjectById;
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
@@ -883,5 +884,18 @@ public class SearchITest extends ConcurrentTest {
             .extracting(QueryProfile.ShardProfile::searches,
                 InstanceOfAssertFactories.map(String.class, String.class))
             .isNotEmpty());
+  }
+
+  @Test
+  public void testDiversity() throws Exception {
+    Version.V137.orSkip();
+
+    var things = client.collections.use(COLLECTION);
+    var resp = things.query.nearVector(searchVector,
+        opt -> opt.diversity(Diversity.mmr(div -> div.limit(3))));
+
+    Assertions.assertThat(resp)
+        .extracting(QueryResponse::objects, InstanceOfAssertFactories.LIST)
+        .hasSize(3);
   }
 }

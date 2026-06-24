@@ -13,6 +13,7 @@ public record NearObject(
     Float distance,
     Float certainty,
     Rerank rerank,
+    Diversity diversity,
     BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
@@ -30,6 +31,7 @@ public record NearObject(
         builder.distance,
         builder.certainty,
         builder.rerank,
+        builder.diversity,
         builder.baseOptions());
   }
 
@@ -73,6 +75,9 @@ public record NearObject(
       nearObject.setCertainty(certainty);
     } else if (distance != null) {
       nearObject.setDistance(distance);
+    }
+    if (diversity != null) {
+      nearObject.setSelection(diversity.toProto());
     }
     return nearObject;
   }
