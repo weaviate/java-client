@@ -98,6 +98,7 @@ public record Replication(
        *
        * @deprecated This paramter should be controled server-side.
        */
+      @Deprecated
       public Builder maxWorkers(int maxWorkers) {
         this.maxWorkers = maxWorkers;
         return this;
@@ -126,6 +127,7 @@ public record Replication(
        *
        * @deprecated This parameter should be controled server-side.
        */
+      @Deprecated
       public Builder aliveNodesCheckingFrequencyMillis(int aliveNodesCheckingFrequencyMillis) {
         this.aliveNodesCheckingFrequencyMillis = aliveNodesCheckingFrequencyMillis;
         return this;
