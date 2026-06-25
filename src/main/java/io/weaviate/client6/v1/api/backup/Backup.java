@@ -35,6 +35,8 @@ public record Backup(
     @SerializedName("completedAt") OffsetDateTime completedAt,
     /** Backup size in GiB. */
     @SerializedName("size") Float sizeGiB,
+    /** Prefix for the incremental backup IDs. */
+    @SerializedName("incremental_base_backup_id") String prefixIncremental,
     /**
      * This value indicates if a backup is being created or restored from.
      * For operations like LIST this value is null.
@@ -55,6 +57,7 @@ public record Backup(
         startedAt,
         completedAt,
         sizeGiB,
+        prefixIncremental,
         operation);
   }
 
