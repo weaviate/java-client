@@ -17,6 +17,11 @@ import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
+
+import com.jparams.junit4.JParamsTestRunner;
+import com.jparams.junit4.data.DataMethod;
+import com.jparams.junit4.description.Name;
 
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateApiException;
@@ -32,6 +37,7 @@ import io.weaviate.client6.v1.api.collections.data.ObjectReference;
 import io.weaviate.client6.v1.api.collections.generate.GenerativeObject;
 import io.weaviate.client6.v1.api.collections.generate.TaskOutput;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
+import io.weaviate.client6.v1.api.collections.query.Boost;
 import io.weaviate.client6.v1.api.collections.query.FetchObjectById;
 import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.api.collections.query.GroupBy;
@@ -53,6 +59,7 @@ import io.weaviate.containers.Model2Vec;
 import io.weaviate.containers.Weaviate;
 import io.weaviate.containers.Weaviate.Version;
 
+@RunWith(JParamsTestRunner.class)
 public class SearchITest extends ConcurrentTest {
   private static final ContainerGroup compose = Container.compose(
       Weaviate.custom()
@@ -131,7 +138,10 @@ public class SearchITest extends ConcurrentTest {
     for (int i = 0; i < n; i++) {
       var vector = randomVector(10, -.01f, .001f);
       var object = things.data.insert(
-          Map.of("category", CATEGORIES.get(i % CATEGORIES.size())),
+          Map.of(
+              "category", CATEGORIES.get(i % CATEGORIES.size()),
+              "created_at", OffsetDateTime.now(),
+              "position", i),
           metadata -> metadata
               .uuid(randomUUID())
               .vectors(Vectors.of(VECTOR_INDEX, vector)));
@@ -149,7 +159,10 @@ public class SearchITest extends ConcurrentTest {
    */
   private static void createTestCollection() throws IOException {
     client.collections.create(COLLECTION, cfg -> cfg
-        .properties(Property.text("category"))
+        .properties(
+            Property.text("category"),
+            Property.date("created_at"),
+            Property.integer("position"))
         .vectorConfig(VectorConfig.selfProvided(VECTOR_INDEX)));
   }
 
@@ -883,5 +896,60 @@ public class SearchITest extends ConcurrentTest {
             .extracting(QueryProfile.ShardProfile::searches,
                 InstanceOfAssertFactories.map(String.class, String.class))
             .isNotEmpty());
+  }
+
+  public static Object[][] boostCases() {
+    return new Object[][] {
+        { "filter", Boost.filter(Filter.property("category").eq("red")), },
+        { "timeDecay", Boost.timeDecay("created_at", "365d",
+            time -> time
+                .origin("2024-01-01T00:00:00Z")
+                .curve(Boost.Curve.EXPONENTIAL)
+                .decay(.3f)
+                .weight(1f)),
+        },
+        {
+            "numericDecay", Boost.numericDecay("position", 1f, 3f,
+                num -> num
+                    .curve(Boost.Curve.LINEAR)
+                    .decay(0.2f)
+                    .weight(1f)),
+        },
+        {
+            "numericProperty", Boost.numericProperty("position",
+                prop -> prop
+                    .modifier(Boost.Modifier.LOG1P)
+                    .weight(1f)),
+        },
+    };
+  }
+
+  @Test
+  @DataMethod(source = SearchITest.class, method = "boostCases")
+  @Name("{0}")
+  public void testBoost(String __, Object boost) throws Exception {
+    Version.V138.orSkip();
+
+    // Boosting reranks query results. To verify the boost parameter
+    // made it to request, check that boosted results arrive in the
+    // different order from those in a plain vector search.
+    //
+    // Because boosting is a common parameter for all query types,
+    // testing one (e.g. nearVector) is sufficient.
+
+    // Arrange
+    var things = client.collections.use(COLLECTION);
+    var baseline = things.query.nearVector(searchVector,
+        opt -> opt.limit(5))
+        .objects().stream().map(WeaviateObject::uuid).toList();
+
+    // Act
+    var got = things.query.nearVector(searchVector,
+        opt -> opt.limit(5).boost((Boost) boost))
+        .objects().stream().map(WeaviateObject::uuid).toList();
+
+    // Assert
+    Assertions.assertThat(got).hasSameSizeAs(baseline);
+    Assertions.assertThat(got).doesNotContainSequence(baseline);
   }
 }

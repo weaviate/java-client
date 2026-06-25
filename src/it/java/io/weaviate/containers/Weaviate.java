@@ -45,7 +45,8 @@ public class Weaviate extends WeaviateContainer {
     V134(1, 34, 7),
     V135(1, 35, 2),
     V136(1, 36, 9),
-    V137(1, 37, 7);
+    V137(1, 37, 7),
+    V138(1, 38, 2);
 
     public final SemanticVersion semver;
 
