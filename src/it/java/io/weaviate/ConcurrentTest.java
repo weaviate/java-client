@@ -126,6 +126,21 @@ public abstract class ConcurrentTest {
         .isGreaterThanOrEqualTo(required.semver);
   }
 
+  /**
+   * Skip the test if the version that the {@link Weaviate}
+   * container is running is newer than the required one.
+   *
+   * <br>
+   * This is useful for guarding tests from server versions
+   * which the client does not fully support yet.
+   */
+  public static void requireAtMost(Weaviate.Version required) {
+    var actual = SemanticVersion.of(Weaviate.VERSION);
+    Assumptions.assumeThat(actual)
+        .as("requires at most %s, but running %s", required.semver, actual)
+        .isLessThanOrEqualTo(required.semver);
+  }
+
   @FunctionalInterface
   public interface ThrowingRunnable {
     void run() throws Exception;
