@@ -36,6 +36,7 @@ public interface Permission {
     GROUPS("groups"),
     ROLES("roles"),
     NODES("nodes"),
+    NAMESPACES("namespaces"),
     TENANTS("tenants"),
     REPLICATE("replicate"),
     USERS("users"),

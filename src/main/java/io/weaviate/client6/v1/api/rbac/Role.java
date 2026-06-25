@@ -3,6 +3,7 @@ package io.weaviate.client6.v1.api.rbac;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -43,6 +44,9 @@ public record Role(
           if (role.permissions == null) {
             return (T) role;
           }
+          // Permissions which are not known to this client version
+          // will be returned as null; we should drop them before merging.
+          role.permissions.removeIf(Objects::isNull);
           return (T) new Role(role.name(), Permission.merge(role.permissions));
         }
       };
