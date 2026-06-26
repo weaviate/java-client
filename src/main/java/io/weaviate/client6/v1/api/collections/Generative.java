@@ -175,8 +175,6 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
 
   /**
    * Configure a default {@code generative-deepseek} module.
-   *
-   * @param endpoint Base URL for the generative service.
    */
   public static Generative deepseek() {
     return DeepseekGenerative.of();
@@ -185,8 +183,7 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
   /**
    * Configure a {@code generative-deepseek} module.
    *
-   * @param endpoint Base URL for the generative service.
-   * @param fn       Lambda expression for optional parameters.
+   * @param fn Lambda expression for optional parameters.
    */
   public static Generative deepseek(Function<DeepseekGenerative.Builder, ObjectBuilder<DeepseekGenerative>> fn) {
     return DeepseekGenerative.of(fn);
