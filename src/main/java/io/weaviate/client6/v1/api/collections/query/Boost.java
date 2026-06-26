@@ -80,7 +80,7 @@ public class Boost {
     var conditions = Arrays.stream(boosts)
         .<Condition>mapMulti((b, stream) -> {
           if (b.depth != null) {
-            throw new IllegalArgumentException("A boost passed to Boosts.blend() cannot set it's own depth.");
+            throw new IllegalArgumentException("A boost passed to Boost.blend() cannot set it's own depth.");
           }
           b.conditions.forEach(cond -> {
             if (cond.weight == null && b.weight != null) {
