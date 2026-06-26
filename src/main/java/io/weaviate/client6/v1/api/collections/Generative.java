@@ -19,6 +19,7 @@ import io.weaviate.client6.v1.api.collections.generative.AwsGenerative;
 import io.weaviate.client6.v1.api.collections.generative.AzureOpenAiGenerative;
 import io.weaviate.client6.v1.api.collections.generative.CohereGenerative;
 import io.weaviate.client6.v1.api.collections.generative.DatabricksGenerative;
+import io.weaviate.client6.v1.api.collections.generative.DeepseekGenerative;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
 import io.weaviate.client6.v1.api.collections.generative.FriendliaiGenerative;
 import io.weaviate.client6.v1.api.collections.generative.GoogleGenerative;
@@ -38,6 +39,7 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
     ANTHROPIC("generative-anthropic"),
     COHERE("generative-cohere"),
     DATABRICKS("generative-databricks"),
+    DEEPSEEK("generative-deepseek"),
     FRIENDLIAI("generative-friendliai"),
     GOOGLE("generative-google"),
     MISTRAL("generative-mistral"),
@@ -169,6 +171,22 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
   public static Generative databricks(String endpoint,
       Function<DatabricksGenerative.Builder, ObjectBuilder<DatabricksGenerative>> fn) {
     return DatabricksGenerative.of(endpoint, fn);
+  }
+
+  /**
+   * Configure a default {@code generative-deepseek} module.
+   */
+  public static Generative deepseek() {
+    return DeepseekGenerative.of();
+  }
+
+  /**
+   * Configure a {@code generative-deepseek} module.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Generative deepseek(Function<DeepseekGenerative.Builder, ObjectBuilder<DeepseekGenerative>> fn) {
+    return DeepseekGenerative.of(fn);
   }
 
   /** Configure a default {@code generative-frienliai} module. */
@@ -384,6 +402,21 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
     return _as(Generative.Kind.DATABRICKS);
   }
 
+  /** Is this a {@code generative-deepseek} provider? */
+  default boolean isDeepseek() {
+    return _is(Generative.Kind.DEEPSEEK);
+  }
+
+  /**
+   * Get as {@link DeepseekGenerative} instance.
+   *
+   * @throws IllegalStateException if the current kind is not
+   *                               {@code generative-deepseek}.
+   */
+  default DeepseekGenerative asDeepseek() {
+    return _as(Generative.Kind.DEEPSEEK);
+  }
+
   /** Is this a {@code generative-friendliai} provider? */
   default boolean isFriendliai() {
     return _is(Generative.Kind.FRIENDLIAI);
@@ -520,6 +553,7 @@ public interface Generative extends TaggedUnion<Generative.Kind, Object> {
       addAdapter(gson, Generative.Kind.AWS, AwsGenerative.class);
       addAdapter(gson, Generative.Kind.COHERE, CohereGenerative.class);
       addAdapter(gson, Generative.Kind.DATABRICKS, DatabricksGenerative.class);
+      addAdapter(gson, Generative.Kind.DEEPSEEK, DeepseekGenerative.class);
       addAdapter(gson, Generative.Kind.GOOGLE, GoogleGenerative.class);
       addAdapter(gson, Generative.Kind.FRIENDLIAI, FriendliaiGenerative.class);
       addAdapter(gson, Generative.Kind.MISTRAL, MistralGenerative.class);
