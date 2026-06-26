@@ -52,10 +52,10 @@ import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAwsVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecCohereVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDatabricksVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDigitalOceanVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecGoogleVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecHuggingFaceVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecJinaAiVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDigitalOceanVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecMistralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecModel2VecVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecMorphVectorizer;
@@ -68,10 +68,10 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVector
 import io.weaviate.client6.v1.api.rbac.AliasesPermission;
 import io.weaviate.client6.v1.api.rbac.BackupsPermission;
 import io.weaviate.client6.v1.api.rbac.ClusterPermission;
-import io.weaviate.client6.v1.api.rbac.McpPermission;
 import io.weaviate.client6.v1.api.rbac.CollectionsPermission;
 import io.weaviate.client6.v1.api.rbac.DataPermission;
 import io.weaviate.client6.v1.api.rbac.GroupsPermission;
+import io.weaviate.client6.v1.api.rbac.McpPermission;
 import io.weaviate.client6.v1.api.rbac.NodesPermission;
 import io.weaviate.client6.v1.api.rbac.ReplicatePermission;
 import io.weaviate.client6.v1.api.rbac.Role;
@@ -367,7 +367,8 @@ public class JSONTest {
         },
         {
             VectorConfig.class,
-            Text2VecDigitalOceanVectorizer.of(v -> v.model("qwen3-embedding-0.6b").baseUrl("https://inference.do-ai.run").sourceProperties("a")),
+            Text2VecDigitalOceanVectorizer
+                .of(v -> v.model("qwen3-embedding-0.6b").baseUrl("https://inference.do-ai.run").sourceProperties("a")),
             """
                 {
                   "vectorIndexType": "hnsw",
@@ -429,14 +430,18 @@ public class JSONTest {
         },
         {
             VectorConfig.class,
-            Text2VecMorphVectorizer.of(v -> v.sourceProperties("a")),
+            Text2VecMorphVectorizer.of(
+                v -> v
+                    .sourceProperties("a")
+                    .endpoint("/v0/example")),
             """
                 {
                   "vectorIndexType": "hnsw",
                   "vectorIndexConfig": {},
                   "vectorizer": {
                     "text2vec-morph": {
-                      "properties": ["a"]
+                      "properties": ["a"],
+                      "endpoint": "/v0/example"
                     }
                   }
                 }
@@ -507,13 +512,17 @@ public class JSONTest {
         {
             VectorConfig.class,
             Text2VecOpenAiVectorizer
-                .of(v -> v.sourceProperties("a").model(Text2VecOpenAiVectorizer.TEXT_EMBEDDING_3_LARGE)),
+                .of(v -> v
+                    .endpoint("/v0/example")
+                    .sourceProperties("a")
+                    .model(Text2VecOpenAiVectorizer.TEXT_EMBEDDING_3_LARGE)),
             """
                 {
                   "vectorIndexType": "hnsw",
                   "vectorIndexConfig": {},
                   "vectorizer": {
                     "text2vec-openai": {
+                      "endpoint": "/v0/example",
                       "model": "text-embedding-3-large",
                       "properties": ["a"],
                       "vectorizeClassName": false

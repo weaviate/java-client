@@ -12,6 +12,7 @@ public record NearVector(NearVectorTarget searchTarget,
     Float distance,
     Float certainty,
     Rerank rerank,
+    Diversity diversity,
     BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
@@ -44,6 +45,7 @@ public record NearVector(NearVectorTarget searchTarget,
         builder.distance,
         builder.certainty,
         builder.rerank,
+        builder.diversity,
         builder.baseOptions());
   }
 
@@ -89,6 +91,10 @@ public record NearVector(NearVectorTarget searchTarget,
       nearVector.setCertainty(certainty);
     } else if (distance != null) {
       nearVector.setDistance(distance);
+    }
+
+    if (diversity != null) {
+      nearVector.setSelection(diversity.toProto());
     }
     return nearVector;
   }

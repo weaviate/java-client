@@ -7,6 +7,7 @@ abstract class BaseVectorSearchBuilder<SelfT extends BaseVectorSearchBuilder<Sel
   Float distance;
   Float certainty;
   Rerank rerank;
+  Diversity diversity;
 
   /**
    * Discard objects whose vectors are further away
@@ -43,6 +44,15 @@ abstract class BaseVectorSearchBuilder<SelfT extends BaseVectorSearchBuilder<Sel
   @SuppressWarnings("unchecked")
   public SelfT rerank(Rerank rerank) {
     this.rerank = rerank;
+    return (SelfT) this;
+  }
+
+  /**
+   * Apply diversity selection to the query results.
+   */
+  @SuppressWarnings("unchecked")
+  public SelfT diversity(Diversity diversity) {
+    this.diversity = diversity;
     return (SelfT) this;
   }
 }

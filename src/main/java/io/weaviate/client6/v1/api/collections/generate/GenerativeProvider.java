@@ -8,6 +8,7 @@ import io.weaviate.client6.v1.api.collections.generative.AwsGenerative;
 import io.weaviate.client6.v1.api.collections.generative.AzureOpenAiGenerative;
 import io.weaviate.client6.v1.api.collections.generative.CohereGenerative;
 import io.weaviate.client6.v1.api.collections.generative.DatabricksGenerative;
+import io.weaviate.client6.v1.api.collections.generative.DeepseekGenerative;
 import io.weaviate.client6.v1.api.collections.generative.FriendliaiGenerative;
 import io.weaviate.client6.v1.api.collections.generative.GoogleGenerative;
 import io.weaviate.client6.v1.api.collections.generative.MistralGenerative;
@@ -87,6 +88,16 @@ public interface GenerativeProvider {
   public static GenerativeProvider databricks(
       Function<DatabricksGenerative.Provider.Builder, ObjectBuilder<DatabricksGenerative.Provider>> fn) {
     return DatabricksGenerative.Provider.of(fn);
+  }
+
+  /**
+   * Configure {@code generative-deepseek} as a dynamic provider.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static GenerativeProvider deepseek(
+      Function<DeepseekGenerative.Provider.Builder, ObjectBuilder<DeepseekGenerative.Provider>> fn) {
+    return DeepseekGenerative.Provider.of(fn);
   }
 
   /**

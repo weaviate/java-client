@@ -13,6 +13,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecMorphVectorizer(
     @SerializedName("baseURL") String baseUrl,
+    @SerializedName("endpoint") String endpoint,
     @SerializedName("model") String model,
 
     /** Properties included in the embedding. */
@@ -44,6 +45,7 @@ public record Text2VecMorphVectorizer(
   public Text2VecMorphVectorizer(Builder builder) {
     this(
         builder.baseUrl,
+        builder.endpoint,
         builder.model,
         builder.sourceProperties,
         builder.vectorIndex,
@@ -56,10 +58,17 @@ public record Text2VecMorphVectorizer(
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
     private String baseUrl;
+    private String endpoint;
     private String model;
 
     public Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
+      return this;
+    }
+
+    /** Defaults to {@code /v1/embeddings} on the server. */
+    public Builder endpoint(String endpoint) {
+      this.endpoint = endpoint;
       return this;
     }
 

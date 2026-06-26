@@ -1,6 +1,7 @@
 package io.weaviate.integration;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
@@ -509,5 +510,40 @@ public class CollectionsITest extends ConcurrentTest {
         .returns(12, AsyncReplicationConfig::propagationLimit)
         .returns(13, AsyncReplicationConfig::propagationConcurrency)
         .returns(14, AsyncReplicationConfig::propagationBatchSize);
+  }
+
+  @Test
+  public void test_properties() {
+    Assertions.assertThatCode(() -> {
+      var properties = new ArrayList<Property>() {
+        {
+          add(Property.textArray("prop_textArray"));
+          add(Property.integer("prop_integer"));
+          add(Property.integerArray("prop_integerArray"));
+          add(Property.number("prop_number"));
+          add(Property.numberArray("prop_numberArray"));
+          add(Property.bool("prop_bool"));
+          add(Property.boolArray("prop_boolArray"));
+          add(Property.blob("prop_blob"));
+          add(Property.date("prop_date"));
+          add(Property.dateArray("prop_dateArray"));
+          add(Property.uuid("prop_uuid"));
+          add(Property.uuidArray("prop_uuidArray"));
+          add(Property.object("prop_object",
+              p -> p.nestedProperties(Property.text("foo"))));
+          add(Property.objectArray("prop_objectArray",
+              p -> p.nestedProperties(Property.text("foo"))));
+          add(Property.phoneNumber("prop_phoneNumber"));
+          add(Property.geoCoordinates("prop_geoCoordinates"));
+        }
+      };
+
+      requireAtLeast(Weaviate.Version.V137, () -> {
+        properties.add(Property.blobHash("prop_blobHash"));
+      });
+
+      client.collections.create(
+          ns("Things"), col -> col.properties(properties));
+    }).doesNotThrowAnyException();
   }
 }

@@ -119,6 +119,25 @@ public record Property(
   }
 
   /**
+   * Create a {@code blobHash} property.
+   *
+   * @param name Property name.
+   */
+  public static Property blobHash(String name) {
+    return blobHash(name, ObjectBuilder.identity());
+  }
+
+  /**
+   * Create a {@code blobHash} property with additional configuration.
+   *
+   * @param name Property name.
+   * @param fn   Lambda expression for optional parameters.
+   */
+  public static Property blobHash(String name, Function<Builder, ObjectBuilder<Property>> fn) {
+    return newProperty(name, DataType.BLOB_HASH, fn);
+  }
+
+  /**
    * Create a {@code bool} property.
    *
    * @param name Property name.

@@ -24,7 +24,8 @@ public record GoogleGenerative(
     @SerializedName("maxOutputTokens") Integer maxTokens,
     @SerializedName("topK") Integer topK,
     @SerializedName("topP") Float topP,
-    @SerializedName("temperature") Float temperature) implements Generative {
+    @SerializedName("temperature") Float temperature,
+    @SerializedName("location") String location) implements Generative {
 
   @Override
   public Kind _kind() {
@@ -63,7 +64,8 @@ public record GoogleGenerative(
         builder.maxTokens,
         builder.topK,
         builder.topP,
-        builder.temperature);
+        builder.temperature,
+        builder.location);
   }
 
   public abstract static class Builder implements ObjectBuilder<GoogleGenerative> {
@@ -78,6 +80,7 @@ public record GoogleGenerative(
     private Integer topK;
     private Float topP;
     private Float temperature;
+    private String location;
 
     public Builder(String apiEndpoint, String projectId) {
       this.projectId = projectId;
@@ -141,6 +144,12 @@ public record GoogleGenerative(
       return this;
     }
 
+    /** Defaults to {@code us-central} on the server. */
+    public Builder location(String location) {
+      this.location = location;
+      return this;
+    }
+
     @Override
     public GoogleGenerative build() {
       return new GoogleGenerative(this);
@@ -189,6 +198,7 @@ public record GoogleGenerative(
       String projectId,
       String endpointId,
       String region,
+      String location,
       List<String> stopSequences,
       List<String> images,
       List<String> imageProperties) implements GenerativeProvider {
@@ -245,6 +255,9 @@ public record GoogleGenerative(
         provider.setStopSequences(WeaviateProtoBase.TextArray.newBuilder()
             .addAllValues(stopSequences));
       }
+      if (location != null) {
+        provider.setLocation(location);
+      }
       req.setGoogle(provider);
     }
 
@@ -261,6 +274,7 @@ public record GoogleGenerative(
           builder.projectId,
           builder.endpointId,
           builder.region,
+          builder.location,
           builder.stopSequences,
           builder.images,
           builder.imageProperties);
@@ -279,6 +293,7 @@ public record GoogleGenerative(
       private Float presencePenalty;
       private String endpointId;
       private String region;
+      private String location;
       private final List<String> stopSequences = new ArrayList<>();
       private final List<String> images = new ArrayList<>();
       private final List<String> imageProperties = new ArrayList<>();
@@ -350,6 +365,11 @@ public record GoogleGenerative(
 
       public Builder region(String region) {
         this.region = region;
+        return this;
+      }
+
+      public Builder location(String location) {
+        this.location = location;
         return this;
       }
 

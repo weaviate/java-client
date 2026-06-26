@@ -10,7 +10,13 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoAggregate;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 
-public record NearAudio(Target searchTarget, Float distance, Float certainty, Rerank rerank, BaseQueryOptions common)
+public record NearAudio(
+    Target searchTarget,
+    Float distance,
+    Float certainty,
+    Rerank rerank,
+    Diversity diversity,
+    BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
   public static NearAudio of(String audio) {
@@ -35,6 +41,7 @@ public record NearAudio(Target searchTarget, Float distance, Float certainty, Re
         builder.distance,
         builder.certainty,
         builder.rerank,
+        builder.diversity,
         builder.baseOptions());
   }
 
@@ -81,7 +88,9 @@ public record NearAudio(Target searchTarget, Float distance, Float certainty, Re
     } else if (distance != null) {
       nearAudio.setDistance(distance);
     }
-
+    if (diversity != null) {
+      nearAudio.setSelection(diversity.toProto());
+    }
     return nearAudio;
   }
 }

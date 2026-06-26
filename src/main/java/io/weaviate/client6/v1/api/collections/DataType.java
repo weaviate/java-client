@@ -14,6 +14,7 @@ public interface DataType {
   public static final String BOOL = "boolean";
   public static final String BOOL_ARRAY = "boolean[]";
   public static final String BLOB = "blob";
+  public static final String BLOB_HASH = "blobHash";
   public static final String DATE = "date";
   public static final String DATE_ARRAY = "date[]";
   public static final String UUID = "uuid";

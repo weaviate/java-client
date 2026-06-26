@@ -13,6 +13,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record Text2VecOpenAiVectorizer(
     @SerializedName("baseURL") String baseUrl,
+    @SerializedName("endpoint") String endpoint,
     @SerializedName("model") String model,
     @SerializedName("modelVersion") String modelVersion,
     @SerializedName("dimensions") Integer dimensions,
@@ -66,6 +67,7 @@ public record Text2VecOpenAiVectorizer(
    */
   public Text2VecOpenAiVectorizer(
       String baseUrl,
+      String endpoint,
       String model,
       String modelVersion,
       Integer dimensions,
@@ -76,6 +78,7 @@ public record Text2VecOpenAiVectorizer(
       VectorIndex vectorIndex,
       Quantization quantization) {
     this.baseUrl = baseUrl;
+    this.endpoint = endpoint;
     this.model = model;
     this.modelVersion = modelVersion;
     this.dimensions = dimensions;
@@ -90,6 +93,7 @@ public record Text2VecOpenAiVectorizer(
   public Text2VecOpenAiVectorizer(Builder builder) {
     this(
         builder.baseUrl,
+        builder.endpoint,
         builder.model,
         builder.modelVersion,
         builder.dimensions,
@@ -108,6 +112,7 @@ public record Text2VecOpenAiVectorizer(
     private VectorIndex vectorIndex = VectorIndex.DEFAULT_VECTOR_INDEX;
 
     private String baseUrl;
+    private String endpoint;
     private String model;
     private String modelVersion;
     private Integer dimensions;
@@ -115,6 +120,12 @@ public record Text2VecOpenAiVectorizer(
 
     public Builder baseUrl(String baseUrl) {
       this.baseUrl = baseUrl;
+      return this;
+    }
+
+    /** Defaults to {@code /v1/embeddings} on the server. */
+    public Builder endpoint(String endpoint) {
+      this.endpoint = endpoint;
       return this;
     }
 
