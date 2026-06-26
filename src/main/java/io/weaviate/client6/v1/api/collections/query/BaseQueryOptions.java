@@ -20,6 +20,7 @@ public record BaseQueryOptions(
     String after,
     ConsistencyLevel consistencyLevel,
     Filter filters,
+    Boost boost,
     GenerativeSearch generativeSearch,
     List<String> returnProperties,
     List<QueryReference> returnReferences,
@@ -38,6 +39,7 @@ public record BaseQueryOptions(
         builder.after,
         builder.consistencyLevel,
         builder.filter,
+        builder.boost,
         builder.generativeSearch,
         builder.returnProperties,
         builder.returnReferences,
@@ -54,6 +56,7 @@ public record BaseQueryOptions(
     private String after;
     private ConsistencyLevel consistencyLevel;
     private Filter filter;
+    private Boost boost;
     private GenerativeSearch generativeSearch;
     private List<String> returnProperties = new ArrayList<>();
     private List<QueryReference> returnReferences = new ArrayList<>();
@@ -143,6 +146,12 @@ public record BaseQueryOptions(
       return (SelfT) this;
     }
 
+    /** Boost search results. */
+    public final SelfT boost(Boost boost) {
+      this.boost = boost;
+      return (SelfT) this;
+    }
+
     /** Select properties to include in the query result. */
     public final SelfT returnProperties(String... properties) {
       return returnProperties(Arrays.asList(properties));
@@ -228,6 +237,10 @@ public record BaseQueryOptions(
       var filter = WeaviateProtoBase.Filters.newBuilder();
       filters.appendTo(filter);
       req.setFilters(filter);
+    }
+
+    if (boost != null) {
+      req.setBoost(boost.toProto());
     }
 
     if (generativeSearch != null) {

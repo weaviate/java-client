@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.weaviate.ConcurrentTest;
@@ -14,10 +15,10 @@ import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client6.v1.api.rbac.AliasesPermission;
 import io.weaviate.client6.v1.api.rbac.BackupsPermission;
 import io.weaviate.client6.v1.api.rbac.ClusterPermission;
-import io.weaviate.client6.v1.api.rbac.McpPermission;
 import io.weaviate.client6.v1.api.rbac.CollectionsPermission;
 import io.weaviate.client6.v1.api.rbac.DataPermission;
 import io.weaviate.client6.v1.api.rbac.GroupsPermission;
+import io.weaviate.client6.v1.api.rbac.McpPermission;
 import io.weaviate.client6.v1.api.rbac.NodesPermission;
 import io.weaviate.client6.v1.api.rbac.Permission;
 import io.weaviate.client6.v1.api.rbac.ReplicatePermission;
@@ -55,6 +56,12 @@ public class RbacITest extends ConcurrentTest {
 
   private static final WeaviateClient client = container
       .getClient(fn -> fn.authentication(Authentication.apiKey(API_KEY)));
+
+  @BeforeClass
+  public static void __() {
+    // TODO(dyma): remove once namespace permissions are supported (v1.38 feature)
+    ConcurrentTest.requireAtMost(Weaviate.Version.V137);
+  }
 
   @Test
   public void test_roles_Lifecycle() throws IOException {
