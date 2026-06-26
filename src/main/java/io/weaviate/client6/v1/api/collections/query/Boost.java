@@ -15,6 +15,21 @@ public class Boost {
   private final Float weight;
   private final Integer depth;
 
+  // Package-private for testing.
+  List<Condition> conditions() {
+    return conditions;
+  }
+
+  // Package-private for testing.
+  Float weight() {
+    return weight;
+  }
+
+  // Package-private for testing.
+  Integer depth() {
+    return depth;
+  }
+
   private Boost(Condition condition, Float weight, Integer depth) {
     this(List.of(requireNonNull(condition, "condition")), weight, depth);
   }
@@ -64,6 +79,9 @@ public class Boost {
   public static Boost blend(Float weight, Integer depth, Boost... boosts) {
     var conditions = Arrays.stream(boosts)
         .<Condition>mapMulti((b, stream) -> {
+          if (b.depth != null) {
+            throw new IllegalArgumentException("A boost passed to Boosts.blend() cannot set it's own depth.");
+          }
           b.conditions.forEach(cond -> {
             if (cond.weight == null && b.weight != null) {
               cond = cond.withWeight(b.weight);
@@ -102,6 +120,11 @@ public class Boost {
 
     private Condition withWeight(float weight) {
       return new Condition(func, weight);
+    }
+
+    // Package-private for testing.
+    Float weight() {
+      return weight;
     }
   }
 
