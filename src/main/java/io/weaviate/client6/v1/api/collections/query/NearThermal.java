@@ -14,6 +14,7 @@ public record NearThermal(Target searchTarget,
     Float distance,
     Float certainty,
     Rerank rerank,
+    Diversity diversity,
     BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
@@ -39,6 +40,7 @@ public record NearThermal(Target searchTarget,
         builder.distance,
         builder.certainty,
         builder.rerank,
+        builder.diversity,
         builder.baseOptions());
   }
 
@@ -84,6 +86,9 @@ public record NearThermal(Target searchTarget,
       nearThermal.setCertainty(certainty);
     } else if (distance != null) {
       nearThermal.setDistance(distance);
+    }
+    if (diversity != null) {
+      nearThermal.setSelection(diversity.toProto());
     }
     return nearThermal;
   }
