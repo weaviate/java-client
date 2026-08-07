@@ -7,6 +7,8 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
 
+import com.google.gson.JsonParser;
+
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
@@ -61,6 +63,66 @@ public class CollectionsITest extends ConcurrentTest {
     client.collections.delete(collectionName);
     var noCollection = client.collections.getConfig(collectionName);
     Assertions.assertThat(noCollection).as("after delete").isEmpty();
+  }
+
+  @Test
+  public void testCreateFromJsonAndGetConfigAsJson() throws IOException {
+    var collectionName = ns("Things");
+
+    // Act: create from a raw schema document, including a quantizer nested inside a
+    // "dynamic" index -- configuration CollectionConfig cannot currently round-trip.
+    client.collections.createFromJson("""
+        {
+          "class": "%s",
+          "description": "created from raw JSON",
+          "properties": [
+            { "name": "username", "dataType": ["text"] },
+            { "name": "age", "dataType": ["int"] }
+          ],
+          "vectorConfig": {
+            "default": {
+              "vectorIndexType": "dynamic",
+              "vectorizer": { "none": {} },
+              "vectorIndexConfig": {
+                "threshold": 10000,
+                "hnsw": { "rq": { "enabled": true, "bits": 8 } }
+              }
+            }
+          }
+        }
+        """.formatted(collectionName));
+
+    // Assert: the server accepted every option, including the ones the typed API
+    // would have dropped on the way out.
+    var raw = client.collections.getConfigAsJson(collectionName);
+    Assertions.assertThat(raw).as("raw schema").get(InstanceOfAssertFactories.STRING)
+        .contains(collectionName)
+        .contains("created from raw JSON");
+
+    var document = JsonParser.parseString(raw.get()).getAsJsonObject();
+    Assertions.assertThat(document.get("class").getAsString()).isEqualTo(collectionName);
+    Assertions.assertThat(document.getAsJsonObject("vectorConfig")
+        .getAsJsonObject("default").get("vectorIndexType").getAsString())
+        .as("dynamic index").isEqualTo("dynamic");
+    Assertions.assertThat(document.getAsJsonObject("vectorConfig")
+        .getAsJsonObject("default").getAsJsonObject("vectorIndexConfig")
+        .getAsJsonObject("hnsw").getAsJsonObject("rq").get("enabled").getAsBoolean())
+        .as("rq survives the raw round-trip").isTrue();
+
+    // Assert: listAsJson sees it too.
+    Assertions.assertThat(client.collections.listAsJson())
+        .as("full schema").contains(collectionName);
+
+    // Assert: a missing collection is empty rather than an error.
+    client.collections.delete(collectionName);
+    Assertions.assertThat(client.collections.getConfigAsJson(collectionName))
+        .as("after delete").isEmpty();
+  }
+
+  @Test
+  public void testCreateFromJsonRejectsDocumentWithoutClass() {
+    Assertions.assertThatThrownBy(() -> client.collections.createFromJson("{ \"description\": \"no name\" }"))
+        .as("no \"class\" key").isInstanceOf(IllegalArgumentException.class);
   }
 
   @Test

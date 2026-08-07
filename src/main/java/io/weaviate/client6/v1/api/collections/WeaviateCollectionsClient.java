@@ -185,6 +185,52 @@ public class WeaviateCollectionsClient {
   }
 
   /**
+   * Create a new Weaviate collection from a raw JSON schema definition.
+   *
+   * <p>
+   * The document is forwarded to the server verbatim, so it may use any option
+   * the server accepts &mdash; including ones this client version does not model.
+   * Nothing is validated client-side: invalid configuration surfaces as a
+   * {@link WeaviateApiException}. Use {@link #create(CollectionConfig)} when you
+   * want the type-checked builder API instead.
+   *
+   * <pre>{@code
+   * client.collections.createFromJson("""
+   *     {
+   *       "class": "Song",
+   *       "properties": [
+   *         { "name": "title", "dataType": ["text"] },
+   *         { "name": "yearReleased", "dataType": ["int"] }
+   *       ],
+   *       "vectorConfig": {
+   *         "default": {
+   *           "vectorizer": { "none": {} },
+   *           "vectorIndexType": "hnsw"
+   *         }
+   *       }
+   *     }
+   *     """);
+   * }</pre>
+   *
+   * @param json JSON object describing the collection. Must contain a
+   *             {@code "class"} key with the collection name.
+   * @return Handle for the created collection.
+   * @throws IllegalArgumentException in case the string is not a JSON object or
+   *                                  does not carry a {@code "class"} name.
+   * @throws WeaviateApiException     in case the server returned with an
+   *                                  error status code.
+   * @throws IOException              in case the request was not sent
+   *                                  successfully due to a malformed request, a
+   *                                  networking error or the server being
+   *                                  unavailable.
+   */
+  public CollectionHandle<Map<String, Object>> createFromJson(String json) throws IOException {
+    var request = new CreateCollectionFromJsonRequest(json);
+    this.restTransport.performRequest(request, CreateCollectionFromJsonRequest._ENDPOINT);
+    return use(request.collectionName());
+  }
+
+  /**
    * Fetch Weaviate collection configuration.
    *
    * @param collectionName Collection name.
@@ -197,6 +243,45 @@ public class WeaviateCollectionsClient {
    */
   public Optional<CollectionConfig> getConfig(String collectionName) throws IOException {
     return this.restTransport.performRequest(new GetConfigRequest(collectionName), GetConfigRequest._ENDPOINT);
+  }
+
+  /**
+   * Fetch a collection's schema exactly as the server returned it.
+   *
+   * <p>
+   * {@link #getConfig(String)} maps the response onto {@link CollectionConfig}
+   * and therefore drops anything this client version does not model. Use this
+   * method when you need the complete picture &mdash; rendering a schema,
+   * diffing two collections, or reading a module option that has no typed
+   * accessor yet.
+   *
+   * @param collectionName Collection name.
+   * @return the raw JSON body if a collection with this name exists.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @throws IOException          in case the request was not sent successfully
+   *                              due to a malformed request, a networking error
+   *                              or the server being unavailable.
+   * @see #createFromJson(String)
+   */
+  public Optional<String> getConfigAsJson(String collectionName) throws IOException {
+    return this.restTransport.performRequest(new GetConfigJsonRequest(collectionName),
+        GetConfigJsonRequest._ENDPOINT);
+  }
+
+  /**
+   * Fetch the schema of all collections exactly as the server returned it.
+   *
+   * @return the raw JSON body, an object with a {@code "classes"} array.
+   * @throws WeaviateApiException in case the server returned with an
+   *                              error status code.
+   * @throws IOException          in case the request was not sent successfully
+   *                              due to a malformed request, a networking error
+   *                              or the server being unavailable.
+   * @see #getConfigAsJson(String)
+   */
+  public String listAsJson() throws IOException {
+    return this.restTransport.performRequest(new ListCollectionJsonRequest(), ListCollectionJsonRequest._ENDPOINT);
   }
 
   /**
