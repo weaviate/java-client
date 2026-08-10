@@ -179,8 +179,8 @@ public class WeaviateCollectionsClient {
    *                              or the server being unavailable.
    */
   public CollectionHandle<Map<String, Object>> create(CollectionConfig collection) throws IOException {
-    this.restTransport.performRequest(new CreateCollectionRequest(collection),
-        CreateCollectionRequest._ENDPOINT);
+    this.restTransport.performRequest(new CreateCollectionRequest<>(collection),
+        CreateCollectionRequest.<CollectionConfig>endpoint());
     return use(collection.collectionName());
   }
 
@@ -225,9 +225,11 @@ public class WeaviateCollectionsClient {
    *                                  unavailable.
    */
   public CollectionHandle<Map<String, Object>> createFromJson(String json) throws IOException {
-    var request = new CreateCollectionFromJsonRequest(json);
-    this.restTransport.performRequest(request, CreateCollectionFromJsonRequest._ENDPOINT);
-    return use(request.collectionName());
+    // Read the name -- and reject an unusable document -- before sending anything.
+    var collectionName = CreateCollectionRequest.collectionNameFromJson(json);
+    this.restTransport.performRequest(new CreateCollectionRequest<>(json),
+        CreateCollectionRequest.<String>endpoint());
+    return use(collectionName);
   }
 
   /**
@@ -242,7 +244,8 @@ public class WeaviateCollectionsClient {
    *                              or the server being unavailable.
    */
   public Optional<CollectionConfig> getConfig(String collectionName) throws IOException {
-    return this.restTransport.performRequest(new GetConfigRequest(collectionName), GetConfigRequest._ENDPOINT);
+    return this.restTransport.performRequest(new GetConfigRequest(collectionName),
+        GetConfigRequest.endpoint(CollectionConfig.class));
   }
 
   /**
@@ -265,8 +268,8 @@ public class WeaviateCollectionsClient {
    * @see #createFromJson(String)
    */
   public Optional<String> getConfigAsJson(String collectionName) throws IOException {
-    return this.restTransport.performRequest(new GetConfigJsonRequest(collectionName),
-        GetConfigJsonRequest._ENDPOINT);
+    return this.restTransport.performRequest(new GetConfigRequest(collectionName),
+        GetConfigRequest.endpoint(String.class));
   }
 
   /**
@@ -281,7 +284,8 @@ public class WeaviateCollectionsClient {
    * @see #getConfigAsJson(String)
    */
   public String listAsJson() throws IOException {
-    return this.restTransport.performRequest(new ListCollectionJsonRequest(), ListCollectionJsonRequest._ENDPOINT);
+    return this.restTransport.performRequest(new ListCollectionRequest(),
+        ListCollectionRequest.endpoint(String.class));
   }
 
   /**
@@ -295,7 +299,8 @@ public class WeaviateCollectionsClient {
    *                              or the server being unavailable.
    */
   public List<CollectionConfig> list() throws IOException {
-    return this.restTransport.performRequest(new ListCollectionRequest(), ListCollectionRequest._ENDPOINT);
+    return this.restTransport.performRequest(new ListCollectionRequest(),
+        ListCollectionRequest.endpoint(ListCollectionResponse.class)).collections();
   }
 
   /**

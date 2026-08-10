@@ -147,8 +147,9 @@ public class WeaviateCollectionsClientAsync {
    * Create a new Weaviate collection with {@link CollectionConfig}.
    */
   public CompletableFuture<CollectionHandleAsync<Map<String, Object>>> create(CollectionConfig collection) {
-    return this.restTransport.performRequestAsync(new CreateCollectionRequest(collection),
-        CreateCollectionRequest._ENDPOINT).thenApply(__ -> use(collection.collectionName()));
+    return this.restTransport.performRequestAsync(new CreateCollectionRequest<>(collection),
+        CreateCollectionRequest.<CollectionConfig>endpoint())
+        .thenApply(__ -> use(collection.collectionName()));
   }
 
   /**
@@ -169,9 +170,11 @@ public class WeaviateCollectionsClientAsync {
    * @see WeaviateCollectionsClient#createFromJson(String)
    */
   public CompletableFuture<CollectionHandleAsync<Map<String, Object>>> createFromJson(String json) {
-    var request = new CreateCollectionFromJsonRequest(json);
-    return this.restTransport.performRequestAsync(request, CreateCollectionFromJsonRequest._ENDPOINT)
-        .thenApply(__ -> use(request.collectionName()));
+    // Read the name -- and reject an unusable document -- before sending anything.
+    var collectionName = CreateCollectionRequest.collectionNameFromJson(json);
+    return this.restTransport.performRequestAsync(new CreateCollectionRequest<>(json),
+        CreateCollectionRequest.<String>endpoint())
+        .thenApply(__ -> use(collectionName));
   }
 
   /**
@@ -180,7 +183,8 @@ public class WeaviateCollectionsClientAsync {
    * @param collectionName Collection name.
    */
   public CompletableFuture<Optional<CollectionConfig>> getConfig(String collectionName) {
-    return this.restTransport.performRequestAsync(new GetConfigRequest(collectionName), GetConfigRequest._ENDPOINT);
+    return this.restTransport.performRequestAsync(new GetConfigRequest(collectionName),
+        GetConfigRequest.endpoint(CollectionConfig.class));
   }
 
   /**
@@ -194,8 +198,8 @@ public class WeaviateCollectionsClientAsync {
    * @see WeaviateCollectionsClient#getConfigAsJson(String)
    */
   public CompletableFuture<Optional<String>> getConfigAsJson(String collectionName) {
-    return this.restTransport.performRequestAsync(new GetConfigJsonRequest(collectionName),
-        GetConfigJsonRequest._ENDPOINT);
+    return this.restTransport.performRequestAsync(new GetConfigRequest(collectionName),
+        GetConfigRequest.endpoint(String.class));
   }
 
   /**
@@ -204,12 +208,13 @@ public class WeaviateCollectionsClientAsync {
    * @see WeaviateCollectionsClient#listAsJson()
    */
   public CompletableFuture<String> listAsJson() {
-    return this.restTransport.performRequestAsync(new ListCollectionJsonRequest(),
-        ListCollectionJsonRequest._ENDPOINT);
+    return this.restTransport.performRequestAsync(new ListCollectionRequest(),
+        ListCollectionRequest.endpoint(String.class));
   }
 
   public CompletableFuture<List<CollectionConfig>> list() {
-    return this.restTransport.performRequestAsync(new ListCollectionRequest(), ListCollectionRequest._ENDPOINT);
+    return this.restTransport.performRequestAsync(new ListCollectionRequest(),
+        ListCollectionRequest.endpoint(ListCollectionResponse.class)).thenApply(ListCollectionResponse::collections);
   }
 
   /**
