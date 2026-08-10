@@ -16,7 +16,20 @@ public class SimpleEndpoint<RequestT, ResponseT> extends EndpointBase<RequestT, 
     return NULL_RESPONSE;
   }
 
+  /**
+   * Response deserializer for {@code cls}.
+   *
+   * <p>
+   * {@code String.class} is a special case: the body is returned as the server
+   * sent it, without being parsed. Endpoints parameterized by response type use
+   * this to offer a raw-JSON alternative to a model class, which is the only way
+   * to see fields the client does not model yet.
+   */
+  @SuppressWarnings("unchecked")
   protected static <T> BiFunction<Integer, String, T> deserializeClass(Class<T> cls) {
+    if (cls == String.class) {
+      return (statusCode, response) -> (T) response;
+    }
     return (statusCode, response) -> JSON.deserialize(response, cls);
   }
 
