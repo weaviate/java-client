@@ -25,6 +25,7 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecCohereVectori
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecGoogleVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecJinaAiVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecNvidiaVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecTwelveLabsVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecVoyageAiVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Ref2VecCentroidVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
@@ -33,10 +34,10 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAwsVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAzureOpenAiVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecCohereVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDatabricksVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDigitalOceanVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecGoogleVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecHuggingFaceVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecJinaAiVectorizer;
-import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecDigitalOceanVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecMistralVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecModel2VecVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecMorphVectorizer;
@@ -78,6 +79,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     MULTI2VEC_GOOGLE("multi2vec-google"),
     MULTI2VEC_COHERE("multi2vec-cohere"),
     MULTI2VEC_JINAAI("multi2vec-jinaai"),
+    MULTI2VEC_TWELVELABS("multi2vec-twelvelabs"),
     MULTI2VEC_NVIDIA("multi2vec-nvidia"),
     MULTI2VEC_VOYAGEAI("multi2vec-voyageai"),
     TEXT2MULTIVEC_JINAAI("text2multivec-jinaai"),
@@ -528,6 +530,36 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
   /** Create a vector index with an {@code multi2vec-jinaai} vectorizer. */
   public static Map.Entry<String, VectorConfig> multi2vecJinaAi() {
     return multi2vecJinaAi(VectorIndex.DEFAULT_VECTOR_NAME);
+  }
+
+  /**
+   * Create a vector index with an {@code multi2vec-twelvelabs} vectorizer.
+   *
+   * @param fn Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecTwelveLabs(
+      Function<Multi2VecTwelveLabsVectorizer.Builder, ObjectBuilder<Multi2VecTwelveLabsVectorizer>> fn) {
+    return multi2vecTwelveLabs(VectorIndex.DEFAULT_VECTOR_NAME, fn);
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-twelvelabs} vectorizer.
+   *
+   * @param vectorName Vector name.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecTwelveLabs(String vectorName) {
+    return Map.entry(vectorName, Multi2VecTwelveLabsVectorizer.of());
+  }
+
+  /**
+   * Create a named vector index with an {@code multi2vec-twelvelabs} vectorizer.
+   *
+   * @param vectorName Vector name.
+   * @param fn         Lambda expression for optional parameters.
+   */
+  public static Map.Entry<String, VectorConfig> multi2vecTwelveLabs(String vectorName,
+      Function<Multi2VecTwelveLabsVectorizer.Builder, ObjectBuilder<Multi2VecTwelveLabsVectorizer>> fn) {
+    return Map.entry(vectorName, Multi2VecTwelveLabsVectorizer.of(fn));
   }
 
   /**
@@ -1475,6 +1507,16 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
     return _as(VectorConfig.Kind.MULTI2VEC_GOOGLE);
   }
 
+  /** Is this an instance of {@link Multi2VecTwelveLabsVectorizer}? */
+  default public boolean isMulti2VecTwelveLabs() {
+    return _is(VectorConfig.Kind.MULTI2VEC_TWELVELABS);
+  }
+
+  /** Convert this instance to {@link Multi2VecTwelveLabsVectorizer}. */
+  default public Multi2VecTwelveLabsVectorizer asMulti2VecTwelveLabs() {
+    return _as(VectorConfig.Kind.MULTI2VEC_TWELVELABS);
+  }
+
   /** Is this an instance of {@link Multi2VecJinaAiVectorizer}? */
   default public boolean isMulti2VecJinaAi() {
     return _is(VectorConfig.Kind.MULTI2VEC_JINAAI);
@@ -1733,6 +1775,7 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
       addAdapter(gson, VectorConfig.Kind.MULTI2VEC_GOOGLE, Multi2VecGoogleVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.MULTI2VEC_COHERE, Multi2VecCohereVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.MULTI2VEC_JINAAI, Multi2VecJinaAiVectorizer.class);
+      addAdapter(gson, VectorConfig.Kind.MULTI2VEC_TWELVELABS, Multi2VecTwelveLabsVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.MULTI2VEC_NVIDIA, Multi2VecNvidiaVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.MULTI2VEC_VOYAGEAI, Multi2VecVoyageAiVectorizer.class);
       addAdapter(gson, VectorConfig.Kind.TEXT2MULTIVEC_JINAAI, Text2MultiVecJinaAiVectorizer.class);
