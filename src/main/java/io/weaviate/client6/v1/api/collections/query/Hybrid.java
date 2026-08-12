@@ -21,6 +21,7 @@ public record Hybrid(
     QueryOperator near,
     FusionType fusionType,
     Float maxVectorDistance,
+    Diversity diversity,
     BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
 
@@ -53,6 +54,7 @@ public record Hybrid(
         builder.near,
         builder.fusionType,
         builder.maxVectorDistance,
+        builder.diversity,
         builder.baseOptions());
   }
 
@@ -67,6 +69,7 @@ public record Hybrid(
     QueryOperator near;
     FusionType fusionType;
     Float maxVectorDistance;
+    Diversity diversity;
 
     public Builder(Target searchTarget) {
       this.searchTarget = searchTarget;
@@ -143,6 +146,14 @@ public record Hybrid(
       return this;
     }
 
+    /**
+     * Apply diversity selection to the query results.
+     */
+    public Builder diversity(Diversity diversity) {
+      this.diversity = diversity;
+      return this;
+    }
+
     @Override
     public final Hybrid build() {
       return new Hybrid(this);
@@ -204,6 +215,10 @@ public record Hybrid(
     var targets = WeaviateProtoBaseSearch.Targets.newBuilder();
     if (searchTarget.appendTargets(targets)) {
       hybrid.setTargets(targets);
+    }
+
+    if (diversity != null) {
+      hybrid.setSelection(diversity.toProto());
     }
 
     return hybrid;
