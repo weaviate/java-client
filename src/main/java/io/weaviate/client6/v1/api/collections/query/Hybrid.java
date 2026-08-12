@@ -187,6 +187,7 @@ public record Hybrid(
     if (alpha != null) {
       hybrid.setAlpha(alpha);
       hybrid.setAlphaParam(alpha);
+      hybrid.setUseAlphaParam(true);
     }
 
     if (fusionType != null) {
