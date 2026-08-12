@@ -47,6 +47,7 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecCohereVectori
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecGoogleVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecJinaAiVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecNvidiaVectorizer;
+import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecTwelveLabsVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Multi2VecVoyageAiVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecAwsVectorizer;
@@ -969,6 +970,29 @@ public class JSONTest {
                     "multi2vec-google": {
                       "apiEndpoint": "generativelanguage.googleapis.com",
                       "dimensions": 768
+                    }
+                  }
+                }
+                    """,
+        },
+        {
+            VectorConfig.class,
+            Multi2VecTwelveLabsVectorizer.of(
+                v -> v
+                    .baseUrl("example.com")
+                    .model(Multi2VecTwelveLabsVectorizer.MARENGO30)
+                    .imageFields("a", "b")
+                    .textFields("c")),
+            """
+                {
+                  "vectorIndexType": "hnsw",
+                  "vectorIndexConfig": {},
+                  "vectorizer": {
+                    "multi2vec-twelvelabs": {
+                      "baseURL": "example.com",
+                      "model": "marengo3.0",
+                      "imageFields": ["a", "b"],
+                      "textFields": ["c"]
                     }
                   }
                 }
