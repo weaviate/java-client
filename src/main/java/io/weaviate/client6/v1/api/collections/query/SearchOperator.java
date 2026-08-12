@@ -4,25 +4,29 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBaseSearch.SearchOperatorOptions.Operator;
 
 public class SearchOperator {
-  private final String operator;
+  private final Operator operator;
   private final Integer minimumOrTokensMatch;
 
   public static final SearchOperator or(int minimumOrTokensMatch) {
-    return new SearchOperator("Or", minimumOrTokensMatch);
+    return new SearchOperator(Operator.OPERATOR_OR, minimumOrTokensMatch);
   }
 
   public static final SearchOperator and() {
-    return new SearchOperator("And", 0);
+    return new SearchOperator(Operator.OPERATOR_AND, 0);
   }
 
-  private SearchOperator(String operator, Integer minimumOrTokensMatch) {
+  public static final SearchOperator andCross() {
+    return new SearchOperator(Operator.OPERATOR_AND_CROSS, 0);
+  }
+
+  private SearchOperator(Operator operator, Integer minimumOrTokensMatch) {
     this.operator = operator;
     this.minimumOrTokensMatch = minimumOrTokensMatch;
   }
 
   void appendTo(WeaviateProtoBaseSearch.BM25.Builder req) {
-    var options = WeaviateProtoBaseSearch.SearchOperatorOptions.newBuilder();
-    options.setOperator(operator == "And" ? Operator.OPERATOR_AND : Operator.OPERATOR_OR);
+    var options = WeaviateProtoBaseSearch.SearchOperatorOptions.newBuilder()
+        .setOperator(operator);
     if (minimumOrTokensMatch != null) {
       options.setMinimumOrTokensMatch(minimumOrTokensMatch);
     }
