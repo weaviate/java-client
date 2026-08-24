@@ -14,7 +14,6 @@ public record NearAudio(
     Target searchTarget,
     Float distance,
     Float certainty,
-    Rerank rerank,
     Diversity diversity,
     BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
@@ -40,7 +39,6 @@ public record NearAudio(
         builder.media,
         builder.distance,
         builder.certainty,
-        builder.rerank,
         builder.diversity,
         builder.baseOptions());
   }

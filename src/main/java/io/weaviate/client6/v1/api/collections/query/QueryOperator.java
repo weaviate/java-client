@@ -7,8 +7,15 @@ public interface QueryOperator {
     return null;
   }
 
+  /**
+   * Reranking requested for this query, if any.
+   *
+   * <p>
+   * Reranking is a common query option, so operators that carry
+   * {@link BaseQueryOptions} read it from there.
+   */
   default Rerank rerank() {
-    return null;
+    return common() != null ? common().rerank() : null;
   }
 
   /** Append QueryOperator to the request message. */
