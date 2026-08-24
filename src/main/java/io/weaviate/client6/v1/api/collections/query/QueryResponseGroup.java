@@ -17,6 +17,14 @@ public record QueryResponseGroup<T>(
     Float maxDistance,
     /** The size of the group. */
     long numberOfObjects,
+    /**
+     * Score assigned to this group by the reranker module.
+     *
+     * <p>
+     * Only present if the query requested reranking, see
+     * {@link BaseQueryOptions.Builder#rerank(Rerank)}.
+     */
+    Double rerankScore,
     /** Objects retrieved in the query. */
     List<QueryObjectGrouped<T>> objects) {
 }
