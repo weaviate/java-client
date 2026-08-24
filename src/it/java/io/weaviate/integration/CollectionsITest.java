@@ -39,6 +39,15 @@ import io.weaviate.containers.Weaviate;
 public class CollectionsITest extends ConcurrentTest {
   private static WeaviateClient client = Container.WEAVIATE.getClient();
 
+  /**
+   * "dynamic" vector indexes are only accepted by a server started with
+   * ASYNC_INDEXING=true, which the shared container is not: asynchronous
+   * indexing would make the vectors of freshly inserted objects searchable
+   * only eventually, and most suites rely on them being searchable at once.
+   */
+  private static final Weaviate asyncIndexing = Weaviate.custom()
+      .enableAsyncIndexing(true).build();
+
   @Test
   public void testCreateGetDelete() throws IOException {
     var collectionName = ns("Things");
@@ -71,7 +80,8 @@ public class CollectionsITest extends ConcurrentTest {
 
     // Act: create from a raw schema document, including a quantizer nested inside a
     // "dynamic" index -- configuration CollectionConfig cannot currently round-trip.
-    client.collections.createFromJson("""
+    var asyncClient = asyncIndexing.getClient();
+    asyncClient.collections.createFromJson("""
         {
           "class": "%s",
           "description": "created from raw JSON",
@@ -94,7 +104,7 @@ public class CollectionsITest extends ConcurrentTest {
 
     // Assert: the server accepted every option, including the ones the typed API
     // would have dropped on the way out.
-    var raw = client.collections.getConfigAsJson(collectionName);
+    var raw = asyncClient.collections.getConfigAsJson(collectionName);
     Assertions.assertThat(raw).as("raw schema").get(InstanceOfAssertFactories.STRING)
         .contains(collectionName)
         .contains("created from raw JSON");
@@ -110,12 +120,12 @@ public class CollectionsITest extends ConcurrentTest {
         .as("rq survives the raw round-trip").isTrue();
 
     // Assert: listAsJson sees it too.
-    Assertions.assertThat(client.collections.listAsJson())
+    Assertions.assertThat(asyncClient.collections.listAsJson())
         .as("full schema").contains(collectionName);
 
     // Assert: a missing collection is empty rather than an error.
-    client.collections.delete(collectionName);
-    Assertions.assertThat(client.collections.getConfigAsJson(collectionName))
+    asyncClient.collections.delete(collectionName);
+    Assertions.assertThat(asyncClient.collections.getConfigAsJson(collectionName))
         .as("after delete").isEmpty();
   }
 
