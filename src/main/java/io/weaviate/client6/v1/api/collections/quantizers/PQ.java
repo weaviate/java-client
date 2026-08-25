@@ -11,10 +11,28 @@ public record PQ(
     @SerializedName("enabled") boolean enabled,
     @SerializedName("centroids") Integer centroids,
     @SerializedName("segments") Integer segments,
-    @SerializedName("encoder_type") EncoderType encoderType,
-    @SerializedName("encoder_distribution") EncoderDistribution encoderDistribution,
-    @SerializedName("training_limit") Integer trainingLimit,
-    @SerializedName("bit_compression") Boolean bitCompression) implements Quantization {
+    /**
+     * Encoder settings, which the server nests one level deeper as
+     * {@code encoder: {type, distribution}}.
+     */
+    @SerializedName("encoder") Encoder encoder,
+    @SerializedName("trainingLimit") Integer trainingLimit,
+    @SerializedName("bitCompression") Boolean bitCompression) implements Quantization {
+
+  /** Type of the encoder, or {@code null} if it was left at the server default. */
+  public EncoderType encoderType() {
+    return encoder != null ? encoder.type() : null;
+  }
+
+  /** Encoder distribution, or {@code null} if left at the server default. */
+  public EncoderDistribution encoderDistribution() {
+    return encoder != null ? encoder.distribution() : null;
+  }
+
+  public record Encoder(
+      @SerializedName("type") EncoderType type,
+      @SerializedName("distribution") EncoderDistribution distribution) {
+  }
 
   public enum EncoderType {
     @SerializedName("kmeans")
@@ -53,8 +71,9 @@ public record PQ(
         builder.enabled,
         builder.centroids,
         builder.segments,
-        builder.encoderType,
-        builder.encoderDistribution,
+        builder.encoderType == null && builder.encoderDistribution == null
+            ? null
+            : new Encoder(builder.encoderType, builder.encoderDistribution),
         builder.trainingLimit,
         builder.bitCompression);
   }
