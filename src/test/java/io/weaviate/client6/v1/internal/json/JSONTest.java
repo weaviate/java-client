@@ -1188,6 +1188,34 @@ public class JSONTest {
                 }
                 """,
         },
+        // A dynamic index nests its quantizer inside "hnsw"/"flat" -- the client
+        // used to put it beside them, where the server never looks, and could not
+        // read it back either.
+        {
+            VectorConfig.class,
+            SelfProvidedVectorizer.of(none -> none
+                .vectorIndex(Dynamic.of(idx -> idx
+                    .hnsw(Hnsw.of(hnsw -> hnsw.ef(1)))
+                    .flat(Flat.of(flat -> flat.vectorCacheMaxObjects(100)))
+                    .threshold(5)
+                    .distance(Distance.COSINE)))
+                .quantization(Quantization.rq(rq -> rq.rescoreLimit(20).bits(8)))),
+            """
+                {
+                  "vectorIndexType": "dynamic",
+                  "vectorizer": {"none": {}},
+                  "vectorIndexConfig": {
+                    "flat": {"vectorCacheMaxObjects": 100},
+                    "hnsw": {
+                      "ef": 1,
+                      "rq": {"enabled": true, "rescoreLimit": 20, "bits": 8}
+                    },
+                    "threshold": 5,
+                    "distance": "cosine"
+                  }
+                }
+                """,
+        },
         {
             VectorConfig.class,
             SelfProvidedVectorizer.of(none -> none

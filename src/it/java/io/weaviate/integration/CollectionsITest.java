@@ -30,6 +30,8 @@ import io.weaviate.client6.v1.api.collections.config.ShardStatus;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
 import io.weaviate.client6.v1.api.collections.query.BaseQueryOptions;
 import io.weaviate.client6.v1.api.collections.quantizers.RQ;
+import io.weaviate.client6.v1.api.collections.vectorindex.Dynamic;
+import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.containers.Container;
@@ -37,6 +39,13 @@ import io.weaviate.containers.Weaviate;
 
 public class CollectionsITest extends ConcurrentTest {
   private static WeaviateClient client = Container.WEAVIATE.getClient();
+
+  /**
+   * "dynamic" vector indexes are only accepted by a server started with
+   * ASYNC_INDEXING=true, which the shared container is not.
+   */
+  private static final Weaviate asyncIndexing = Weaviate.custom()
+      .enableAsyncIndexing(true).build();
 
   @Test
   public void testCreateGetDelete() throws IOException {
@@ -276,6 +285,50 @@ public class CollectionsITest extends ConcurrentTest {
    * never read, so every one of them was dropped on write and came back null.
    * Asserting on {@code enabled} alone did not catch it.
    */
+  /**
+   * A dynamic index keeps its quantizer inside "hnsw"/"flat".
+   *
+   * <p>
+   * The client used to write it beside them, where the server never looks, so a
+   * dynamic index created through this client came back unquantized -- and even
+   * one quantized by other means read as {@code quantization() == null}.
+   */
+  @Test
+  public void test_dynamicIndexQuantizationRoundTrip() throws IOException {
+    // Arrange: "dynamic" is only accepted by a server started with
+    // ASYNC_INDEXING=true, which the shared container is not -- asynchronous
+    // indexing would make freshly inserted vectors searchable only eventually,
+    // and the other suites rely on them being searchable at once.
+    var asyncClient = asyncIndexing.getClient();
+    var nsThings = ns("Things");
+
+    var things = asyncClient.collections.create(nsThings,
+        c -> c.vectorConfig(VectorConfig.selfProvided(
+            self -> self
+                .vectorIndex(Dynamic.of(idx -> idx
+                    .hnsw(Hnsw.of(hnsw -> hnsw.ef(64)))
+                    .flat(Flat.of(flat -> flat.vectorCacheMaxObjects(1000)))
+                    .threshold(5000)))
+                .quantization(Quantization.rq(rq -> rq.rescoreLimit(20).bits(8))))));
+
+    // Act
+    var config = things.config.get();
+
+    // Assert: the server kept it, and we can read it back off the dynamic index.
+    Assertions.assertThat(config).get()
+        .extracting(CollectionConfig::vectors)
+        .extracting("default", InstanceOfAssertFactories.type(VectorConfig.class))
+        .satisfies(vector -> {
+          Assertions.assertThat(vector.vectorIndex())
+              .as("index type").isInstanceOf(Dynamic.class);
+          Assertions.assertThat(vector.quantization())
+              .as("quantizer nested under hnsw").isNotNull()
+              .asInstanceOf(InstanceOfAssertFactories.type(RQ.class))
+              .returns(20, RQ::rescoreLimit)
+              .returns(8, RQ::bits);
+        });
+  }
+
   @Test
   public void test_quantizerSettingsRoundTrip() throws IOException {
     // Arrange

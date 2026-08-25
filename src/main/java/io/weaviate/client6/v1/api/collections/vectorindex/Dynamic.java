@@ -20,7 +20,9 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 public record Dynamic(
     @SerializedName("hnsw") Hnsw hnsw,
     @SerializedName("flat") Flat flat,
-    @SerializedName("threshold") Long threshold)
+    @SerializedName("threshold") Long threshold,
+    /** Distance metric, which a dynamic index carries at its own level. */
+    @SerializedName("distance") Distance distance)
     implements VectorIndex {
 
   @Override
@@ -45,7 +47,8 @@ public record Dynamic(
     this(
         builder.hnsw,
         builder.flat,
-        builder.threshold);
+        builder.threshold,
+        builder.distance);
   }
 
   public static class Builder implements ObjectBuilder<Dynamic> {
@@ -53,6 +56,7 @@ public record Dynamic(
     private Hnsw hnsw;
     private Flat flat;
     private Long threshold;
+    private Distance distance;
 
     public Builder hnsw(Hnsw hnsw) {
       this.hnsw = hnsw;
@@ -66,6 +70,11 @@ public record Dynamic(
 
     public Builder threshold(long threshold) {
       this.threshold = threshold;
+      return this;
+    }
+
+    public Builder distance(Distance distance) {
+      this.distance = distance;
       return this;
     }
 
@@ -99,6 +108,9 @@ public record Dynamic(
           var dynamic = new JsonObject();
 
           dynamic.addProperty("threshold", value.threshold);
+          if (value.distance != null) {
+            dynamic.add("distance", gson.toJsonTree(value.distance));
+          }
           dynamic.add("hnsw", hnswAdapter.toJsonTree(value.hnsw));
           dynamic.add("flat", flatAdapter.toJsonTree(value.flat));
 
@@ -111,8 +123,12 @@ public record Dynamic(
 
           var hnsw = hnswAdapter.fromJsonTree(jsonObject.get("hnsw"));
           var flat = flatAdapter.fromJsonTree(jsonObject.get("flat"));
-          var threshold = jsonObject.get("threshold").getAsLong();
-          return new Dynamic(hnsw, flat, threshold);
+          // Both are optional in the response: a dropped index has neither.
+          var threshold = jsonObject.has("threshold") && jsonObject.get("threshold").isJsonPrimitive()
+              ? jsonObject.get("threshold").getAsLong()
+              : null;
+          Distance distance = gson.fromJson(jsonObject.get("distance"), Distance.class);
+          return new Dynamic(hnsw, flat, threshold, distance);
         }
       }.nullSafe();
     }

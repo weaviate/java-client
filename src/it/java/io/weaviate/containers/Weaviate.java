@@ -282,6 +282,15 @@ public class Weaviate extends WeaviateContainer {
       return this;
     }
 
+    /**
+     * Enable asynchronous vector indexing. Required by the server to create
+     * "dynamic" vector indexes.
+     */
+    public Builder enableAsyncIndexing(boolean enable) {
+      environment.put("ASYNC_INDEXING", Boolean.toString(enable));
+      return this;
+    }
+
     public Builder enableAnonymousAccess(boolean enable) {
       environment.put("AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED", Boolean.toString(enable));
       return this;
