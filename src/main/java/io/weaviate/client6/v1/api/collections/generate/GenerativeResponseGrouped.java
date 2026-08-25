@@ -58,6 +58,7 @@ public record GenerativeResponseGrouped<PropertiesT>(
               group.getMinDistance(),
               group.getMaxDistance(),
               group.getNumberOfObjects(),
+              group.hasRerank() ? group.getRerank().getScore() : null,
               objects,
               generative);
         })
