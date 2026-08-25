@@ -9,8 +9,8 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record SQ(
     @SerializedName("enabled") boolean enabled,
-    @SerializedName("rescore_limit") Integer rescoreLimit,
-    @SerializedName("training_limit") Integer trainingLimit,
+    @SerializedName("rescoreLimit") Integer rescoreLimit,
+    @SerializedName("trainingLimit") Integer trainingLimit,
     @SerializedName("cache") Boolean cache) implements Quantization {
 
   @Override

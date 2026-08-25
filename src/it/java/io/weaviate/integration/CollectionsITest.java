@@ -29,6 +29,7 @@ import io.weaviate.client6.v1.api.collections.config.Shard;
 import io.weaviate.client6.v1.api.collections.config.ShardStatus;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
 import io.weaviate.client6.v1.api.collections.query.BaseQueryOptions;
+import io.weaviate.client6.v1.api.collections.quantizers.RQ;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.containers.Container;
@@ -264,6 +265,37 @@ public class CollectionsITest extends ConcurrentTest {
         .extracting("default", InstanceOfAssertFactories.type(VectorConfig.class))
         .extracting(VectorConfig::quantization)
         .returns(Quantization.Kind.BQ, Quantization::_kind);
+  }
+
+  /**
+   * The quantizer settings have to survive a round trip through the server.
+   *
+   * <p>
+   * They used to be sent under snake_case names ({@code rescore_limit},
+   * {@code training_limit}, ...) that Weaviate looks up verbatim and therefore
+   * never read, so every one of them was dropped on write and came back null.
+   * Asserting on {@code enabled} alone did not catch it.
+   */
+  @Test
+  public void test_quantizerSettingsRoundTrip() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    var things = client.collections.create(nsThings,
+        c -> c.vectorConfig(VectorConfig.selfProvided(
+            self -> self.quantization(Quantization.rq(rq -> rq.rescoreLimit(42).bits(8))))));
+
+    // Act
+    var config = things.config.get();
+
+    // Assert
+    Assertions.assertThat(config).get()
+        .extracting(CollectionConfig::vectors)
+        .extracting("default", InstanceOfAssertFactories.type(VectorConfig.class))
+        .extracting(VectorConfig::quantization)
+        .asInstanceOf(InstanceOfAssertFactories.type(RQ.class))
+        .returns(42, RQ::rescoreLimit)
+        .returns(8, RQ::bits);
   }
 
   @Test
