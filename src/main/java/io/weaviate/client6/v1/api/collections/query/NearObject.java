@@ -12,7 +12,6 @@ public record NearObject(
     String uuid,
     Float distance,
     Float certainty,
-    Rerank rerank,
     Diversity diversity,
     BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
@@ -30,7 +29,6 @@ public record NearObject(
         builder.uuid,
         builder.distance,
         builder.certainty,
-        builder.rerank,
         builder.diversity,
         builder.baseOptions());
   }

@@ -21,6 +21,7 @@ public record BaseQueryOptions(
     ConsistencyLevel consistencyLevel,
     Filter filters,
     Boost boost,
+    Rerank rerank,
     GenerativeSearch generativeSearch,
     List<String> returnProperties,
     List<QueryReference> returnReferences,
@@ -40,6 +41,7 @@ public record BaseQueryOptions(
         builder.consistencyLevel,
         builder.filter,
         builder.boost,
+        builder.rerank,
         builder.generativeSearch,
         builder.returnProperties,
         builder.returnReferences,
@@ -57,6 +59,7 @@ public record BaseQueryOptions(
     private ConsistencyLevel consistencyLevel;
     private Filter filter;
     private Boost boost;
+    private Rerank rerank;
     private GenerativeSearch generativeSearch;
     private List<String> returnProperties = new ArrayList<>();
     private List<QueryReference> returnReferences = new ArrayList<>();
@@ -152,6 +155,20 @@ public record BaseQueryOptions(
       return (SelfT) this;
     }
 
+    /**
+     * Control the ranking of the query results.
+     *
+     * <p>
+     * Reranking is applied by the server on top of the result set produced by the
+     * search operator, so it works with every operator: {@link NearText} and the
+     * other {@code near*} searches, {@link Bm25}, {@link Hybrid} and
+     * {@link FetchObjects}.
+     */
+    public final SelfT rerank(Rerank rerank) {
+      this.rerank = rerank;
+      return (SelfT) this;
+    }
+
     /** Select properties to include in the query result. */
     public final SelfT returnProperties(String... properties) {
       return returnProperties(Arrays.asList(properties));
@@ -241,6 +258,10 @@ public record BaseQueryOptions(
 
     if (boost != null) {
       req.setBoost(boost.toProto());
+    }
+
+    if (rerank != null) {
+      rerank.appendTo(req);
     }
 
     if (generativeSearch != null) {

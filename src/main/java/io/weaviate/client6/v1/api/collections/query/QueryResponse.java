@@ -78,6 +78,11 @@ public record QueryResponse<PropertiesT>(
     if (metadataResult.getExplainScorePresent()) {
       metadata.explainScore(metadataResult.getExplainScore());
     }
+    // 0.0 is a legitimate score, so the presence flag is the only way to tell
+    // "not reranked" from "reranked with score 0".
+    if (metadataResult.getRerankScorePresent()) {
+      metadata.rerankScore(metadataResult.getRerankScore());
+    }
     return new WeaviateObject<>(
         object.uuid(),
         collection.collectionName(),

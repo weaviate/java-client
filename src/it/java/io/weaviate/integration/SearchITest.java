@@ -801,13 +801,56 @@ public class SearchITest extends ConcurrentTest {
         Map.of("title", "Height-adjustable desk", "price", 349));
 
     // Act
-    var got = things.query.nearText(
-        "office supplies",
-        nt -> nt.rerank(Rerank.by("price",
-            rank -> rank.query("cheaper first"))));
+    var rerank = Rerank.by("price", rank -> rank.query("cheaper first"));
+    var got = things.query.nearText("office supplies", nt -> nt.rerank(rerank));
 
     // Assert: ranking not important really, just that the request was valid.
     Assertions.assertThat(got.objects()).hasSize(2);
+
+    // Assert: rerank is not exclusive to vector search -- BM25, hybrid and
+    // fetchObjects accept it too, and the server reranks for all of them.
+    Assertions.assertThat(things.query.bm25("chair", bm25 -> bm25.rerank(rerank)).objects())
+        .as("bm25").isNotEmpty().allSatisfy(SearchITest::assertReranked);
+    Assertions.assertThat(things.query.hybrid("chair", hybrid -> hybrid.rerank(rerank)).objects())
+        .as("hybrid").isNotEmpty().allSatisfy(SearchITest::assertReranked);
+    Assertions.assertThat(things.query.fetchObjects(fetch -> fetch.rerank(rerank)).objects())
+        .as("fetchObjects").hasSize(2).allSatisfy(SearchITest::assertReranked);
+  }
+
+  private static void assertReranked(WeaviateObject<Map<String, Object>> object) {
+    Assertions.assertThat(object.queryMetadata().rerankScore())
+        .as("rerank score of %s", object.uuid()).isNotNull();
+  }
+
+  @Test
+  public void test_rerankScoreIsReturned() throws IOException {
+    // Arrange
+    var nsThings = ns("Things");
+
+    var things = client.collections.create(nsThings,
+        c -> c
+            .properties(Property.text("title"), Property.integer("price"))
+            .vectorConfig(VectorConfig.text2vecModel2Vec(
+                t2v -> t2v.sourceProperties("title", "price")))
+            .rerankerModules(new DummyReranker()));
+
+    things.data.insertMany(
+        Map.of("title", "Ergonomic chair", "price", 269),
+        Map.of("title", "Height-adjustable desk", "price", 349));
+
+    // Act
+    var got = things.query.fetchObjects(
+        fetch -> fetch.rerank(Rerank.by("title", rank -> rank.query("chair"))));
+
+    // Assert: the score which produced the ordering is readable.
+    Assertions.assertThat(got.objects()).hasSize(2)
+        .allSatisfy(obj -> Assertions.assertThat(obj.queryMetadata().rerankScore())
+            .as("rerank score of %s", obj.uuid()).isNotNull());
+
+    // Assert: a query without rerank leaves the score unset.
+    Assertions.assertThat(things.query.fetchObjects().objects()).hasSize(2)
+        .allSatisfy(obj -> Assertions.assertThat(obj.queryMetadata().rerankScore())
+            .as("not reranked").isNull());
   }
 
   @Test
