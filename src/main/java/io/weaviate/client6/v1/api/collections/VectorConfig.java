@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
@@ -50,6 +51,7 @@ import io.weaviate.client6.v1.api.collections.vectorizers.Text2VecWeaviateVector
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.TaggedUnion;
 import io.weaviate.client6.v1.internal.json.JsonEnum;
+import io.weaviate.client6.v1.internal.json.QuantizerJson;
 
 public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
   public enum Kind implements JsonEnum<Kind> {
@@ -1815,8 +1817,10 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
           vectorIndex.getAsJsonObject().add("vectorizer", vectorizer);
 
           if (value.quantization() != null && !config.getAsJsonObject().get("quantization").isJsonNull()) {
-            vectorIndex.getAsJsonObject()
-                .get("vectorIndexConfig").getAsJsonObject()
+            QuantizerJson.host(
+                vectorIndex.getAsJsonObject().get("vectorIndexConfig").getAsJsonObject(),
+                vectorIndex.getAsJsonObject().get("vectorIndexType"),
+                true)
                 .add(value.quantization()._kind().jsonValue(), config.getAsJsonObject().remove("quantization"));
           }
 
@@ -1833,19 +1837,22 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
             vectorIndexConfig = jsonObject.get("vectorIndexConfig").getAsJsonObject();
           }
 
+          // A dynamic index keeps its quantizer one level deeper, inside "hnsw"/"flat".
+          var quantizers = QuantizerJson.host(vectorIndexConfig, jsonObject.get("vectorIndexType"), false);
+
           String quantizationKind = null;
           for (var kind : new String[] {
               Quantization.Kind.BQ.jsonValue(),
               Quantization.Kind.PQ.jsonValue(),
               Quantization.Kind.SQ.jsonValue(),
               Quantization.Kind.RQ.jsonValue() }) {
-            if (vectorIndexConfig.has(kind)
-                && vectorIndexConfig.get(kind).getAsJsonObject().get("enabled").getAsBoolean()) {
+            if (quantizers.has(kind)
+                && quantizers.get(kind).getAsJsonObject().get("enabled").getAsBoolean()) {
               quantizationKind = kind;
             }
           }
-          if (quantizationKind == null && vectorIndexConfig.has(Quantization.Kind.UNCOMPRESSED.jsonValue())
-              && vectorIndexConfig.get(Quantization.Kind.UNCOMPRESSED.jsonValue()).getAsBoolean()) {
+          if (quantizationKind == null && quantizers.has(Quantization.Kind.UNCOMPRESSED.jsonValue())
+              && quantizers.get(Quantization.Kind.UNCOMPRESSED.jsonValue()).getAsBoolean()) {
             quantizationKind = Quantization.Kind.UNCOMPRESSED.jsonValue();
           }
 
@@ -1880,9 +1887,9 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
           // Each individual vectorizer has a `Quantization quantization` field.
           // We need to specify the kind in order for
           // Quantization.CustomTypeAdapterFactory to be able to find the right adapter.
-          if (quantizationKind != null && vectorIndexConfig.has(quantizationKind)) {
+          if (quantizationKind != null && quantizers.has(quantizationKind)) {
             JsonObject quantization = new JsonObject();
-            quantization.add(quantizationKind, vectorIndexConfig.get(quantizationKind));
+            quantization.add(quantizationKind, quantizers.get(quantizationKind));
             concreteVectorizer.add("quantization", quantization);
           } else {
             concreteVectorizer.add("quantization", null);

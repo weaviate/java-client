@@ -9,7 +9,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record RQ(
     @SerializedName("enabled") boolean enabled,
-    @SerializedName("rescore_limit") Integer rescoreLimit,
+    @SerializedName("rescoreLimit") Integer rescoreLimit,
     @SerializedName("bits") Integer bits,
     @SerializedName("cache") Boolean cache) implements Quantization {
 

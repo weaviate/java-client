@@ -16,6 +16,7 @@ import io.weaviate.client6.v1.api.collections.Reranker;
 import io.weaviate.client6.v1.api.collections.VectorConfig;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.json.JSON;
+import io.weaviate.client6.v1.internal.json.QuantizerJson;
 import io.weaviate.client6.v1.internal.rest.Endpoint;
 import io.weaviate.client6.v1.internal.rest.SimpleEndpoint;
 
@@ -42,9 +43,13 @@ public record UpdateCollectionRequest(CollectionConfig updated, CollectionConfig
             var vectorName = origVector.getKey();
             var origQuantization = origVector.getValue().quantization();
             if (vectors.has(vectorName) && origQuantization != null) {
-              vectors
-                  .get(vectorName).getAsJsonObject()
-                  .get("vectorIndexConfig").getAsJsonObject()
+              var vector = vectors.get(vectorName).getAsJsonObject();
+              // A dynamic index keeps its quantizer settings inside "hnsw"/"flat",
+              // so the flag has to land at the same depth the server reads it from.
+              QuantizerJson.host(
+                  vector.get("vectorIndexConfig").getAsJsonObject(),
+                  vector.get("vectorIndexType"),
+                  true)
                   .addProperty(Quantization.Kind.UNCOMPRESSED.jsonValue(), origQuantization.isUncompressed());
             }
           }

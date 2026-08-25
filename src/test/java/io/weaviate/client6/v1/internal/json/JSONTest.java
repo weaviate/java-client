@@ -1188,6 +1188,34 @@ public class JSONTest {
                 }
                 """,
         },
+        // A dynamic index nests its quantizer inside "hnsw"/"flat" -- the client
+        // used to put it beside them, where the server never looks, and could not
+        // read it back either.
+        {
+            VectorConfig.class,
+            SelfProvidedVectorizer.of(none -> none
+                .vectorIndex(Dynamic.of(idx -> idx
+                    .hnsw(Hnsw.of(hnsw -> hnsw.ef(1)))
+                    .flat(Flat.of(flat -> flat.vectorCacheMaxObjects(100)))
+                    .threshold(5)
+                    .distance(Distance.COSINE)))
+                .quantization(Quantization.rq(rq -> rq.rescoreLimit(20).bits(8)))),
+            """
+                {
+                  "vectorIndexType": "dynamic",
+                  "vectorizer": {"none": {}},
+                  "vectorIndexConfig": {
+                    "flat": {"vectorCacheMaxObjects": 100},
+                    "hnsw": {
+                      "ef": 1,
+                      "rq": {"enabled": true, "rescoreLimit": 20, "bits": 8}
+                    },
+                    "threshold": 5,
+                    "distance": "cosine"
+                  }
+                }
+                """,
+        },
         {
             VectorConfig.class,
             SelfProvidedVectorizer.of(none -> none
@@ -1206,11 +1234,13 @@ public class JSONTest {
                     "pq": {
                       "enabled": true,
                       "centroids": 8,
-                      "encoder_distribution": "normal",
-                      "encoder_type": "tile",
+                      "encoder": {
+                        "type": "tile",
+                        "distribution": "normal"
+                      },
                       "segments": 16,
-                      "training_limit": 1024,
-                      "bit_compression": true
+                      "trainingLimit": 1024,
+                      "bitCompression": true
                     }
                   }
                 }
@@ -1230,8 +1260,8 @@ public class JSONTest {
                   "vectorIndexConfig": {
                     "sq": {
                       "enabled": true,
-                      "rescore_limit": 10,
-                      "training_limit": 1024,
+                      "rescoreLimit": 10,
+                      "trainingLimit": 1024,
                       "cache": true
                     }
                   }
@@ -1251,7 +1281,7 @@ public class JSONTest {
                   "vectorIndexConfig": {
                     "rq": {
                       "enabled": true,
-                      "rescore_limit": 10,
+                      "rescoreLimit": 10,
                       "bits": 8
                     }
                   }
@@ -1271,7 +1301,7 @@ public class JSONTest {
                   "vectorIndexConfig": {
                     "bq": {
                       "enabled": true,
-                      "rescore_limit": 10,
+                      "rescoreLimit": 10,
                       "cache": true
                     }
                   }
