@@ -722,7 +722,9 @@ public class SearchITest extends ConcurrentTest {
   @Test
   public void test_filterCreateUpdateTime() throws IOException {
     // Arrange
-    var now = OffsetDateTime.now().minusHours(1);
+    // On a minute boundary: the filter operand used to serialize without the
+    // seconds, and the server failed to parse it as RFC3339.
+    var now = OffsetDateTime.now().minusHours(1).withSecond(0).withNano(0);
     var nsCounter = ns("Counter");
 
     var counter = client.collections.create(nsCounter,
