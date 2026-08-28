@@ -54,9 +54,24 @@ public class WeaviateTenantsClientAsync {
     return update(Arrays.asList(tenants));
   }
 
+  /**
+   * Update tenant configuration.
+   *
+   * <p>
+   * The server accepts at most
+   * {@value UpdateTenantsRequest#MAX_TENANTS_PER_REQUEST} tenants per update, so
+   * longer lists are sent as several requests, chained so that they reach the
+   * server one after another. That makes a partial update possible: if one
+   * request fails, the tenants of the preceding ones stay updated and the
+   * returned future completes exceptionally.
+   */
   public CompletableFuture<Void> update(List<Tenant> tenants) throws IOException {
-    return this.restTransport.performRequestAsync(new UpdateTenantsRequest(tenants),
-        UpdateTenantsRequest.endpoint(collection));
+    CompletableFuture<Void> updated = CompletableFuture.completedFuture(null);
+    for (var batch : UpdateTenantsRequest.batches(tenants)) {
+      updated = updated.thenCompose(__ -> this.restTransport.performRequestAsync(
+          new UpdateTenantsRequest(batch), UpdateTenantsRequest.endpoint(collection)));
+    }
+    return updated;
   }
 
   public CompletableFuture<Void> delete(String... tenants) throws IOException {

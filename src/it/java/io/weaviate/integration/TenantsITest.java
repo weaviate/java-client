@@ -1,5 +1,8 @@
 package io.weaviate.integration;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -70,5 +73,36 @@ public class TenantsITest extends ConcurrentTest {
         .describedAs("%s not exists", isaac.name()).isFalse();
     Assertions.assertThat(things.tenants.exists(owen.name()))
         .describedAs("%s not exists", owen.name()).isFalse();
+  }
+
+  /**
+   * The server refuses to update more than 100 tenants at once, so the client
+   * splits longer lists -- otherwise activate/deactivate of 101+ tenants fails
+   * with HTTP 422 ("maximum number of tenants allowed to be updated
+   * simultaneously is 100").
+   */
+  @Test
+  public void test_updateMoreThanOneHundredTenants() throws Exception {
+    // Arrange: 250 tenants, comfortably over two batch boundaries.
+    var nsMany = ns("ManyTenants");
+    client.collections.create(nsMany, c -> c.multiTenancy(mt -> mt.autoTenantCreation(false)));
+    var many = client.collections.use(nsMany);
+
+    List<String> names = IntStream.rangeClosed(1, 250).mapToObj(i -> "tenant-" + i).toList();
+    // Creating is not capped by the server and goes out in a single request.
+    many.tenants.create(names.stream().map(Tenant::active).toList());
+    Assertions.assertThat(many.tenants.list()).as("created").hasSize(250);
+
+    // Act
+    many.tenants.deactivate(names);
+
+    // Assert
+    eventually(() -> many.tenants.list().stream().allMatch(Tenant::isInactive),
+        200, 5, "not all tenants were deactivated");
+
+    // ...and back, to cover the activate path as well.
+    many.tenants.activate(names);
+    eventually(() -> many.tenants.list().stream().allMatch(Tenant::isActive),
+        200, 5, "not all tenants were activated");
   }
 }

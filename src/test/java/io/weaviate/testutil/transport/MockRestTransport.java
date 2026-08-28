@@ -55,7 +55,9 @@ public class MockRestTransport implements RestTransport {
   public <RequestT, ResponseT, ExceptionT> CompletableFuture<ResponseT> performRequestAsync(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint) {
     requests.add(new Request<>(request, endpoint));
-    return null;
+    // A completed future rather than null, so callers which chain requests
+    // (thenCompose) can be tested against this transport.
+    return CompletableFuture.completedFuture(null);
   }
 
   @Override
