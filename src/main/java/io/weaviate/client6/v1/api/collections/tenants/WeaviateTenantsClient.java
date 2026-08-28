@@ -119,6 +119,13 @@ public class WeaviateTenantsClient {
   /**
    * Update tenant configuration.
    *
+   * <p>
+   * The server accepts at most
+   * {@value UpdateTenantsRequest#MAX_TENANTS_PER_REQUEST} tenants per update, so
+   * longer lists are sent as several sequential requests. That makes a partial
+   * update possible: if one request fails, the tenants of the preceding ones stay
+   * updated and the error is propagated.
+   *
    * @param tenants Tenant names.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
@@ -127,7 +134,9 @@ public class WeaviateTenantsClient {
    *                              or the server being unavailable.
    */
   public void update(List<Tenant> tenants) throws IOException {
-    this.restTransport.performRequest(new UpdateTenantsRequest(tenants), UpdateTenantsRequest.endpoint(collection));
+    for (var batch : UpdateTenantsRequest.batches(tenants)) {
+      this.restTransport.performRequest(new UpdateTenantsRequest(batch), UpdateTenantsRequest.endpoint(collection));
+    }
   }
 
   /**
