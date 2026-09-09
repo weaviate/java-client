@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import io.weaviate.client6.v1.internal.DateUtil;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase.Filters;
 
@@ -908,7 +909,7 @@ public class Filter implements FilterOperand {
 
     @Override
     public void appendTo(WeaviateProtoBase.Filters.Builder filter) {
-      filter.setValueText(value.toString());
+      filter.setValueText(DateUtil.toRFC3339(value));
     }
 
     @Override
@@ -930,7 +931,7 @@ public class Filter implements FilterOperand {
     }
 
     private List<String> formatted() {
-      return values.stream().map(OffsetDateTime::toString).toList();
+      return values.stream().map(DateUtil::toRFC3339).toList();
     }
 
     @Override

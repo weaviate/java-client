@@ -14,6 +14,7 @@ import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.api.collections.GeoCoordinates;
 import io.weaviate.client6.v1.api.collections.PhoneNumber;
 import io.weaviate.client6.v1.api.collections.WeaviateObject;
+import io.weaviate.client6.v1.internal.DateUtil;
 import io.weaviate.client6.v1.internal.MapUtil;
 import io.weaviate.client6.v1.internal.grpc.ByteStringUtil;
 import io.weaviate.client6.v1.internal.grpc.Rpc;
@@ -175,7 +176,7 @@ public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> o
     } else if (value instanceof UUID v) {
       protoValue.setStringValue(v.toString());
     } else if (value instanceof OffsetDateTime v) {
-      protoValue.setStringValue(v.toString());
+      protoValue.setStringValue(DateUtil.toRFC3339(v));
     } else if (value instanceof Boolean v) {
       protoValue.setBoolValue(v.booleanValue());
     } else if (value instanceof Number v) {
@@ -208,7 +209,7 @@ public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> o
                     } else if (listValue instanceof UUID lv) {
                       protoListValue.setStringValue(lv.toString());
                     } else if (listValue instanceof OffsetDateTime lv) {
-                      protoListValue.setStringValue(lv.toString());
+                      protoListValue.setStringValue(DateUtil.toRFC3339(lv));
                     } else if (listValue instanceof Boolean lv) {
                       protoListValue.setBoolValue(lv);
                     } else if (listValue instanceof Number lv) {
@@ -238,7 +239,7 @@ public record InsertManyRequest<PropertiesT>(List<WeaviateObject<PropertiesT>> o
             .map(lv -> com.google.protobuf.Value.newBuilder().setStringValue(lv.toString()).build()).toList();
       } else if (value instanceof OffsetDateTime[] v) {
         values = Arrays.stream(v)
-            .map(lv -> com.google.protobuf.Value.newBuilder().setStringValue(lv.toString()).build()).toList();
+            .map(lv -> com.google.protobuf.Value.newBuilder().setStringValue(DateUtil.toRFC3339(lv)).build()).toList();
       } else if (value instanceof Boolean[] v) {
         values = Arrays.stream(v)
             .map(lv -> com.google.protobuf.Value.newBuilder().setBoolValue(lv).build()).toList();
