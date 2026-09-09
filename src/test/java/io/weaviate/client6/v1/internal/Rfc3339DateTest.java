@@ -2,6 +2,7 @@ package io.weaviate.client6.v1.internal;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -117,6 +118,38 @@ public class Rfc3339DateTest {
         .as("list").isEqualTo(ROUND_RFC3339);
     Assertions.assertThat(fields.get("array").getListValue().getValues(0).getStringValue())
         .as("array").isEqualTo(ROUND_RFC3339);
+  }
+
+  /**
+   * The digits stay ASCII whatever the JVM's formatting locale is.
+   *
+   * <p>
+   * Raised in review on the grounds that {@code toFormatter()} takes the default
+   * locale. It does, but the locale is not what chooses the digits --
+   * {@code DecimalStyle} is, and a builder always starts from
+   * {@link java.time.format.DecimalStyle#STANDARD}. Measured on JDK 25:
+   * {@code DecimalStyle.of(Locale.forLanguageTag("hi-IN-u-nu-deva"))} is
+   * {@code DecimalStyle[०+-.]} and formatting through it does give
+   * {@code २०२४-०३-०१T००:००:००Z}, but neither {@code toFormatter()} nor
+   * {@code withLocale(...)} reaches that -- only an explicit
+   * {@code withDecimalStyle(...)} does, and nothing here calls it.
+   *
+   * <p>
+   * So this is a guard rather than a fix: it fails if someone later gives the
+   * formatter a locale-derived decimal style, which is the only way the reported
+   * problem could actually occur.
+   */
+  @Test
+  public void test_digitsAreAsciiInAnyLocale() {
+    var previous = Locale.getDefault(Locale.Category.FORMAT);
+    try {
+      for (var tag : List.of("hi-IN-u-nu-deva", "ar-EG-u-nu-arab", "bn-BD-u-nu-beng")) {
+        Locale.setDefault(Locale.Category.FORMAT, Locale.forLanguageTag(tag));
+        Assertions.assertThat(DateUtil.toRFC3339(ROUND)).as(tag).isEqualTo(ROUND_RFC3339);
+      }
+    } finally {
+      Locale.setDefault(Locale.Category.FORMAT, previous);
+    }
   }
 
   private static WeaviateProtoBase.Filters marshal(Filter filter) {
