@@ -15,6 +15,8 @@ import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 
 import io.weaviate.client6.v1.api.cluster.NodeVerbosity;
+import io.weaviate.client6.v1.api.cluster.Shard;
+import io.weaviate.client6.v1.api.cluster.VectorIndexingStatus;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Encoding;
 import io.weaviate.client6.v1.api.collections.Generative;
@@ -2266,6 +2268,24 @@ public class JSONTest {
                     "resourceName": "azure-resource",
                     "deploymentId": "azure-deployment"
                   }
+                }
+                  """
+        },
+        // Shard: the server's key is "vectorQueueLength" -- see #619
+        {
+            Shard.class,
+            new Shard("s1", "Things", 7, VectorIndexingStatus.INDEXING, 42, false, true, 1, 1),
+            """
+                {
+                  "name": "s1",
+                  "class": "Things",
+                  "objectCount": 7,
+                  "vectorIndexingStatus": "INDEXING",
+                  "vectorQueueLength": 42,
+                  "compressed": false,
+                  "loaded": true,
+                  "numberOfReplicas": 1,
+                  "replicationFactor": 1
                 }
                   """
         },
