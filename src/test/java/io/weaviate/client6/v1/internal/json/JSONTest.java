@@ -15,6 +15,8 @@ import com.jparams.junit4.JParamsTestRunner;
 import com.jparams.junit4.data.DataMethod;
 
 import io.weaviate.client6.v1.api.cluster.NodeVerbosity;
+import io.weaviate.client6.v1.api.cluster.ShardReplica;
+import io.weaviate.client6.v1.api.cluster.ShardingState;
 import io.weaviate.client6.v1.api.collections.CollectionConfig;
 import io.weaviate.client6.v1.api.collections.Encoding;
 import io.weaviate.client6.v1.api.collections.Generative;
@@ -2266,6 +2268,22 @@ public class JSONTest {
                     "resourceName": "azure-resource",
                     "deploymentId": "azure-deployment"
                   }
+                }
+                  """
+        },
+        // ShardingState: the server names the shard "shard", not "shardName"
+        {
+            ShardingState.class,
+            new ShardingState("Things", List.of(new ShardReplica("s1", List.of("node1", "node2")))),
+            """
+                {
+                  "collection": "Things",
+                  "shards": [
+                    {
+                      "shard": "s1",
+                      "replicas": ["node1", "node2"]
+                    }
+                  ]
                 }
                   """
         },
