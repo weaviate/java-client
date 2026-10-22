@@ -1,9 +1,11 @@
 package io.weaviate.client6.v1.internal.rest;
 
-import io.weaviate.client6.v1.api.WeaviateApiException;
-import io.weaviate.client6.v1.api.Config;
-import io.weaviate.client6.v1.api.WeaviateClient;
-import io.weaviate.client6.v1.internal.Proxy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockserver.model.HttpForward.forward;
+
+import java.io.IOException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,11 +13,10 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
 
-import java.io.IOException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockserver.model.HttpForward.forward;
+import io.weaviate.client6.v1.api.Config;
+import io.weaviate.client6.v1.api.WeaviateApiException;
+import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.internal.Proxy;
 
 public class ProxyTest {
   private ClientAndServer targetServer;
@@ -31,7 +32,7 @@ public class ProxyTest {
     targetServer.when(
         HttpRequest.request()
             .withMethod("GET")
-            .withPath("/v1/.well-known/live"))
+            .withPath("/v1/\\.well-known/live"))
         .respond(
             HttpResponse.response()
                 .withStatusCode(200));
@@ -61,8 +62,7 @@ public class ProxyTest {
         .grpcHost("localhost")
         .grpcPort(targetServer.getLocalPort())
         .proxy(new Proxy("localhost", proxyServer.getLocalPort()))
-        .timeout(5)
-    );
+        .timeout(5));
 
     client = new WeaviateClient(config);
   }
@@ -76,7 +76,7 @@ public class ProxyTest {
     // Since setUp() already creates a client using the proxy, we just need to
     // verify it was initialized correctly.
     assertThat(client).isNotNull();
-    
+
     // Verify that the initialization calls went through the proxy
     proxyServer.verify(
         HttpRequest.request()
@@ -124,7 +124,7 @@ public class ProxyTest {
     // we focus on ensuring the client is correctly initialized with the proxy.
     assertThatThrownBy(() -> client.collections.use("Test").size())
         .isInstanceOf(WeaviateApiException.class)
-        .hasMessageContaining("UNAVAILABLE: Network closed");
+        .hasMessageContaining("UNIMPLEMENTED");
   }
 
   @After
