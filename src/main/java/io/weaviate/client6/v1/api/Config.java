@@ -197,7 +197,8 @@ public record Config(
     }
 
     /**
-     * Override or extend any of configurations previously set for the gRPC channel.
+     * Override or extend any of the configurations previously set for the gRPC
+     * channel.
      *
      * <br>
      * This is best used to access the parameters specific to gRPC, which the client
