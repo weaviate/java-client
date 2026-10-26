@@ -1,9 +1,10 @@
 package io.weaviate.containers;
 
 import org.testcontainers.containers.MinIOContainer;
+import org.testcontainers.utility.DockerImageName;
 
 public class MinIo extends MinIOContainer {
-  private static final String DOCKER_IMAGE = "minio/minio";
+  private static final String DOCKER_IMAGE = "cgr.dev/chainguard/minio";
   public static final String ACCESS_KEY = "minioadmin";
   public static final String SECRET_KEY = "minioadmin";
 
@@ -15,7 +16,8 @@ public class MinIo extends MinIOContainer {
   }
 
   private MinIo() {
-    super(DOCKER_IMAGE);
+    super(DockerImageName.parse(DOCKER_IMAGE)
+        .asCompatibleSubstituteFor("minio/minio"));
     withUserName(ACCESS_KEY);
     withPassword(SECRET_KEY);
     withCreateContainerCmdModifier(cmd -> cmd.withHostName("minio"));
