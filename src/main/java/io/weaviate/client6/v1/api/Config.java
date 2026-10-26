@@ -1,5 +1,7 @@
 package io.weaviate.client6.v1.api;
 
+import static java.util.Objects.requireNonNull;
+
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,6 +9,7 @@ import java.util.function.Function;
 
 import javax.net.ssl.TrustManagerFactory;
 
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.weaviate.client6.v1.internal.BuildInfo;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.Proxy;
@@ -26,7 +29,8 @@ public record Config(
     Authentication authentication,
     TrustManagerFactory trustManagerFactory,
     Timeout timeout,
-    Proxy proxy) {
+    Proxy proxy,
+    Function<NettyChannelBuilder, NettyChannelBuilder> channelBuilder) {
 
   public static Config of(Function<Custom, ObjectBuilder<Config>> fn) {
     return fn.apply(new Custom()).build();
@@ -43,7 +47,8 @@ public record Config(
         builder.authentication,
         builder.trustManagerFactory,
         builder.timeout,
-        builder.proxy);
+        builder.proxy,
+        builder.channelBuilder);
   }
 
   RestTransportOptions restTransportOptions() {
@@ -51,7 +56,8 @@ public record Config(
   }
 
   RestTransportOptions restTransportOptions(TokenProvider tokenProvider) {
-    return new RestTransportOptions(scheme, httpHost, httpPort, headers, tokenProvider, trustManagerFactory, timeout, proxy);
+    return new RestTransportOptions(scheme, httpHost, httpPort, headers, tokenProvider, trustManagerFactory, timeout,
+        proxy);
   }
 
   GrpcChannelOptions grpcTransportOptions() {
@@ -59,7 +65,8 @@ public record Config(
   }
 
   GrpcChannelOptions grpcTransportOptions(TokenProvider tokenProvider) {
-    return new GrpcChannelOptions(scheme, grpcHost, grpcPort, headers, tokenProvider, trustManagerFactory, timeout, proxy);
+    return new GrpcChannelOptions(scheme, grpcHost, grpcPort, headers, tokenProvider, trustManagerFactory, timeout,
+        proxy, channelBuilder);
   }
 
   private abstract static class Builder<SelfT extends Builder<SelfT>> implements ObjectBuilder<Config> {
@@ -74,6 +81,7 @@ public record Config(
     protected Timeout timeout = new Timeout();
     protected Map<String, String> headers = new HashMap<>();
     protected Proxy proxy;
+    protected Function<NettyChannelBuilder, NettyChannelBuilder> channelBuilder;
 
     /**
      * Set URL scheme. Subclasses may increase the visibility of this method to
@@ -185,6 +193,22 @@ public record Config(
     @SuppressWarnings("unchecked")
     public SelfT proxy(Proxy proxy) {
       this.proxy = proxy;
+      return (SelfT) this;
+    }
+
+    /**
+     * Override or extend any of the configurations previously set for the gRPC
+     * channel.
+     *
+     * <br>
+     * This is best used to access the parameters specific to gRPC, which the client
+     * does not expose directly, e.g. keepalive configuration. For other
+     * configurations, like timeout and proxy, prefer using the APIs exposed by this
+     * class.
+     */
+    @SuppressWarnings("unchecked")
+    public SelfT grpcChannelOptions(Function<NettyChannelBuilder, NettyChannelBuilder> channelBuilder) {
+      this.channelBuilder = requireNonNull(channelBuilder, "channelBuilder");
       return (SelfT) this;
     }
 

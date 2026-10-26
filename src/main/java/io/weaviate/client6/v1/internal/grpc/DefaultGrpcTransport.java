@@ -2,6 +2,8 @@ package io.weaviate.client6.v1.internal.grpc;
 
 import static java.util.Objects.requireNonNull;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.OptionalInt;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -12,6 +14,7 @@ import javax.net.ssl.SSLException;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+
 import io.grpc.HttpConnectProxiedSocketAddress;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
@@ -28,12 +31,6 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateBlocki
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateGrpc.WeaviateFutureStub;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamReply;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStreamRequest;
-
-import javax.net.ssl.SSLException;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public final class DefaultGrpcTransport implements GrpcTransport {
   /**
@@ -175,6 +172,11 @@ public final class DefaultGrpcTransport implements GrpcTransport {
     }
 
     channel.intercept(MetadataUtils.newAttachHeadersInterceptor(transportOptions.headers()));
+
+    if (transportOptions.channelBuilder() != null) {
+      channel = transportOptions.channelBuilder().apply(channel);
+    }
+
     return channel.build();
   }
 
