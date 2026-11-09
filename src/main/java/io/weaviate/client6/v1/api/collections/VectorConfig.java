@@ -1837,7 +1837,6 @@ public interface VectorConfig extends TaggedUnion<VectorConfig.Kind, Object> {
             vectorIndexConfig = jsonObject.get("vectorIndexConfig").getAsJsonObject();
           }
 
-          // A dynamic index keeps its quantizer one level deeper, inside "hnsw"/"flat".
           var quantizers = QuantizerJson.host(vectorIndexConfig, jsonObject.get("vectorIndexType"), false);
 
           String quantizationKind = null;

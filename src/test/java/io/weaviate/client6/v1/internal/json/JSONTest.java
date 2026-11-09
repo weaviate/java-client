@@ -1188,9 +1188,6 @@ public class JSONTest {
                 }
                 """,
         },
-        // A dynamic index nests its quantizer inside "hnsw"/"flat" -- the client
-        // used to put it beside them, where the server never looks, and could not
-        // read it back either.
         {
             VectorConfig.class,
             SelfProvidedVectorizer.of(none -> none

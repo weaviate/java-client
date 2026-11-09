@@ -44,8 +44,6 @@ public record UpdateCollectionRequest(CollectionConfig updated, CollectionConfig
             var origQuantization = origVector.getValue().quantization();
             if (vectors.has(vectorName) && origQuantization != null) {
               var vector = vectors.get(vectorName).getAsJsonObject();
-              // A dynamic index keeps its quantizer settings inside "hnsw"/"flat",
-              // so the flag has to land at the same depth the server reads it from.
               QuantizerJson.host(
                   vector.get("vectorIndexConfig").getAsJsonObject(),
                   vector.get("vectorIndexType"),

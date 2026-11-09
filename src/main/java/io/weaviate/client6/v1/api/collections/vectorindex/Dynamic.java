@@ -21,7 +21,6 @@ public record Dynamic(
     @SerializedName("hnsw") Hnsw hnsw,
     @SerializedName("flat") Flat flat,
     @SerializedName("threshold") Long threshold,
-    /** Distance metric, which a dynamic index carries at its own level. */
     @SerializedName("distance") Distance distance)
     implements VectorIndex {
 
@@ -123,7 +122,6 @@ public record Dynamic(
 
           var hnsw = hnswAdapter.fromJsonTree(jsonObject.get("hnsw"));
           var flat = flatAdapter.fromJsonTree(jsonObject.get("flat"));
-          // Both are optional in the response: a dropped index has neither.
           var threshold = jsonObject.has("threshold") && jsonObject.get("threshold").isJsonPrimitive()
               ? jsonObject.get("threshold").getAsLong()
               : null;
