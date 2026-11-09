@@ -2271,7 +2271,6 @@ public class JSONTest {
                 }
                   """
         },
-        // ShardingState: the server names the shard "shard", not "shardName"
         {
             ShardingState.class,
             new ShardingState("Things", List.of(new ShardReplica("s1", List.of("node1", "node2")))),
