@@ -22,19 +22,8 @@ import io.weaviate.client6.v1.api.collections.query.Filter;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBase;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
-/**
- * Timestamps must reach the server as RFC 3339, which requires the seconds.
- *
- * <p>
- * {@link OffsetDateTime#toString()} omits them when the second and the
- * nanosecond are both zero, so every timestamp on an exact minute boundary used
- * to be rejected by the server. The existing date tests all seed from
- * {@code OffsetDateTime.now()}, which practically never lands on one -- hence
- * the literals here.
- */
 @RunWith(JParamsTestRunner.class)
 public class Rfc3339DateTest {
-  /** The value that used to serialize as "2024-03-01T00:00Z". */
   private static final OffsetDateTime ROUND = OffsetDateTime.parse("2024-03-01T00:00:00Z");
   private static final String ROUND_RFC3339 = "2024-03-01T00:00:00Z";
 
@@ -56,7 +45,6 @@ public class Rfc3339DateTest {
     Assertions.assertThat(DateUtil.toRFC3339(value)).isEqualTo(want);
   }
 
-  /** Whatever we write has to be readable again. */
   @Name("{0}")
   @DataMethod(source = Rfc3339DateTest.class, method = "timestamps")
   @Test
@@ -64,7 +52,6 @@ public class Rfc3339DateTest {
     Assertions.assertThat(DateUtil.fromISO8601(DateUtil.toRFC3339(value))).isEqualTo(value);
   }
 
-  /** The reader stays lenient, so dates written by older clients still parse. */
   @Test
   public void test_readsTheOldTruncatedForm() {
     Assertions.assertThat(DateUtil.fromISO8601("2024-03-01T00:00Z")).isEqualTo(ROUND);
@@ -78,8 +65,6 @@ public class Rfc3339DateTest {
         { "lte", (Function<OffsetDateTime, Filter>) v -> Filter.property("when").lte(v) },
         { "gt", (Function<OffsetDateTime, Filter>) v -> Filter.property("when").gt(v) },
         { "gte", (Function<OffsetDateTime, Filter>) v -> Filter.property("when").gte(v) },
-        // The metadata filters take OffsetDateTime only -- no String overload to fall
-        // back on, so these had no workaround at all.
         { "createdAt", (Function<OffsetDateTime, Filter>) v -> Filter.createdAt().gt(v) },
         { "lastUpdatedAt", (Function<OffsetDateTime, Filter>) v -> Filter.lastUpdatedAt().lt(v) },
     };
@@ -120,25 +105,6 @@ public class Rfc3339DateTest {
         .as("array").isEqualTo(ROUND_RFC3339);
   }
 
-  /**
-   * The digits stay ASCII whatever the JVM's formatting locale is.
-   *
-   * <p>
-   * Raised in review on the grounds that {@code toFormatter()} takes the default
-   * locale. It does, but the locale is not what chooses the digits --
-   * {@code DecimalStyle} is, and a builder always starts from
-   * {@link java.time.format.DecimalStyle#STANDARD}. Measured on JDK 25:
-   * {@code DecimalStyle.of(Locale.forLanguageTag("hi-IN-u-nu-deva"))} is
-   * {@code DecimalStyle[०+-.]} and formatting through it does give
-   * {@code २०२४-०३-०१T००:००:००Z}, but neither {@code toFormatter()} nor
-   * {@code withLocale(...)} reaches that -- only an explicit
-   * {@code withDecimalStyle(...)} does, and nothing here calls it.
-   *
-   * <p>
-   * So this is a guard rather than a fix: it fails if someone later gives the
-   * formatter a locale-derived decimal style, which is the only way the reported
-   * problem could actually occur.
-   */
   @Test
   public void test_digitsAreAsciiInAnyLocale() {
     var previous = Locale.getDefault(Locale.Category.FORMAT);

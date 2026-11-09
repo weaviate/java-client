@@ -455,10 +455,6 @@ public class DataITest extends ConcurrentTest {
 
     var types = client.collections.use(nsDataTypes);
 
-    // Truncated to the minute on purpose: OffsetDateTime.toString() used to drop
-    // the seconds when second and nano are both zero, producing a non-RFC3339
-    // string the server rejects. A plain OffsetDateTime.now() practically never
-    // lands on a minute boundary, so it never caught it.
     var now = OffsetDateTime.now().withSecond(0).withNano(0);
     var uuid = UUID.randomUUID();
 

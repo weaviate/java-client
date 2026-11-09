@@ -2270,13 +2270,6 @@ public class JSONTest {
                 }
                   """
         },
-
-        // DateUtil.CustomTypeAdapterFactory
-        //
-        // Weaviate wants RFC 3339, which requires the seconds. OffsetDateTime's own
-        // toString() drops them when second and nano are both zero, so a timestamp on
-        // an exact minute boundary used to go out as "2024-03-01T00:00Z" and get
-        // rejected.
         {
             OffsetDateTime.class,
             OffsetDateTime.parse("2024-03-01T00:00:00Z"),
@@ -2287,7 +2280,6 @@ public class JSONTest {
             OffsetDateTime.parse("2024-03-01T00:00:01Z"),
             "\"2024-03-01T00:00:01Z\"",
         },
-        // The fraction is preserved as-is: neither invented nor truncated.
         {
             OffsetDateTime.class,
             OffsetDateTime.parse("2024-03-01T12:34:56.789Z"),
@@ -2298,7 +2290,6 @@ public class JSONTest {
             OffsetDateTime.parse("2024-03-01T00:00:00.000000001Z"),
             "\"2024-03-01T00:00:00.000000001Z\"",
         },
-        // A non-UTC offset keeps its offset rather than being normalised.
         {
             OffsetDateTime.class,
             OffsetDateTime.parse("2024-03-01T00:00:00+02:00"),
