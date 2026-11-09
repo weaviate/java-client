@@ -18,7 +18,6 @@ import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 public class RerankTest {
   private static final Rerank RERANK = Rerank.by("title", rank -> rank.query("fish"));
 
-  /** Every search operator can be reranked, not only the vector searches. */
   public static Object[][] operators() {
     return new Object[][] {
         { "bm25", Bm25.of("animal", q -> q.rerank(RERANK)) },
@@ -69,7 +68,6 @@ public class RerankTest {
         .returns(0.7811474, QueryMetadata::rerankScore);
   }
 
-  /** 0.0 is a legitimate score, so absence has to come from the presence flag. */
   @Test
   public void test_rerankScoreZeroIsNotAbsent() {
     var reply = WeaviateProtoSearchGet.SearchReply.newBuilder()

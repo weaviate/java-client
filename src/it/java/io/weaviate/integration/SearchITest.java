@@ -807,8 +807,6 @@ public class SearchITest extends ConcurrentTest {
     // Assert: ranking not important really, just that the request was valid.
     Assertions.assertThat(got.objects()).hasSize(2);
 
-    // Assert: rerank is not exclusive to vector search -- BM25, hybrid and
-    // fetchObjects accept it too, and the server reranks for all of them.
     Assertions.assertThat(things.query.bm25("chair", bm25 -> bm25.rerank(rerank)).objects())
         .as("bm25").isNotEmpty().allSatisfy(SearchITest::assertReranked);
     Assertions.assertThat(things.query.hybrid("chair", hybrid -> hybrid.rerank(rerank)).objects())
@@ -842,12 +840,11 @@ public class SearchITest extends ConcurrentTest {
     var got = things.query.fetchObjects(
         fetch -> fetch.rerank(Rerank.by("title", rank -> rank.query("chair"))));
 
-    // Assert: the score which produced the ordering is readable.
+    // Assert
     Assertions.assertThat(got.objects()).hasSize(2)
         .allSatisfy(obj -> Assertions.assertThat(obj.queryMetadata().rerankScore())
             .as("rerank score of %s", obj.uuid()).isNotNull());
 
-    // Assert: a query without rerank leaves the score unset.
     Assertions.assertThat(things.query.fetchObjects().objects()).hasSize(2)
         .allSatisfy(obj -> Assertions.assertThat(obj.queryMetadata().rerankScore())
             .as("not reranked").isNull());

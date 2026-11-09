@@ -155,15 +155,7 @@ public record BaseQueryOptions(
       return (SelfT) this;
     }
 
-    /**
-     * Control the ranking of the query results.
-     *
-     * <p>
-     * Reranking is applied by the server on top of the result set produced by the
-     * search operator, so it works with every operator: {@link NearText} and the
-     * other {@code near*} searches, {@link Bm25}, {@link Hybrid} and
-     * {@link FetchObjects}.
-     */
+    /** Rerank the query results. Works with every search operator. */
     public final SelfT rerank(Rerank rerank) {
       this.rerank = rerank;
       return (SelfT) this;

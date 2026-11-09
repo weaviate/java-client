@@ -12,10 +12,6 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
-/**
- * The generative search reuses the query operators, so it is reranked the same
- * way and has to read the scores back the same way.
- */
 public class GenerativeRerankTest {
 
   @Test
@@ -43,7 +39,6 @@ public class GenerativeRerankTest {
         .returns(null, GenerativeResponseGroup::rerankScore);
   }
 
-  /** Objects in the group carry their own score, unmarshalled by the query package. */
   @Test
   public void test_objectRerankScoreIsUnmarshalled() {
     var reply = WeaviateProtoSearchGet.SearchReply.newBuilder()

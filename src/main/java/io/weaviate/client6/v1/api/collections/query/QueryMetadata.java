@@ -10,13 +10,7 @@ public record QueryMetadata(
     Float score,
     /** Components of the BM25 ranking score. */
     String explainScore,
-    /**
-     * Score assigned by the reranker module.
-     *
-     * <p>
-     * Only present if the query requested reranking, see
-     * {@link BaseQueryOptions.Builder#rerank(Rerank)}.
-     */
+    /** Score assigned by the reranker, if the query was reranked. */
     Double rerankScore) {
 
   private QueryMetadata(Builder builder) {
