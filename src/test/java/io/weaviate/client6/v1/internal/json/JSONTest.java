@@ -2269,7 +2269,6 @@ public class JSONTest {
                 }
                   """
         },
-        // groups/UserType: the server's value is "db_env_user" -- see #623
         {
             io.weaviate.client6.v1.api.rbac.groups.UserType.class,
             io.weaviate.client6.v1.api.rbac.groups.UserType.DB_ENV_USER,
