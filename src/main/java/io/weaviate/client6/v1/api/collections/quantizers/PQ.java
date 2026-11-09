@@ -11,20 +11,14 @@ public record PQ(
     @SerializedName("enabled") boolean enabled,
     @SerializedName("centroids") Integer centroids,
     @SerializedName("segments") Integer segments,
-    /**
-     * Encoder settings, which the server nests one level deeper as
-     * {@code encoder: {type, distribution}}.
-     */
     @SerializedName("encoder") Encoder encoder,
     @SerializedName("trainingLimit") Integer trainingLimit,
     @SerializedName("bitCompression") Boolean bitCompression) implements Quantization {
 
-  /** Type of the encoder, or {@code null} if it was left at the server default. */
   public EncoderType encoderType() {
     return encoder != null ? encoder.type() : null;
   }
 
-  /** Encoder distribution, or {@code null} if left at the server default. */
   public EncoderDistribution encoderDistribution() {
     return encoder != null ? encoder.distribution() : null;
   }
