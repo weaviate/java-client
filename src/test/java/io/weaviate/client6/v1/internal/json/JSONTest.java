@@ -1476,9 +1476,6 @@ public class JSONTest {
                 }
                   """,
         },
-        // reranker-nvidia reads "baseURL" like every other module. It had no test
-        // row, which is how it kept sending "baseUrl" -- stored in the schema and
-        // then ignored, so reranking silently used the default endpoint.
         {
             Reranker.class,
             Reranker.nvidia(rerank -> rerank
