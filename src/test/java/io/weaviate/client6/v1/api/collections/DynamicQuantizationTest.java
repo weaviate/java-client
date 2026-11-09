@@ -3,18 +3,14 @@ package io.weaviate.client6.v1.api.collections;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import com.google.gson.JsonParser;
+
 import io.weaviate.client6.v1.api.collections.vectorindex.Distance;
 import io.weaviate.client6.v1.api.collections.vectorindex.Dynamic;
+import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
+import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.client6.v1.internal.json.JSON;
 
-/**
- * Reading a quantizer off a dynamic index.
- *
- * <p>
- * The round-trip cases live in {@code JSONTest}; these cover the shapes the
- * server can return but this client never writes, since a single
- * {@code quantization()} slot always writes to {@code hnsw}.
- */
 public class DynamicQuantizationTest {
 
   private static String dynamic(String hnswExtra, String flatExtra) {
@@ -31,7 +27,6 @@ public class DynamicQuantizationTest {
         """.formatted(hnswExtra, flatExtra);
   }
 
-  /** The reported case: a dynamic index with RQ enabled on hnsw. */
   @Test
   public void test_readsQuantizerFromHnsw() {
     var config = JSON.deserialize(
@@ -45,7 +40,6 @@ public class DynamicQuantizationTest {
     Assertions.assertThat(config.quantization().asRQ().bits()).isEqualTo(8);
   }
 
-  /** flat carries its own quantizer, and only bq is valid there. */
   @Test
   public void test_readsQuantizerFromFlatWhenHnswHasNone() {
     var config = JSON.deserialize(
@@ -58,10 +52,6 @@ public class DynamicQuantizationTest {
     Assertions.assertThat(config.quantization().asBQ().rescoreLimit()).isEqualTo(5);
   }
 
-  /**
-   * hnsw and flat can carry different quantizers, which one slot cannot
-   * represent. hnsw wins; see QuantizerJson.
-   */
   @Test
   public void test_prefersHnswWhenBothCarryOne() {
     var config = JSON.deserialize(
@@ -79,7 +69,6 @@ public class DynamicQuantizationTest {
     Assertions.assertThat(config.quantization()).isNull();
   }
 
-  /** A disabled quantizer reads as absent, same as for hnsw and flat indexes. */
   @Test
   public void test_disabledQuantizerIsNull() {
     var config = JSON.deserialize(
@@ -89,7 +78,6 @@ public class DynamicQuantizationTest {
     Assertions.assertThat(config.quantization()).isNull();
   }
 
-  /** The dynamic level carries its own distance, which used to be dropped. */
   @Test
   public void test_readsDistanceAtDynamicLevel() {
     var config = JSON.deserialize("""
@@ -108,5 +96,38 @@ public class DynamicQuantizationTest {
     Assertions.assertThat(config.vectorIndex().asDynamic())
         .returns(Distance.L2_SQUARED, Dynamic::distance)
         .returns(10000L, Dynamic::threshold);
+  }
+
+  @Test
+  public void test_ignoresDisabledQuantizersOnHnsw() {
+    var config = JSON.deserialize(
+        dynamic("""
+            , "bq": {"enabled": false, "rescoreLimit": -1, "cache": false},
+              "pq": {"enabled": false, "bitCompression": false, "segments": 0, "centroids": 256,
+                     "trainingLimit": 100000, "encoder": {"type": "kmeans", "distribution": "log-normal"}},
+              "sq": {"enabled": false, "rescoreLimit": 20, "trainingLimit": 100000, "cache": false},
+              "rq": {"enabled": false, "bits": 8, "rescoreLimit": 20, "cache": false},
+              "skipDefaultQuantization": false
+            """,
+            ", \"bq\": {\"enabled\": true, \"rescoreLimit\": 5}"),
+        VectorConfig.class);
+
+    Assertions.assertThat(config.quantization())
+        .isNotNull()
+        .returns(Quantization.Kind.BQ, Quantization::_kind);
+    Assertions.assertThat(config.quantization().asBQ().rescoreLimit()).isEqualTo(5);
+  }
+
+  @Test
+  public void test_writesQuantizerToHnswWhenOnlyFlatIsSet() {
+    var config = SelfProvidedVectorizer.of(none -> none
+        .vectorIndex(Dynamic.of(idx -> idx.flat(Flat.of(flat -> flat.vectorCacheMaxObjects(100)))))
+        .quantization(Quantization.rq(rq -> rq.bits(8))));
+
+    var indexConfig = JsonParser.parseString(JSON.serialize(config)).getAsJsonObject()
+        .getAsJsonObject("vectorIndexConfig");
+
+    Assertions.assertThat(indexConfig.getAsJsonObject("hnsw").has("rq")).as("rq under hnsw").isTrue();
+    Assertions.assertThat(indexConfig.getAsJsonObject("flat").has("rq")).as("rq under flat").isFalse();
   }
 }
