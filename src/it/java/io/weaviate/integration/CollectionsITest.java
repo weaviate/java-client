@@ -267,28 +267,16 @@ public class CollectionsITest extends ConcurrentTest {
         .returns(Quantization.Kind.BQ, Quantization::_kind);
   }
 
-  /**
-   * The quantizer settings have to survive a round trip through the server.
-   *
-   * <p>
-   * They used to be sent under snake_case names ({@code rescore_limit},
-   * {@code training_limit}, ...) that Weaviate looks up verbatim and therefore
-   * never read, so every one of them was dropped on write and came back null.
-   * Asserting on {@code enabled} alone did not catch it.
-   */
   @Test
   public void test_quantizerSettingsRoundTrip() throws IOException {
-    // Arrange
     var nsThings = ns("Things");
 
     var things = client.collections.create(nsThings,
         c -> c.vectorConfig(VectorConfig.selfProvided(
             self -> self.quantization(Quantization.rq(rq -> rq.rescoreLimit(42).bits(8))))));
 
-    // Act
     var config = things.config.get();
 
-    // Assert
     Assertions.assertThat(config).get()
         .extracting(CollectionConfig::vectors)
         .extracting("default", InstanceOfAssertFactories.type(VectorConfig.class))
