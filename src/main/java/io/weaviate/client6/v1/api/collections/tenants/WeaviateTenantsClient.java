@@ -119,14 +119,7 @@ public class WeaviateTenantsClient {
   /**
    * Update tenant configuration.
    *
-   * <p>
-   * The server accepts at most
-   * {@value UpdateTenantsRequest#MAX_TENANTS_PER_REQUEST} tenants per update, so
-   * longer lists are sent as several sequential requests. That makes a partial
-   * update possible: if one request fails, the tenants of the preceding ones stay
-   * updated and the error is propagated.
-   *
-   * @param tenants Tenant names.
+   * @param tenants Tenant configurations.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully

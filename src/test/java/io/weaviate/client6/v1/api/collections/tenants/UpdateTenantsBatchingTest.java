@@ -11,11 +11,6 @@ import org.junit.Test;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 import io.weaviate.testutil.transport.MockRestTransport;
 
-/**
- * The server rejects an update of more than 100 tenants with HTTP 422, so the
- * client splits longer lists. Adding tenants is not capped and has to keep going
- * out as a single request.
- */
 public class UpdateTenantsBatchingTest {
   private static final CollectionDescriptor<?> COLLECTION = CollectionDescriptor.ofMap("Things");
 
@@ -27,7 +22,6 @@ public class UpdateTenantsBatchingTest {
     return IntStream.rangeClosed(1, n).mapToObj(i -> "tenant-" + i).toList();
   }
 
-  /** Collect the body of every request the client sent, in order. */
   private static List<String> bodies(MockRestTransport transport, int expectAtMost) {
     var seen = new ArrayList<String>();
     var assertions = new MockRestTransport.AssertFunction[expectAtMost];
@@ -85,7 +79,6 @@ public class UpdateTenantsBatchingTest {
     Assertions.assertThat(bodies(transport, 2)).hasSize(1);
   }
 
-  /** activate/deactivate/offload all delegate to update, so they split too. */
   @Test
   public void test_deactivateSplitsIntoSeveralRequests() throws IOException {
     var transport = new MockRestTransport();
