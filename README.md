@@ -342,8 +342,7 @@ float[][] v = vectors.getMulti("custom_2d"); // 2-d vector with a custom name
 
 #### Batch insert
 
-> [!NOTE]
-> Support for Dynamic Batching in `client6` will be added once Server-Side Batching becomes GA in Weaviate (est. `v1.34`)
+`insertMany` sends all objects in a single request:
 
 ```java
 InsertManyResponse response = songs.data.insertMany(
@@ -368,6 +367,40 @@ songs.data.insertMany(
   WeaviateObject.of(map2, obj -> obj.uuid(uuid2))
 )
 ```
+
+#### Server-side batching
+
+For large imports, use server-side batching, which is generally available since Weaviate `v1.36`. The client streams objects to Weaviate over one gRPC stream, and the server tells the client how fast to send based on its current load. You don't have to tune batch sizes or concurrency, and the client doesn't flood a busy server.
+
+```java
+try (BatchContext<Map<String, Object>> batch = songs.batch.start()) {
+  for (Map<String, Object> song : catalog) {
+    batch.add(WeaviateObject.of(song));
+  }
+} // close() waits until every queued object has been sent and acknowledged
+```
+
+`add` returns a `TaskHandle`. Its `done()` future completes when Weaviate accepts the object, and completes exceptionally with the server's error when Weaviate rejects it. `batch.numberOfErrors()` counts the rejected objects.
+
+```java
+List<TaskHandle> handles = new ArrayList<>();
+try (var batch = songs.batch.start()) {
+  for (Map<String, Object> song : catalog) {
+    handles.add(batch.add(WeaviateObject.of(song)));
+  }
+}
+for (TaskHandle handle : handles) {
+  try {
+    handle.done().get();
+  } catch (ExecutionException e) {
+    System.err.println("rejected: " + e.getCause().getMessage());
+  }
+}
+```
+
+`start` takes optional settings, e.g. `songs.batch.start(b -> b.batchSize(200).maxReconnectRetries(5))`. The server still adjusts the pace from there. If the stream breaks, for example because a node restarts, the client reconnects and re-sends unacknowledged objects, so `close()` can take a while on an unstable cluster. Use `withTenant(...)` on the collection handle to batch into a tenant.
+
+On Weaviate versions before `v1.36`, use `insertMany`.
 
 ### Querying data
 
