@@ -25,8 +25,6 @@ public class GetConfigRequestTest {
       (JsonEndpoint<ListCollectionRequest, ListCollectionResponse>) ListCollectionRequest
           .endpoint(ListCollectionResponse.class);
 
-  // Includes a key the client does not model, and a quantizer nested inside a
-  // "dynamic" index, neither of which survives CollectionConfig deserialization.
   private static final String RAW_SCHEMA = """
       {
         "class": "Things",

@@ -185,14 +185,8 @@ public class WeaviateCollectionsClient {
   }
 
   /**
-   * Create a new Weaviate collection from a raw JSON schema definition.
-   *
-   * <p>
-   * The document is forwarded to the server verbatim, so it may use any option
-   * the server accepts &mdash; including ones this client version does not model.
-   * Nothing is validated client-side: invalid configuration surfaces as a
-   * {@link WeaviateApiException}. Use {@link #create(CollectionConfig)} when you
-   * want the type-checked builder API instead.
+   * Create a new Weaviate collection from a raw JSON schema definition, which is
+   * sent to the server as-is.
    *
    * <pre>{@code
    * client.collections.createFromJson("""
@@ -225,7 +219,6 @@ public class WeaviateCollectionsClient {
    *                                  unavailable.
    */
   public CollectionHandle<Map<String, Object>> createFromJson(String json) throws IOException {
-    // Read the name -- and reject an unusable document -- before sending anything.
     var collectionName = CreateCollectionRequest.collectionNameFromJson(json);
     this.restTransport.performRequest(new CreateCollectionRequest<>(json),
         CreateCollectionRequest.<String>endpoint());
@@ -249,14 +242,7 @@ public class WeaviateCollectionsClient {
   }
 
   /**
-   * Fetch a collection's schema exactly as the server returned it.
-   *
-   * <p>
-   * {@link #getConfig(String)} maps the response onto {@link CollectionConfig}
-   * and therefore drops anything this client version does not model. Use this
-   * method when you need the complete picture &mdash; rendering a schema,
-   * diffing two collections, or reading a module option that has no typed
-   * accessor yet.
+   * Fetch a collection's schema as raw JSON, exactly as the server returned it.
    *
    * @param collectionName Collection name.
    * @return the raw JSON body if a collection with this name exists.
@@ -273,7 +259,8 @@ public class WeaviateCollectionsClient {
   }
 
   /**
-   * Fetch the schema of all collections exactly as the server returned it.
+   * Fetch the schema of all collections as raw JSON, exactly as the server
+   * returned it.
    *
    * @return the raw JSON body, an object with a {@code "classes"} array.
    * @throws WeaviateApiException in case the server returned with an

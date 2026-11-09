@@ -6,6 +6,7 @@ import org.junit.Test;
 import com.google.gson.JsonParser;
 
 import io.weaviate.client6.v1.internal.rest.Endpoint;
+import io.weaviate.testutil.transport.MockRestTransport;
 
 public class CreateCollectionRequestTest {
   private static final Endpoint<CreateCollectionRequest<String>, Void> RAW = //
@@ -16,7 +17,6 @@ public class CreateCollectionRequestTest {
 
   @Test
   public void test_endpoint_passesRawBodyThroughVerbatim() {
-    // Includes a key the client does not model to prove nothing is stripped.
     var json = """
         { "class": "Things", "someFutureOption": { "enabled": true } }
         """;
@@ -93,5 +93,17 @@ public class CreateCollectionRequestTest {
     Assertions.assertThatThrownBy(() -> CreateCollectionRequest.collectionNameFromJson("{ \"class\": 42 }"))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("\"class\"");
+  }
+
+  @Test
+  public void test_async_invalidJsonFailsTheFuture() {
+    var transport = new MockRestTransport();
+    var future = new WeaviateCollectionsClientAsync(transport, null).createFromJson("{}");
+
+    Assertions.assertThat(future).failsWithin(java.time.Duration.ZERO)
+        .withThrowableThat().withCauseInstanceOf(IllegalArgumentException.class);
+    var sent = new java.util.concurrent.atomic.AtomicBoolean();
+    transport.assertNext((method, url, body, query) -> sent.set(true));
+    Assertions.assertThat(sent).as("no request sent").isFalse();
   }
 }

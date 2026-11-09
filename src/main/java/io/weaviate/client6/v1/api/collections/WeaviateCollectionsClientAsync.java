@@ -153,25 +153,21 @@ public class WeaviateCollectionsClientAsync {
   }
 
   /**
-   * Create a new Weaviate collection from a raw JSON schema definition.
-   *
-   * <p>
-   * The document is forwarded to the server verbatim, so it may use any option
-   * the server accepts &mdash; including ones this client version does not model.
-   * Nothing is validated client-side: invalid configuration surfaces as a
-   * {@link io.weaviate.client6.v1.api.WeaviateApiException}. Use
-   * {@link #create(CollectionConfig)} when you want the type-checked builder API
-   * instead.
+   * Create a new Weaviate collection from a raw JSON schema definition, which is
+   * sent to the server as-is.
    *
    * @param json JSON object describing the collection. Must contain a
-   *             {@code "class"} key with the collection name.
-   * @throws IllegalArgumentException in case the string is not a JSON object or
-   *                                  does not carry a {@code "class"} name.
+   *             {@code "class"} key with the collection name. Otherwise the
+   *             returned future fails with {@link IllegalArgumentException}.
    * @see WeaviateCollectionsClient#createFromJson(String)
    */
   public CompletableFuture<CollectionHandleAsync<Map<String, Object>>> createFromJson(String json) {
-    // Read the name -- and reject an unusable document -- before sending anything.
-    var collectionName = CreateCollectionRequest.collectionNameFromJson(json);
+    String collectionName;
+    try {
+      collectionName = CreateCollectionRequest.collectionNameFromJson(json);
+    } catch (IllegalArgumentException e) {
+      return CompletableFuture.failedFuture(e);
+    }
     return this.restTransport.performRequestAsync(new CreateCollectionRequest<>(json),
         CreateCollectionRequest.<String>endpoint())
         .thenApply(__ -> use(collectionName));
@@ -188,11 +184,7 @@ public class WeaviateCollectionsClientAsync {
   }
 
   /**
-   * Fetch a collection's schema exactly as the server returned it.
-   *
-   * <p>
-   * {@link #getConfig(String)} maps the response onto {@link CollectionConfig}
-   * and therefore drops anything this client version does not model.
+   * Fetch a collection's schema as raw JSON, exactly as the server returned it.
    *
    * @param collectionName Collection name.
    * @see WeaviateCollectionsClient#getConfigAsJson(String)
@@ -203,7 +195,8 @@ public class WeaviateCollectionsClientAsync {
   }
 
   /**
-   * Fetch the schema of all collections exactly as the server returned it.
+   * Fetch the schema of all collections as raw JSON, exactly as the server
+   * returned it.
    *
    * @see WeaviateCollectionsClient#listAsJson()
    */
