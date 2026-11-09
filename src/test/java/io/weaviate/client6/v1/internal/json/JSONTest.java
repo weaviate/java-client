@@ -2271,7 +2271,6 @@ public class JSONTest {
                 }
                   """
         },
-        // Shard: the server's key is "vectorQueueLength" -- see #619
         {
             Shard.class,
             new Shard("s1", "Things", 7, VectorIndexingStatus.INDEXING, 42, false, true, 1, 1),
