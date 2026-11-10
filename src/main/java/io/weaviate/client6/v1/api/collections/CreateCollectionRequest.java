@@ -20,7 +20,7 @@ public record CreateCollectionRequest<T>(T collection) {
             : JSON.serialize(request.collection));
   }
 
-  public static String collectionNameFromJson(String json) {
+  static String collectionNameFromJson(String json) {
     if (json == null || json.isBlank()) {
       throw new IllegalArgumentException("collection JSON must not be null or blank");
     }

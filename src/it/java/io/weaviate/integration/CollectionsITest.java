@@ -72,8 +72,8 @@ public class CollectionsITest extends ConcurrentTest {
   public void testCreateFromJsonAndGetConfigAsJson() throws IOException {
     var collectionName = ns("Things");
 
-    var asyncClient = asyncIndexing.getClient();
-    asyncClient.collections.createFromJson("""
+    var asyncIndexingClient = asyncIndexing.getClient();
+    asyncIndexingClient.collections.createFromJson("""
         {
           "class": "%s",
           "description": "created from raw JSON",
@@ -94,7 +94,7 @@ public class CollectionsITest extends ConcurrentTest {
         }
         """.formatted(collectionName));
 
-    var raw = asyncClient.collections.getConfigAsJson(collectionName);
+    var raw = asyncIndexingClient.collections.getConfigAsJson(collectionName);
     Assertions.assertThat(raw).as("raw schema").get(InstanceOfAssertFactories.STRING)
         .contains(collectionName)
         .contains("created from raw JSON");
@@ -109,11 +109,11 @@ public class CollectionsITest extends ConcurrentTest {
         .getAsJsonObject("hnsw").getAsJsonObject("rq").get("enabled").getAsBoolean())
         .as("rq survives the raw round-trip").isTrue();
 
-    Assertions.assertThat(asyncClient.collections.listAsJson())
+    Assertions.assertThat(asyncIndexingClient.collections.listAsJson())
         .as("full schema").contains(collectionName);
 
-    asyncClient.collections.delete(collectionName);
-    Assertions.assertThat(asyncClient.collections.getConfigAsJson(collectionName))
+    asyncIndexingClient.collections.delete(collectionName);
+    Assertions.assertThat(asyncIndexingClient.collections.getConfigAsJson(collectionName))
         .as("after delete").isEmpty();
   }
 
