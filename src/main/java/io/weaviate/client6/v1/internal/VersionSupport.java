@@ -40,9 +40,12 @@ public final class VersionSupport {
 
     @Override
     public int compareTo(SemanticVersion that) {
-      var this_v = Integer.valueOf("%d%d".formatted(this.major, this.minor));
-      var that_v = Integer.valueOf("%d%d".formatted(that.major, that.minor));
-      return this_v.compareTo(that_v);
+
+      int majorComparison = Integer.compare(this.major, that.major);
+      if (majorComparison != 0) {
+        return majorComparison;
+      }
+      return Integer.compare(this.minor, that.minor);
     }
 
     public String toString() {
