@@ -722,7 +722,7 @@ public class SearchITest extends ConcurrentTest {
   @Test
   public void test_filterCreateUpdateTime() throws IOException {
     // Arrange
-    var now = OffsetDateTime.now().minusHours(1);
+    var now = OffsetDateTime.now().minusHours(1).withSecond(0).withNano(0);
     var nsCounter = ns("Counter");
 
     var counter = client.collections.create(nsCounter,

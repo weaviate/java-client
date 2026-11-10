@@ -455,7 +455,7 @@ public class DataITest extends ConcurrentTest {
 
     var types = client.collections.use(nsDataTypes);
 
-    var now = OffsetDateTime.now();
+    var now = OffsetDateTime.now().withSecond(0).withNano(0);
     var uuid = UUID.randomUUID();
 
     Map<String, Object> want = Map.ofEntries(

@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.internal.json;
 
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -2268,6 +2269,31 @@ public class JSONTest {
                   }
                 }
                   """
+        },
+        {
+            OffsetDateTime.class,
+            OffsetDateTime.parse("2024-03-01T00:00:00Z"),
+            "\"2024-03-01T00:00:00Z\"",
+        },
+        {
+            OffsetDateTime.class,
+            OffsetDateTime.parse("2024-03-01T00:00:01Z"),
+            "\"2024-03-01T00:00:01Z\"",
+        },
+        {
+            OffsetDateTime.class,
+            OffsetDateTime.parse("2024-03-01T12:34:56.789Z"),
+            "\"2024-03-01T12:34:56.789Z\"",
+        },
+        {
+            OffsetDateTime.class,
+            OffsetDateTime.parse("2024-03-01T00:00:00.000000001Z"),
+            "\"2024-03-01T00:00:00.000000001Z\"",
+        },
+        {
+            OffsetDateTime.class,
+            OffsetDateTime.parse("2024-03-01T00:00:00+02:00"),
+            "\"2024-03-01T00:00:00+02:00\"",
         },
     };
   }
