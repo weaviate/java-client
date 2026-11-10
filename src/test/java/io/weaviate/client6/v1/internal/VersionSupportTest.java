@@ -18,6 +18,7 @@ public class VersionSupportTest {
         { "2.36.2", "2.36.0-rc.3", true }, // patch ignored
         { "1.12", "1.11", false }, // omit patch
         {"1.32","2.0.0",true},
+        {"2.0.0","2.0.0",true},
         { "0.55.6", "0.1.0", false }, // can start with zero
     };
   }
