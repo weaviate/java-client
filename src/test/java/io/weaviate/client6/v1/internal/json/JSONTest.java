@@ -2269,6 +2269,11 @@ public class JSONTest {
                 }
                   """
         },
+        {
+            io.weaviate.client6.v1.api.rbac.groups.UserType.class,
+            io.weaviate.client6.v1.api.rbac.groups.UserType.DB_ENV_USER,
+            "\"db_env_user\""
+        },
     };
   }
 
