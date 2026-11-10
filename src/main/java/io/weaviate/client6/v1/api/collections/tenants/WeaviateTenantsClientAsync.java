@@ -55,8 +55,12 @@ public class WeaviateTenantsClientAsync {
   }
 
   public CompletableFuture<Void> update(List<Tenant> tenants) throws IOException {
-    return this.restTransport.performRequestAsync(new UpdateTenantsRequest(tenants),
-        UpdateTenantsRequest.endpoint(collection));
+    CompletableFuture<Void> updated = CompletableFuture.completedFuture(null);
+    for (var batch : UpdateTenantsRequest.batches(tenants)) {
+      updated = updated.thenCompose(__ -> this.restTransport.performRequestAsync(
+          new UpdateTenantsRequest(batch), UpdateTenantsRequest.endpoint(collection)));
+    }
+    return updated;
   }
 
   public CompletableFuture<Void> delete(String... tenants) throws IOException {

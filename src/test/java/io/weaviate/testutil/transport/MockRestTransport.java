@@ -51,11 +51,15 @@ public class MockRestTransport implements RestTransport {
     return null;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public <RequestT, ResponseT, ExceptionT> CompletableFuture<ResponseT> performRequestAsync(RequestT request,
       Endpoint<RequestT, ResponseT> endpoint) {
     requests.add(new Request<>(request, endpoint));
-    return null;
+    if (endpoint instanceof BooleanEndpoint) {
+      return CompletableFuture.completedFuture((ResponseT) Boolean.TRUE);
+    }
+    return CompletableFuture.completedFuture(null);
   }
 
   @Override

@@ -105,7 +105,7 @@ public class WeaviateTenantsClient {
   /**
    * Update tenant configuration.
    *
-   * @param tenants Tenant names.
+   * @param tenants Tenant configurations.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
@@ -119,7 +119,7 @@ public class WeaviateTenantsClient {
   /**
    * Update tenant configuration.
    *
-   * @param tenants Tenant names.
+   * @param tenants Tenant configurations.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
@@ -127,7 +127,9 @@ public class WeaviateTenantsClient {
    *                              or the server being unavailable.
    */
   public void update(List<Tenant> tenants) throws IOException {
-    this.restTransport.performRequest(new UpdateTenantsRequest(tenants), UpdateTenantsRequest.endpoint(collection));
+    for (var batch : UpdateTenantsRequest.batches(tenants)) {
+      this.restTransport.performRequest(new UpdateTenantsRequest(batch), UpdateTenantsRequest.endpoint(collection));
+    }
   }
 
   /**

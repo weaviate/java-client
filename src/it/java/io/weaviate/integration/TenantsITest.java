@@ -1,5 +1,8 @@
 package io.weaviate.integration;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -70,5 +73,25 @@ public class TenantsITest extends ConcurrentTest {
         .describedAs("%s not exists", isaac.name()).isFalse();
     Assertions.assertThat(things.tenants.exists(owen.name()))
         .describedAs("%s not exists", owen.name()).isFalse();
+  }
+
+  @Test
+  public void test_updateMoreThanOneHundredTenants() throws Exception {
+    var nsMany = ns("ManyTenants");
+    client.collections.create(nsMany, c -> c.multiTenancy(mt -> mt.autoTenantCreation(false)));
+    var many = client.collections.use(nsMany);
+
+    List<String> names = IntStream.rangeClosed(1, 250).mapToObj(i -> "tenant-" + i).toList();
+    many.tenants.create(names.stream().map(Tenant::active).toList());
+    Assertions.assertThat(many.tenants.list()).as("created").hasSize(250);
+
+    many.tenants.deactivate(names);
+
+    eventually(() -> many.tenants.list().stream().allMatch(Tenant::isInactive),
+        200, 5, "not all tenants were deactivated");
+
+    many.tenants.activate(names);
+    eventually(() -> many.tenants.list().stream().allMatch(Tenant::isActive),
+        200, 5, "not all tenants were activated");
   }
 }
