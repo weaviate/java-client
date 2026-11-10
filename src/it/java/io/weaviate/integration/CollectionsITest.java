@@ -29,6 +29,9 @@ import io.weaviate.client6.v1.api.collections.config.Shard;
 import io.weaviate.client6.v1.api.collections.config.ShardStatus;
 import io.weaviate.client6.v1.api.collections.generative.DummyGenerative;
 import io.weaviate.client6.v1.api.collections.query.BaseQueryOptions;
+import io.weaviate.client6.v1.api.collections.quantizers.RQ;
+import io.weaviate.client6.v1.api.collections.vectorindex.Dynamic;
+import io.weaviate.client6.v1.api.collections.vectorindex.Flat;
 import io.weaviate.client6.v1.api.collections.vectorindex.Hnsw;
 import io.weaviate.client6.v1.api.collections.vectorizers.SelfProvidedVectorizer;
 import io.weaviate.containers.Container;
@@ -36,6 +39,9 @@ import io.weaviate.containers.Weaviate;
 
 public class CollectionsITest extends ConcurrentTest {
   private static WeaviateClient client = Container.WEAVIATE.getClient();
+
+  private static final Weaviate asyncIndexing = Weaviate.custom()
+      .enableAsyncIndexing(true).build();
 
   @Test
   public void testCreateGetDelete() throws IOException {
@@ -264,6 +270,55 @@ public class CollectionsITest extends ConcurrentTest {
         .extracting("default", InstanceOfAssertFactories.type(VectorConfig.class))
         .extracting(VectorConfig::quantization)
         .returns(Quantization.Kind.BQ, Quantization::_kind);
+  }
+
+  @Test
+  public void test_dynamicIndexQuantizationRoundTrip() throws IOException {
+    var asyncClient = asyncIndexing.getClient();
+    var nsThings = ns("Things");
+
+    var things = asyncClient.collections.create(nsThings,
+        c -> c.vectorConfig(VectorConfig.selfProvided(
+            self -> self
+                .vectorIndex(Dynamic.of(idx -> idx
+                    .hnsw(Hnsw.of(hnsw -> hnsw.ef(64)))
+                    .flat(Flat.of(flat -> flat.vectorCacheMaxObjects(1000)))
+                    .threshold(5000)))
+                .quantization(Quantization.rq(rq -> rq.rescoreLimit(20).bits(8))))));
+
+    var config = things.config.get();
+
+    Assertions.assertThat(config).get()
+        .extracting(CollectionConfig::vectors)
+        .extracting("default", InstanceOfAssertFactories.type(VectorConfig.class))
+        .satisfies(vector -> {
+          Assertions.assertThat(vector.vectorIndex())
+              .as("index type").isInstanceOf(Dynamic.class);
+          Assertions.assertThat(vector.quantization())
+              .as("quantizer nested under hnsw").isNotNull()
+              .asInstanceOf(InstanceOfAssertFactories.type(RQ.class))
+              .returns(20, RQ::rescoreLimit)
+              .returns(8, RQ::bits);
+        });
+  }
+
+  @Test
+  public void test_quantizerSettingsRoundTrip() throws IOException {
+    var nsThings = ns("Things");
+
+    var things = client.collections.create(nsThings,
+        c -> c.vectorConfig(VectorConfig.selfProvided(
+            self -> self.quantization(Quantization.rq(rq -> rq.rescoreLimit(42).bits(8))))));
+
+    var config = things.config.get();
+
+    Assertions.assertThat(config).get()
+        .extracting(CollectionConfig::vectors)
+        .extracting("default", InstanceOfAssertFactories.type(VectorConfig.class))
+        .extracting(VectorConfig::quantization)
+        .asInstanceOf(InstanceOfAssertFactories.type(RQ.class))
+        .returns(42, RQ::rescoreLimit)
+        .returns(8, RQ::bits);
   }
 
   @Test
