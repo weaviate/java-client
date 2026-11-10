@@ -41,9 +41,7 @@ public final class VersionSupport {
     @Override
     public int compareTo(SemanticVersion that) {
       int majorComparison = Integer.compare(this.major, that.major);
-      if (majorComparison != 0) {
-        return majorComparison;
-      }
+      if (majorComparison != 0) return majorComparison;
       return Integer.compare(this.minor, that.minor);
     }
 
