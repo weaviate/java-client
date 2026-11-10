@@ -15,6 +15,28 @@ public record PQ(
     @SerializedName("trainingLimit") Integer trainingLimit,
     @SerializedName("bitCompression") Boolean bitCompression) implements Quantization {
 
+  @Deprecated
+  public PQ(
+      boolean enabled,
+      Integer centroids,
+      Integer segments,
+      EncoderType encoderType,
+      EncoderDistribution encoderDistribution,
+      Integer trainingLimit,
+      Boolean bitCompression) {
+    this(
+        enabled,
+        centroids,
+        segments,
+        encoder(encoderType, encoderDistribution),
+        trainingLimit,
+        bitCompression);
+  }
+
+  private static Encoder encoder(EncoderType type, EncoderDistribution distribution) {
+    return type == null && distribution == null ? null : new Encoder(type, distribution);
+  }
+
   public EncoderType encoderType() {
     return encoder != null ? encoder.type() : null;
   }
@@ -65,9 +87,7 @@ public record PQ(
         builder.enabled,
         builder.centroids,
         builder.segments,
-        builder.encoderType == null && builder.encoderDistribution == null
-            ? null
-            : new Encoder(builder.encoderType, builder.encoderDistribution),
+        encoder(builder.encoderType, builder.encoderDistribution),
         builder.trainingLimit,
         builder.bitCompression);
   }
