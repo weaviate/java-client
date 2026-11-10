@@ -8,6 +8,7 @@ import java.util.function.Function;
 import io.weaviate.client6.v1.api.collections.CollectionHandleDefaults;
 import io.weaviate.client6.v1.internal.ObjectBuilder;
 import io.weaviate.client6.v1.internal.TransportOptions;
+import io.weaviate.client6.v1.internal.VersionSupport;
 import io.weaviate.client6.v1.internal.grpc.GrpcTransport;
 import io.weaviate.client6.v1.internal.orm.CollectionDescriptor;
 
@@ -34,14 +35,11 @@ public class WeaviateBatchClient<PropertiesT> {
 
   public BatchContext<PropertiesT> start(
       Function<BatchContext.Builder<PropertiesT>, ObjectBuilder<BatchContext<PropertiesT>>> fn) {
-    OptionalInt maxSizeBytes = grpcTransport.maxMessageSizeBytes();
-    if (maxSizeBytes.isEmpty()) {
-      throw new IllegalStateException("Server must have grpcMaxMessageSize configured to use server-side batching");
-    }
+    int maxSizeBytes = requireServerSideBatching();
 
     StreamFactory<Message, Event> streamFactory = new TranslatingStreamFactory(grpcTransport::createStream);
     BatchContext.Builder<PropertiesT> builder = new BatchContext.Builder<>(
-        streamFactory, maxSizeBytes.getAsInt(), collectionDescriptor, defaults);
+        streamFactory, maxSizeBytes, collectionDescriptor, defaults);
     BatchContext<PropertiesT> context = fn.apply(builder).build();
 
     if (isWeaviateCloudOnGoogleCloud(grpcTransport.host())) {
@@ -53,15 +51,12 @@ public class WeaviateBatchClient<PropertiesT> {
   }
 
   public BatchContext<PropertiesT> start() {
-    OptionalInt maxSizeBytes = grpcTransport.maxMessageSizeBytes();
-    if (maxSizeBytes.isEmpty()) {
-      throw new IllegalStateException("Server must have grpcMaxMessageSize configured to use server-side batching");
-    }
+    int maxSizeBytes = requireServerSideBatching();
 
     StreamFactory<Message, Event> streamFactory = new TranslatingStreamFactory(grpcTransport::createStream);
     BatchContext<PropertiesT> context = new BatchContext.Builder<>(
         streamFactory,
-        maxSizeBytes.getAsInt(),
+        maxSizeBytes,
         collectionDescriptor,
         defaults).build();
 
@@ -71,6 +66,22 @@ public class WeaviateBatchClient<PropertiesT> {
 
     context.start();
     return context;
+  }
+
+  private int requireServerSideBatching() {
+    grpcTransport.serverVersion().ifPresent(version -> {
+      if (!VersionSupport.isAtLeast(version, VersionSupport.SERVER_SIDE_BATCHING_VERSION)) {
+        throw new IllegalStateException(
+            "Server-side batching requires Weaviate %s or newer, server version is %s"
+                .formatted(VersionSupport.SERVER_SIDE_BATCHING_VERSION, version));
+      }
+    });
+
+    OptionalInt maxSizeBytes = grpcTransport.maxMessageSizeBytes();
+    if (maxSizeBytes.isEmpty()) {
+      throw new IllegalStateException("Server must have grpcMaxMessageSize configured to use server-side batching");
+    }
+    return maxSizeBytes.getAsInt();
   }
 
   private static final int GCP_RECONNECT_INTERVAL_SECONDS = 160;

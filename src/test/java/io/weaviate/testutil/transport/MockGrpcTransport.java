@@ -3,6 +3,7 @@ package io.weaviate.testutil.transport;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.CompletableFuture;
 
@@ -19,6 +20,15 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoBatch.BatchStr
 public class MockGrpcTransport implements GrpcTransport {
   private final String host = "example.com";
   private final static int maxMessageSizeBytes = 10240; // 10KB
+  private final String serverVersion;
+
+  public MockGrpcTransport() {
+    this(null);
+  }
+
+  public MockGrpcTransport(String serverVersion) {
+    this.serverVersion = serverVersion;
+  }
 
   @FunctionalInterface
   public interface AssertFunction {
@@ -72,6 +82,11 @@ public class MockGrpcTransport implements GrpcTransport {
   @Override
   public OptionalInt maxMessageSizeBytes() {
     return OptionalInt.of(maxMessageSizeBytes);
+  }
+
+  @Override
+  public Optional<String> serverVersion() {
+    return Optional.ofNullable(serverVersion);
   }
 
   @Override

@@ -120,6 +120,7 @@ public class WeaviateClient implements AutoCloseable {
       throw new WeaviateUnsupportedVersionException(meta.version());
     }
 
+    grpcOpt = grpcOpt.withServerVersion(meta.version());
     if (meta.grpcMaxMessageSize() != null) {
       grpcOpt = grpcOpt.withMaxMessageSize(meta.grpcMaxMessageSize());
     }

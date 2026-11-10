@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -73,6 +74,11 @@ public final class DefaultGrpcTransport implements GrpcTransport {
   @Override
   public OptionalInt maxMessageSizeBytes() {
     return transportOptions.maxMessageSize();
+  }
+
+  @Override
+  public Optional<String> serverVersion() {
+    return transportOptions.serverVersion();
   }
 
   @Override

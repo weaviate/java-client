@@ -1,6 +1,7 @@
 package io.weaviate.client6.v1.internal.grpc;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Function;
 
@@ -15,6 +16,7 @@ import io.weaviate.client6.v1.internal.TransportOptions;
 
 public class GrpcChannelOptions extends TransportOptions<Metadata> {
   private final OptionalInt maxMessageSize;
+  private final String serverVersion;
   private final Function<NettyChannelBuilder, NettyChannelBuilder> channelBuilder;
 
   public GrpcChannelOptions(
@@ -35,6 +37,7 @@ public class GrpcChannelOptions extends TransportOptions<Metadata> {
         tokenProvider,
         tmf,
         OptionalInt.empty(),
+        null,
         timeout,
         proxy,
         channelBuilder);
@@ -47,6 +50,7 @@ public class GrpcChannelOptions extends TransportOptions<Metadata> {
       TokenProvider tokenProvider,
       TrustManagerFactory tmf,
       OptionalInt maxMessageSize,
+      String serverVersion,
       Timeout timeout,
       Proxy proxy,
       Function<NettyChannelBuilder, NettyChannelBuilder> channelBuilder) {
@@ -60,6 +64,7 @@ public class GrpcChannelOptions extends TransportOptions<Metadata> {
         timeout,
         proxy);
     this.maxMessageSize = maxMessageSize;
+    this.serverVersion = serverVersion;
     this.channelBuilder = channelBuilder;
   }
 
@@ -71,6 +76,7 @@ public class GrpcChannelOptions extends TransportOptions<Metadata> {
         tokenProvider,
         trustManagerFactory,
         OptionalInt.of(maxMessageSize),
+        serverVersion,
         timeout,
         proxy,
         channelBuilder);
@@ -78,6 +84,24 @@ public class GrpcChannelOptions extends TransportOptions<Metadata> {
 
   public OptionalInt maxMessageSize() {
     return maxMessageSize;
+  }
+
+  public GrpcChannelOptions withServerVersion(String serverVersion) {
+    return new GrpcChannelOptions(scheme,
+        host,
+        port,
+        headers,
+        tokenProvider,
+        trustManagerFactory,
+        maxMessageSize,
+        serverVersion,
+        timeout,
+        proxy,
+        channelBuilder);
+  }
+
+  public Optional<String> serverVersion() {
+    return Optional.ofNullable(serverVersion);
   }
 
   public Function<NettyChannelBuilder, NettyChannelBuilder> channelBuilder() {
