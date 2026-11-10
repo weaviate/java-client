@@ -1,5 +1,6 @@
 package io.weaviate.client6.v1.internal.grpc;
 
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.CompletableFuture;
 
@@ -30,4 +31,8 @@ public interface GrpcTransport extends AutoCloseable {
    * Maximum inbound/outbound message size supported by the underlying channel.
    */
   OptionalInt maxMessageSizeBytes();
+
+  default Optional<String> serverVersion() {
+    return Optional.empty();
+  }
 }

@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public final class VersionSupport {
   public static final SemanticVersion MINIMAL_SUPPORTED_VERSION = new SemanticVersion(1, 32);
+  public static final SemanticVersion SERVER_SIDE_BATCHING_VERSION = new SemanticVersion(1, 36);
 
   /**
    * Returns true if the {@code version} is the same as or older than the
@@ -12,6 +13,13 @@ public final class VersionSupport {
   public static boolean isSupported(String version) {
     var semver = SemanticVersion.of(version);
     return semver.compareTo(MINIMAL_SUPPORTED_VERSION) >= 0;
+  }
+
+  public static boolean isAtLeast(String version, SemanticVersion minimal) {
+    var semver = SemanticVersion.of(version);
+    return semver.major() != minimal.major()
+        ? semver.major() > minimal.major()
+        : semver.minor() >= minimal.minor();
   }
 
   public record SemanticVersion(int major, int minor, String patch) implements Comparable<SemanticVersion> {

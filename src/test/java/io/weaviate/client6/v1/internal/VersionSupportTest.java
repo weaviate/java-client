@@ -37,4 +37,22 @@ public class VersionSupportTest {
           .isLessThan(v_minimal);
     }
   }
+
+  public static Object[][] isAtLeastCases() {
+    return new Object[][] {
+        { "1.35.6", false },
+        { "1.36.0", true },
+        { "1.36.0-rc.1", true },
+        { "1.39.7", true },
+        { "2.0.1", true },
+    };
+  }
+
+  @Test
+  @DataMethod(source = VersionSupportTest.class, method = "isAtLeastCases")
+  public void test_isAtLeast(String version, boolean want) {
+    Assertions.assertThat(VersionSupport.isAtLeast(version, VersionSupport.SERVER_SIDE_BATCHING_VERSION))
+        .describedAs("%s >= %s", version, VersionSupport.SERVER_SIDE_BATCHING_VERSION)
+        .isEqualTo(want);
+  }
 }
