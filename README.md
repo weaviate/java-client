@@ -402,6 +402,8 @@ for (TaskHandle handle : handles) {
 
 On Weaviate versions before `v1.36`, use `insertMany`.
 
+Create the collection before you run several batches into it at once. If auto-schema has to create it, the concurrent batches race to create it, and the server rejects some of their objects with `class name ... already exists`.
+
 ### Querying data
 
 Query methods are concentrated behind the `.query` namespace.
