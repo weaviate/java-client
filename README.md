@@ -402,7 +402,24 @@ for (TaskHandle handle : handles) {
 
 On Weaviate versions before `v1.36`, use `insertMany`.
 
-Create the collection before you run several batches into it at once. If auto-schema has to create it, the concurrent batches race to create it, and the server rejects some of their objects with `class name ... already exists`.
+If several batches write at once into a collection that auto-schema has to create, the server can reject some objects with `class name ... already exists`. Retry those objects once; by then the collection exists:
+
+```java
+RetryPolicy retryAutoSchemaRace = new RetryPolicy(1) {
+  @Override
+  protected boolean canRetryThrowable(Throwable t) {
+    return t instanceof ServerException
+        && t.getMessage() != null
+        && t.getMessage().contains("already exists");
+  }
+};
+
+try (var batch = songs.batch.start(b -> b.retryPolicy(retryAutoSchemaRace))) {
+  ...
+}
+```
+
+Creating the collection before the import avoids the race altogether.
 
 ### Querying data
 
