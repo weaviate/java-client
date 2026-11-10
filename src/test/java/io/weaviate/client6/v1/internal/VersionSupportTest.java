@@ -18,6 +18,11 @@ public class VersionSupportTest {
         { "2.36.2", "2.36.0-rc.3", true }, // patch ignored
         { "1.12", "1.11", false }, // omit patch
         { "0.55.6", "0.1.0", false }, // can start with zero
+        { "1.32.0", "2.0.0", true }, // major version bump
+        { "1.32.0", "2.5.1", true }, // major version bump
+        { "1.32.0", "10.0.0", true }, // double-digit major
+        { "1.32.0", "1.100.0", true }, // double-digit minor
+        { "1.32.0", "1.31.9", false }, // older minor is still unsupported
     };
   }
 
