@@ -23,6 +23,7 @@ public class VersionSupportTest {
         { "1.32.0", "10.0.0", true }, // double-digit major
         { "1.32.0", "1.100.0", true }, // double-digit minor
         { "1.32.0", "1.31.9", false }, // older minor is still unsupported
+        { "2.0.0", "1.99.0", false }, // lower major with a larger minor
     };
   }
 
