@@ -7,7 +7,7 @@ public record Shard(
     @SerializedName("class") String collection,
     @SerializedName("objectCount") int objectCount,
     @SerializedName("vectorIndexingStatus") VectorIndexingStatus vectorIndexingStatus,
-    @SerializedName("vectorQueueLenght") int vectorQueueLenght,
+    @SerializedName("vectorQueueLength") int vectorQueueLength,
     @SerializedName("compressed") boolean compressed,
     @SerializedName("loaded") boolean loaded,
     @SerializedName("numberOfReplicas") int numberOfReplicas,
