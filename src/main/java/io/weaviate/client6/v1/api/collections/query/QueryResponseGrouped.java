@@ -39,6 +39,7 @@ public record QueryResponseGrouped<PropertiesT>(
               group.getMinDistance(),
               group.getMaxDistance(),
               group.getNumberOfObjects(),
+              group.hasRerank() ? group.getRerank().getScore() : null,
               objects);
         })
         // Collectors.toMap() throws an NPE if either key or value in the map are null.

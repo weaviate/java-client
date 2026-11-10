@@ -78,6 +78,9 @@ public record QueryResponse<PropertiesT>(
     if (metadataResult.getExplainScorePresent()) {
       metadata.explainScore(metadataResult.getExplainScore());
     }
+    if (metadataResult.getRerankScorePresent()) {
+      metadata.rerankScore(metadataResult.getRerankScore());
+    }
     return new WeaviateObject<>(
         object.uuid(),
         collection.collectionName(),

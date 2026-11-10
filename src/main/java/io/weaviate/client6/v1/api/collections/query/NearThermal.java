@@ -13,7 +13,6 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 public record NearThermal(Target searchTarget,
     Float distance,
     Float certainty,
-    Rerank rerank,
     Diversity diversity,
     BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
@@ -39,7 +38,6 @@ public record NearThermal(Target searchTarget,
         builder.media,
         builder.distance,
         builder.certainty,
-        builder.rerank,
         builder.diversity,
         builder.baseOptions());
   }

@@ -8,7 +8,7 @@ public interface QueryOperator {
   }
 
   default Rerank rerank() {
-    return null;
+    return common() != null ? common().rerank() : null;
   }
 
   /** Append QueryOperator to the request message. */

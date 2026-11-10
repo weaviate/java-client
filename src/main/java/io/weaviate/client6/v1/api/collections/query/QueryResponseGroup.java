@@ -17,6 +17,8 @@ public record QueryResponseGroup<T>(
     Float maxDistance,
     /** The size of the group. */
     long numberOfObjects,
+    /** Score assigned to this group by the reranker, if the query was reranked. */
+    Double rerankScore,
     /** Objects retrieved in the query. */
     List<QueryObjectGrouped<T>> objects) {
 }

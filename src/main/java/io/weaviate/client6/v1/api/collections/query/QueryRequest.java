@@ -33,9 +33,6 @@ public record QueryRequest(QueryOperator operator, GroupBy groupBy) {
     if (request.operator.common() != null) {
       request.operator.common().appendTo(message);
     }
-    if (request.operator.rerank() != null) {
-      request.operator.rerank().appendTo(message);
-    }
     request.operator.appendTo(message);
 
     defaults.tenant().ifPresent(message::setTenant);

@@ -11,7 +11,6 @@ import io.weaviate.client6.v1.internal.grpc.protocol.WeaviateProtoSearchGet;
 public record NearVector(NearVectorTarget searchTarget,
     Float distance,
     Float certainty,
-    Rerank rerank,
     Diversity diversity,
     BaseQueryOptions common)
     implements QueryOperator, AggregateObjectFilter {
@@ -44,7 +43,6 @@ public record NearVector(NearVectorTarget searchTarget,
     this(builder.searchTarget,
         builder.distance,
         builder.certainty,
-        builder.rerank,
         builder.diversity,
         builder.baseOptions());
   }

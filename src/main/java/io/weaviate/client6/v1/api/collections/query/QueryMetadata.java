@@ -9,14 +9,17 @@ public record QueryMetadata(
     /** BM25 ranking score. */
     Float score,
     /** Components of the BM25 ranking score. */
-    String explainScore) {
+    String explainScore,
+    /** Score assigned by the reranker, if the query was reranked. */
+    Double rerankScore) {
 
   private QueryMetadata(Builder builder) {
     this(
         builder.distance,
         builder.certainty,
         builder.score,
-        builder.explainScore);
+        builder.explainScore,
+        builder.rerankScore);
   }
 
   static class Builder implements ObjectBuilder<QueryMetadata> {
@@ -24,6 +27,7 @@ public record QueryMetadata(
     private Float certainty;
     private Float score;
     private String explainScore;
+    private Double rerankScore;
 
     final Builder distance(Float distance) {
       this.distance = distance;
@@ -42,6 +46,11 @@ public record QueryMetadata(
 
     final Builder explainScore(String explainScore) {
       this.explainScore = explainScore;
+      return this;
+    }
+
+    final Builder rerankScore(Double rerankScore) {
+      this.rerankScore = rerankScore;
       return this;
     }
 

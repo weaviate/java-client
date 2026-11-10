@@ -19,6 +19,8 @@ public record GenerativeResponseGroup<PropertiesT>(
     Float maxDistance,
     /** The size of the group. */
     long numberOfObjects,
+    /** Score assigned to this group by the reranker, if the query was reranked. */
+    Double rerankScore,
     /** Objects retrieved in the query. */
     List<QueryObjectGrouped<PropertiesT>> objects,
     /** Output of the summary task for this group. */
