@@ -105,7 +105,7 @@ public class WeaviateTenantsClient {
   /**
    * Update tenant configuration.
    *
-   * @param tenants Tenant names.
+   * @param tenants Tenant configurations.
    * @throws WeaviateApiException in case the server returned with an
    *                              error status code.
    * @throws IOException          in case the request was not sent successfully
