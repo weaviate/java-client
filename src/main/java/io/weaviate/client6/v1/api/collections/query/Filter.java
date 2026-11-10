@@ -963,7 +963,7 @@ public class Filter implements FilterOperand {
 
     @Override
     public String toString() {
-      return "(lat=%d, lon=%d, distance=%d)".formatted(lat, lon, distance);
+      return "(lat=%s, lon=%s, distance=%s)".formatted(lat, lon, distance);
     }
   }
 }
