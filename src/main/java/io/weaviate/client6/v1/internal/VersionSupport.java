@@ -39,10 +39,10 @@ public final class VersionSupport {
     }
 
     @Override
-      public int compareTo(SemanticVersion that) {
-        var byMajor = Integer.compare(this.major, that.major);
-        return byMajor != 0 ? byMajor : Integer.compare(this.minor, that.minor);
-      }
+    public int compareTo(SemanticVersion that) {
+      var byMajor = Integer.compare(this.major, that.major);
+      return byMajor != 0 ? byMajor : Integer.compare(this.minor, that.minor);
+    }
 
     public String toString() {
       return String.join(".", String.valueOf(major), String.valueOf(minor), patch != null ? patch : "0");
