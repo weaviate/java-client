@@ -9,7 +9,7 @@ import io.weaviate.client6.v1.internal.ObjectBuilder;
 
 public record NvidiaReranker(
     @SerializedName("model") String model,
-    @SerializedName("baseUrl") String baseUrl) implements Reranker {
+    @SerializedName(value = "baseURL", alternate = "baseUrl") String baseUrl) implements Reranker {
 
   @Override
   public Kind _kind() {

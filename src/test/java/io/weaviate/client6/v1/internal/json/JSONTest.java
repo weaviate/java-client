@@ -1476,6 +1476,20 @@ public class JSONTest {
                 }
                   """,
         },
+        {
+            Reranker.class,
+            Reranker.nvidia(rerank -> rerank
+                .baseUrl("example.com")
+                .model("nvidia/rerank-qa-mistral-4b")),
+            """
+                {
+                  "reranker-nvidia": {
+                    "baseURL": "example.com",
+                    "model": "nvidia/rerank-qa-mistral-4b"
+                  }
+                }
+                  """,
+        },
 
         // BatchReference.CustomTypeAdapterFactory
         {
