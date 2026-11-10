@@ -375,9 +375,9 @@ For large imports, use server-side batching, which is generally available since 
 ```java
 try (BatchContext<Map<String, Object>> batch = songs.batch.start()) {
   for (Map<String, Object> song : catalog) {
-    batch.add(WeaviateObject.of(song));
+    batch.add(WeaviateObject.of(o -> o.properties(song)));
   }
-} // close() waits until every queued object has been sent and acknowledged
+} // close() returns once every object has a final result and the server has closed the stream
 ```
 
 `add` returns a `TaskHandle`. Its `done()` future completes when Weaviate accepts the object, and completes exceptionally with the server's error when Weaviate rejects it. `batch.numberOfErrors()` counts the rejected objects.
@@ -386,7 +386,7 @@ try (BatchContext<Map<String, Object>> batch = songs.batch.start()) {
 List<TaskHandle> handles = new ArrayList<>();
 try (var batch = songs.batch.start()) {
   for (Map<String, Object> song : catalog) {
-    handles.add(batch.add(WeaviateObject.of(song)));
+    handles.add(batch.add(WeaviateObject.of(o -> o.properties(song))));
   }
 }
 for (TaskHandle handle : handles) {
