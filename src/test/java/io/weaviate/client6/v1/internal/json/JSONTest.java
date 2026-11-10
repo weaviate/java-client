@@ -1206,11 +1206,13 @@ public class JSONTest {
                     "pq": {
                       "enabled": true,
                       "centroids": 8,
-                      "encoder_distribution": "normal",
-                      "encoder_type": "tile",
+                      "encoder": {
+                        "type": "tile",
+                        "distribution": "normal"
+                      },
                       "segments": 16,
-                      "training_limit": 1024,
-                      "bit_compression": true
+                      "trainingLimit": 1024,
+                      "bitCompression": true
                     }
                   }
                 }
@@ -1230,8 +1232,8 @@ public class JSONTest {
                   "vectorIndexConfig": {
                     "sq": {
                       "enabled": true,
-                      "rescore_limit": 10,
-                      "training_limit": 1024,
+                      "rescoreLimit": 10,
+                      "trainingLimit": 1024,
                       "cache": true
                     }
                   }
@@ -1251,7 +1253,7 @@ public class JSONTest {
                   "vectorIndexConfig": {
                     "rq": {
                       "enabled": true,
-                      "rescore_limit": 10,
+                      "rescoreLimit": 10,
                       "bits": 8
                     }
                   }
@@ -1271,7 +1273,7 @@ public class JSONTest {
                   "vectorIndexConfig": {
                     "bq": {
                       "enabled": true,
-                      "rescore_limit": 10,
+                      "rescoreLimit": 10,
                       "cache": true
                     }
                   }
