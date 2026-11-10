@@ -16,7 +16,11 @@ public class SimpleEndpoint<RequestT, ResponseT> extends EndpointBase<RequestT, 
     return NULL_RESPONSE;
   }
 
+  @SuppressWarnings("unchecked")
   protected static <T> BiFunction<Integer, String, T> deserializeClass(Class<T> cls) {
+    if (cls == String.class) {
+      return (statusCode, response) -> (T) response;
+    }
     return (statusCode, response) -> JSON.deserialize(response, cls);
   }
 

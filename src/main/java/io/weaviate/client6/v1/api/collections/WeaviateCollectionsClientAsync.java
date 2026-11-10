@@ -147,8 +147,30 @@ public class WeaviateCollectionsClientAsync {
    * Create a new Weaviate collection with {@link CollectionConfig}.
    */
   public CompletableFuture<CollectionHandleAsync<Map<String, Object>>> create(CollectionConfig collection) {
-    return this.restTransport.performRequestAsync(new CreateCollectionRequest(collection),
-        CreateCollectionRequest._ENDPOINT).thenApply(__ -> use(collection.collectionName()));
+    return this.restTransport.performRequestAsync(new CreateCollectionRequest<>(collection),
+        CreateCollectionRequest.<CollectionConfig>endpoint())
+        .thenApply(__ -> use(collection.collectionName()));
+  }
+
+  /**
+   * Create a new Weaviate collection from a raw JSON schema definition, which is
+   * sent to the server as-is.
+   *
+   * @param json JSON object describing the collection. Must contain a
+   *             {@code "class"} key with the collection name. Otherwise the
+   *             returned future fails with {@link IllegalArgumentException}.
+   * @see WeaviateCollectionsClient#createFromJson(String)
+   */
+  public CompletableFuture<CollectionHandleAsync<Map<String, Object>>> createFromJson(String json) {
+    String collectionName;
+    try {
+      collectionName = CreateCollectionRequest.collectionNameFromJson(json);
+    } catch (IllegalArgumentException e) {
+      return CompletableFuture.failedFuture(e);
+    }
+    return this.restTransport.performRequestAsync(new CreateCollectionRequest<>(json),
+        CreateCollectionRequest.<String>endpoint())
+        .thenApply(__ -> use(collectionName));
   }
 
   /**
@@ -157,11 +179,35 @@ public class WeaviateCollectionsClientAsync {
    * @param collectionName Collection name.
    */
   public CompletableFuture<Optional<CollectionConfig>> getConfig(String collectionName) {
-    return this.restTransport.performRequestAsync(new GetConfigRequest(collectionName), GetConfigRequest._ENDPOINT);
+    return this.restTransport.performRequestAsync(new GetConfigRequest(collectionName),
+        GetConfigRequest.endpoint(CollectionConfig.class));
+  }
+
+  /**
+   * Fetch a collection's schema as raw JSON, exactly as the server returned it.
+   *
+   * @param collectionName Collection name.
+   * @see WeaviateCollectionsClient#getConfigAsJson(String)
+   */
+  public CompletableFuture<Optional<String>> getConfigAsJson(String collectionName) {
+    return this.restTransport.performRequestAsync(new GetConfigRequest(collectionName),
+        GetConfigRequest.endpoint(String.class));
+  }
+
+  /**
+   * Fetch the schema of all collections as raw JSON, exactly as the server
+   * returned it.
+   *
+   * @see WeaviateCollectionsClient#listAsJson()
+   */
+  public CompletableFuture<String> listAsJson() {
+    return this.restTransport.performRequestAsync(new ListCollectionRequest(),
+        ListCollectionRequest.endpoint(String.class));
   }
 
   public CompletableFuture<List<CollectionConfig>> list() {
-    return this.restTransport.performRequestAsync(new ListCollectionRequest(), ListCollectionRequest._ENDPOINT);
+    return this.restTransport.performRequestAsync(new ListCollectionRequest(),
+        ListCollectionRequest.endpoint(ListCollectionResponse.class)).thenApply(ListCollectionResponse::collections);
   }
 
   /**

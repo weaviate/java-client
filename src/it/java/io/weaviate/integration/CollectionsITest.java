@@ -7,6 +7,8 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
 
+import com.google.gson.JsonParser;
+
 import io.weaviate.ConcurrentTest;
 import io.weaviate.client6.v1.api.WeaviateApiException;
 import io.weaviate.client6.v1.api.WeaviateClient;
@@ -37,6 +39,9 @@ import io.weaviate.containers.Weaviate;
 public class CollectionsITest extends ConcurrentTest {
   private static WeaviateClient client = Container.WEAVIATE.getClient();
 
+  private static final Weaviate asyncIndexing = Weaviate.custom()
+      .enableAsyncIndexing(true).build();
+
   @Test
   public void testCreateGetDelete() throws IOException {
     var collectionName = ns("Things");
@@ -61,6 +66,61 @@ public class CollectionsITest extends ConcurrentTest {
     client.collections.delete(collectionName);
     var noCollection = client.collections.getConfig(collectionName);
     Assertions.assertThat(noCollection).as("after delete").isEmpty();
+  }
+
+  @Test
+  public void testCreateFromJsonAndGetConfigAsJson() throws IOException {
+    var collectionName = ns("Things");
+
+    var asyncIndexingClient = asyncIndexing.getClient();
+    asyncIndexingClient.collections.createFromJson("""
+        {
+          "class": "%s",
+          "description": "created from raw JSON",
+          "properties": [
+            { "name": "username", "dataType": ["text"] },
+            { "name": "age", "dataType": ["int"] }
+          ],
+          "vectorConfig": {
+            "default": {
+              "vectorIndexType": "dynamic",
+              "vectorizer": { "none": {} },
+              "vectorIndexConfig": {
+                "threshold": 10000,
+                "hnsw": { "rq": { "enabled": true, "bits": 8 } }
+              }
+            }
+          }
+        }
+        """.formatted(collectionName));
+
+    var raw = asyncIndexingClient.collections.getConfigAsJson(collectionName);
+    Assertions.assertThat(raw).as("raw schema").get(InstanceOfAssertFactories.STRING)
+        .contains(collectionName)
+        .contains("created from raw JSON");
+
+    var document = JsonParser.parseString(raw.get()).getAsJsonObject();
+    Assertions.assertThat(document.get("class").getAsString()).isEqualTo(collectionName);
+    Assertions.assertThat(document.getAsJsonObject("vectorConfig")
+        .getAsJsonObject("default").get("vectorIndexType").getAsString())
+        .as("dynamic index").isEqualTo("dynamic");
+    Assertions.assertThat(document.getAsJsonObject("vectorConfig")
+        .getAsJsonObject("default").getAsJsonObject("vectorIndexConfig")
+        .getAsJsonObject("hnsw").getAsJsonObject("rq").get("enabled").getAsBoolean())
+        .as("rq survives the raw round-trip").isTrue();
+
+    Assertions.assertThat(asyncIndexingClient.collections.listAsJson())
+        .as("full schema").contains(collectionName);
+
+    asyncIndexingClient.collections.delete(collectionName);
+    Assertions.assertThat(asyncIndexingClient.collections.getConfigAsJson(collectionName))
+        .as("after delete").isEmpty();
+  }
+
+  @Test
+  public void testCreateFromJsonRejectsDocumentWithoutClass() {
+    Assertions.assertThatThrownBy(() -> client.collections.createFromJson("{ \"description\": \"no name\" }"))
+        .as("no \"class\" key").isInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
