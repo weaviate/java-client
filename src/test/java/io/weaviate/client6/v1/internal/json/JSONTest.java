@@ -1193,6 +1193,23 @@ public class JSONTest {
             SelfProvidedVectorizer.of(none -> none
                 .vectorIndex(Dynamic.of(idx -> idx
                     .hnsw(Hnsw.of(hnsw -> hnsw.ef(1)))
+                    .flat(Flat.of(flat -> flat.vectorCacheMaxObjects(100)))))),
+            """
+                {
+                  "vectorIndexType": "dynamic",
+                  "vectorizer": {"none": {}},
+                  "vectorIndexConfig": {
+                    "flat": {"vectorCacheMaxObjects": 100},
+                    "hnsw": {"ef": 1}
+                  }
+                }
+                """,
+        },
+        {
+            VectorConfig.class,
+            SelfProvidedVectorizer.of(none -> none
+                .vectorIndex(Dynamic.of(idx -> idx
+                    .hnsw(Hnsw.of(hnsw -> hnsw.ef(1)))
                     .flat(Flat.of(flat -> flat.vectorCacheMaxObjects(100)))
                     .threshold(5)
                     .distance(Distance.COSINE)))

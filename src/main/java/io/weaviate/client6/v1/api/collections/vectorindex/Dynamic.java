@@ -106,7 +106,9 @@ public record Dynamic(
 
           var dynamic = new JsonObject();
 
-          dynamic.addProperty("threshold", value.threshold);
+          if (value.threshold != null) {
+            dynamic.addProperty("threshold", value.threshold);
+          }
           if (value.distance != null) {
             dynamic.add("distance", gson.toJsonTree(value.distance));
           }
