@@ -16,12 +16,12 @@ public enum ConsistencyLevel {
    * replication_factor/2 + 1) respond. This provides a balance between
    * consistency and availability.
    */
-  QUORUM(WeaviateProtoBase.ConsistencyLevel.CONSISTENCY_LEVEL_ONE, "QUORUM"),
+  QUORUM(WeaviateProtoBase.ConsistencyLevel.CONSISTENCY_LEVEL_QUORUM, "QUORUM"),
   /**
    * The operation succeeds only when all replicas respond. This is the most
    * consistent but least available and slowest option.
    */
-  ALL(WeaviateProtoBase.ConsistencyLevel.CONSISTENCY_LEVEL_ONE, "ALL");
+  ALL(WeaviateProtoBase.ConsistencyLevel.CONSISTENCY_LEVEL_ALL, "ALL");
 
   private final WeaviateProtoBase.ConsistencyLevel consistencyLevel;
   private final String queryParameter;
